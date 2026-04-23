@@ -15,7 +15,7 @@
             <img src="{{ asset('images/banner1.jpg') }}" class="d-block w-100" alt="Banner 1">
             <div class="carousel-caption">
                 <h1 class="display-3 fw-bold text-uppercase">Mùa Thu Tươi Mát</h1>
-                <p class="lead">Trái cây sạch từ nông trại đến bàn ăn của bạn</p>
+                <p class="lead">Trái cây tươi ngon, bổ dưỡng từ thiên nhiên</p>
             </div>
         </div>
         {{-- ... Giữ nguyên các carousel-item khác ... --}}
@@ -88,7 +88,7 @@
     <div class="video-content text-center text-white w-100">
         <p class="text-uppercase mb-2 fw-bold" style="letter-spacing: 2px;">SẢN PHẨM MỚI</p>
         <h2 class="display-3 fw-bold mb-4">Mùa Thu Tươi Mát</h2>
-        <p class="lead mb-4 px-3">Khám phá những loại trái cây tươi ngon nhất vừa cập bến cửa hàng.</p>
+        <p class="lead mb-4 px-3">Chào mừng bạn đến với mùa vụ trái cây mới và nhiều sản phẩm hấp dẫn!</p>
         <a href="#" class="btn btn-outline-light btn-lg px-5 rounded-pill text-uppercase fw-bold">Xem thêm</a>
     </div>
 </div>
