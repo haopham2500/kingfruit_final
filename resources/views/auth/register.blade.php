@@ -9,7 +9,7 @@
             <form action="{{ route('register') }}" method="POST">
                 @csrf
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Họ và tên</label>
+                    <label class="form-label fw-bold">Họ Tên</label>
                     <input type="text" name="name" class="form-control" placeholder="Nhập họ tên" required>
                 </div>
 
@@ -32,7 +32,7 @@
             </form>
 
             <div class="text-center mt-4">
-                <p class="small text-muted">Đã có tài khoản? <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none">Đăng nhập ngay</a></p>
+                <p class="small text-muted">Bạn đã có tài khoản? <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none">Đăng nhập ngay tại đây</a></p>
             </div>
         </div>
     </div>
