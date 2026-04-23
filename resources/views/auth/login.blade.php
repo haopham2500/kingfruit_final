@@ -23,11 +23,11 @@
                     <label class="form-label fw-bold">Mật khẩu</label>
                     <input type="password" name="password" class="form-control" placeholder="********" required>
                 </div>
-                <button type="submit" class="btn btn-success w-100 fw-bold py-2">ĐĂNG NHẬP</button>
+                <button type="submit" class="btn btn-success w-100 fw-bold py-2">Đăng Nhập</button>
             </form>
 
             <div class="text-center mt-4">
-                <p class="small">Chưa có tài khoản? <a href="{{ route('register') }}" class="text-success fw-bold text-decoration-none">Đăng ký ngay</a></p>
+                <p class="small">Chưa có tài khoản? <a href="{{ route('register') }}" class="text-success fw-bold text-decoration-none">Đăng ký </a></p>
                 <a href="{{ route('home') }}" class="text-muted small text-decoration-none"><i class="bi bi-house-door"></i> Quay lại trang chủ</a>
             </div>
         </div>
