@@ -10,15 +10,15 @@ class ProductController extends Controller
     // Logic của trang index.php
     public function index()
 {
-    // Lấy tất cả sản phẩm
-    $products = DB::table('san_pham')
-        ->join('loai_trai_cay', 'san_pham.id_loai', '=', 'loai_trai_cay.id_loai')
-        ->select('san_pham.*', 'loai_trai_cay.ten_loai')
+    // Sửa 'san_pham' thành 'products' và 'loai_trai_cay' thành 'categories'
+    $products = DB::table('products')
+        ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+        ->select('products.*', 'categories.name as category_name')
         ->get();
 
-    // Lấy 4 sản phẩm ngẫu nhiên cho Best Seller
-    $bestSellers = DB::table('san_pham')
-        ->join('loai_trai_cay', 'san_pham.id_loai', '=', 'loai_trai_cay.id_loai')
+    $bestSellers = DB::table('products')
+        ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+        ->select('products.*', 'categories.name as category_name')
         ->inRandomOrder()
         ->limit(4)
         ->get();
@@ -133,5 +133,24 @@ public function update(Request $request, $id)
 public function destroy($id) {
     DB::table('products')->where('id', $id)->delete();
     return back()->with('success', 'Xóa sản phẩm thành công!');
+}
+public function search(Request $request)
+{
+    $query = $request->input('query'); // Lấy từ khóa người dùng gõ
+
+    // Tìm kiếm sản phẩm kèm theo tên loại trái cây
+    $products = DB::table('products')
+        ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+        ->select('products.*', 'categories.name as category_name')
+        ->where('products.name', 'LIKE', "%{$query}%") // Tìm kiếm theo tên
+        ->orWhere('categories.name', 'LIKE', "%{$query}%") // Tìm cả theo tên danh mục cho xịn
+        ->get();
+
+    // Trả về view 'home' nhưng với dữ liệu đã lọc (Hoặc tạo view mới tùy ní)
+    // Ở đây mình trả về view 'home' để ní không phải tạo thêm file, 
+    // chỉ cần truyền thêm biến $query để hiển thị thông báo "Kết quả tìm kiếm cho..."
+    $bestSellers = DB::table('products')->inRandomOrder()->limit(4)->get(); // Giữ lại cho đỡ trống trang
+    
+    return view('home', compact('products', 'query', 'bestSellers'));
 }
 }

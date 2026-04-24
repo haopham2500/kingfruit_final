@@ -16,6 +16,10 @@ use App\Http\Controllers\CategoryController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
 
+//--- TÌM KIẾM SẢN PHẨM ---Giang
+Route::get('/search', [ProductController::class, 'search'])->name('search');
+
+
 // --- HỆ THỐNG ĐĂNG KÝ / ĐĂNG NHẬP ---
 Route::get('/register', [CrudUserController::class, 'showRegister'])->name('register');
 Route::post('/register', [CrudUserController::class, 'createUser']);
@@ -24,7 +28,16 @@ Route::get('/login', [CrudUserController::class, 'login'])->name('login');
 Route::post('/login', [CrudUserController::class, 'authUser']);
 Route::post('/logout', [CrudUserController::class, 'logout'])->name('logout');
 
-// --- HỆ THỐNG QUẢN TRỊ (ADMIN) ---
+
+
+
+
+
+
+
+
+
+// --- HỆ THỐNG QUẢN TRỊ (ADMIN) ---Hào
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     
     // Quản lý sản phẩm (CRUD)
