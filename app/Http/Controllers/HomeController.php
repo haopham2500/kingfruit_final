@@ -26,5 +26,11 @@ class HomeController extends Controller
 
         // 3. Trả về view 'home'
         return view('home', compact('bestSellers', 'products'));
+
+        // Lấy giỏ hàng từ Service hoặc Session
+        $cart = session()->get('cart', []);
+        $cartCount = count($cart); // Đếm số loại sản phẩm trong giỏ
+
+        return view('home', compact('products', 'bestSellers', 'cartCount'));
     }
 }

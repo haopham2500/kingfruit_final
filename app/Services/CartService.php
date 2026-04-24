@@ -2,68 +2,37 @@
 
 namespace App\Services;
 
-use App\Models\Product;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 class CartService
 {
-    // Lấy toàn bộ giỏ hàng
-    public function getCart()
+    public function addToCart($id, $quantity)
     {
-        return Session::get('cart', []);
-    }
+        // Lấy dữ liệu bằng Query Builder thay vì Model
+        $product = DB::table('products')->where('id', $id)->first();
 
-    // Thêm sản phẩm
-    public function addToCart($id)
-    {
-        $product = Product::findOrFail($id);
-        $cart = $this->getCart();
+        if (!$product) return false;
+
+        $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
+            $cart[$id]['quantity'] += $quantity;
         } else {
             $cart[$id] = [
                 "name" => $product->name,
-                "quantity" => 1,
+                "quantity" => (int)$quantity,
                 "price" => $product->price,
                 "image" => $product->image,
-                "unit" => $product->unit // Lấy từ DB kingfruit_full
+                "unit" => $product->unit ?? 'Kg'
             ];
         }
 
-        Session::put('cart', $cart);
+        session()->put('cart', $cart);
+        return true;
     }
 
-    // Cập nhật số lượng
-    public function updateCart($id, $quantity)
+    public function getCart()
     {
-        $cart = $this->getCart();
-        if (isset($cart[$id]) && $quantity > 0) {
-            $cart[$id]['quantity'] = $quantity;
-            Session::put('cart', $cart);
-            return true;
-        }
-        return false;
-    }
-
-    // Xóa sản phẩm
-    public function removeFromCart($id)
-    {
-        $cart = $this->getCart();
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            Session::put('cart', $cart);
-            return true;
-        }
-        return false;
-    }
-
-    // Tính tổng tiền
-    public function getTotalPrice()
-    {
-        $cart = $this->getCart();
-        return array_reduce($cart, function($total, $item) {
-            return $total + ($item['price'] * $item['quantity']);
-        }, 0);
+        return session()->get('cart', []);
     }
 }

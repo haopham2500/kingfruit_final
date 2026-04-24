@@ -7,7 +7,11 @@
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
         <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4"></button>
     </div>
+
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img src="{{ asset('images/banner1.jpg') }}" class="d-block w-100" alt="Banner 1">
@@ -16,8 +20,48 @@
                 <p class="lead">Trái cây tươi ngon, bổ dưỡng từ thiên nhiên</p>
             </div>
         </div>
+
+        <div class="carousel-item">
+            <img src="{{ asset('images/banner2.jpg') }}" class="d-block w-100" alt="Banner 2">
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-uppercase">Trái Cây Nhập Khẩu</h1>
+                <p class="lead">Chất lượng hàng đầu, an toàn cho sức khỏe</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="{{ asset('images/banner3.jpg') }}" class="d-block w-100" alt="Banner 3">
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-uppercase">Ưu Đãi Đặc Biệt</h1>
+                <p class="lead">Giảm giá lên đến 30% cho các loại combo</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="{{ asset('images/banner4.jpg') }}" class="d-block w-100" alt="Banner 4">
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-uppercase">Sạch Từ Nông Trại</h1>
+                <p class="lead">Quy trình chăm sóc chuẩn VietGAP</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="{{ asset('images/banner5.jpg') }}" class="d-block w-100" alt="Banner 5">
+            <div class="carousel-caption">
+                <h1 class="display-3 fw-bold text-uppercase">Giao Hàng Tận Nơi</h1>
+                <p class="lead">Ship nhanh trong vòng 2h tại nội thành</p>
+            </div>
+        </div>
     </div>
-    {{-- ... (Các nút điều khiển carousel giữ nguyên) ... --}}
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
 @endif
 

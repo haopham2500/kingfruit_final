@@ -133,50 +133,27 @@
         }
 
         /* Ép toàn bộ khung card phải bằng nhau */
-        .product-card {
-            display: flex !important;
-            flex-direction: column !important;
-            height: 100% !important;
-            /* Quan trọng nhất: bắt card cao hết cỡ hàng đó */
-            border-radius: 15px;
-            border: none;
-            transition: 0.4s ease;
-            overflow: hidden;
-        }
+       .product-card {
+        transition: transform 0.3s ease;
+        overflow: hidden; /* Để bo góc card không bị hình đè lên */
+    }
 
-        /* Ép ảnh không được làm vỡ khung */
-        .card-img-top {
-            width: 100%;
-            height: 200px;
-            /* Cố định chiều cao cho tất cả ảnh */
-            object-fit: cover;
-            /* Cắt ảnh sao cho lấp đầy khung mà không bị méo */
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-        }
+    .product-card:hover {
+        transform: translateY(-5px); /* Hiệu ứng bay lên khi rê chuột vào */
+    }
 
-        /* Xử lý phần nội dung chữ bên dưới */
-        .card-body {
-            flex-grow: 1;
-            /* Tự động lấp đầy phần còn lại của card */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            /* Đẩy nút 'Mua ngay' xuống sát đáy cho thẳng hàng */
-            padding: 1.25rem;
-        }
+    .badge-hot {
+        background-color: #ff4757; /* Màu đỏ nổi bật */
+        color: white;
+        z-index: 10; /* Đảm bảo nó luôn nằm trên ảnh */
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
 
-        /* Đảm bảo tên sản phẩm không quá dài làm nhảy dòng */
-        .card-title {
-            font-size: 1.1rem;
-            height: 2.4em;
-            /* Cố định chiều cao cho 2 dòng chữ */
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            margin-bottom: 0.5rem;
-        }
+    .card-img-top {
+        height: 250px;
+        object-fit: cover; /* Giúp ảnh không bị méo khi kích thước khác nhau */
+    }
     </style>
 </head>
 
@@ -212,8 +189,24 @@
                             </button>
                         </form>
                     </li>
+                    <li class="nav-item mx-lg-3 my-2 my-lg-0">
+                        <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
+                        </form>
+                    </li>
 
+                    <li class="nav-item me-3">
+                        <a href="{{ route('cart.index') }}" class="nav-link position-relative d-inline-block">
+                            <i class="bi bi-cart3 fs-4 text-white"></i>
+                            @if(session('cart') && count(session('cart')) > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                                {{ count(session('cart')) }}
+                            </span>
+                            @endif
+                        </a>
+                    </li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#"><i class="bi bi-gift me-1"></i> Khuyến mãi</a></li>
+
+                    
 
                     <li class="nav-item ms-lg-3 d-flex align-items-center">
                         @guest
