@@ -21,13 +21,20 @@
 
         .navbar {
             background-color: var(--king-green) !important;
-            padding: 15px 0;
+            padding: 12px 0;
+            z-index: 1050;
+            /* Đảm bảo menu luôn nằm trên cùng */
         }
 
         .nav-link {
             font-weight: 500;
             text-transform: uppercase;
             margin: 0 10px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            opacity: 0.8;
         }
 
         /* Banner Slider */
@@ -48,12 +55,11 @@
             padding: 30px;
         }
 
-        /* Product Card - Giống vuatraicay.click */
+        /* Product Card */
         .product-card {
             border-radius: 15px;
             border: none;
-            transition: 0.3s;
-            position: relative;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
         }
 
@@ -62,89 +68,22 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .card-img-top {
-            padding: 15px;
-            border-radius: 25px;
-            height: 250px;
-            object-fit: cover;
-        }
-
-        .badge-hot {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--king-red);
-        }
-
-        .badge-cate {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: var(--king-green);
-            font-size: 10px;
-        }
-
-        .price-text {
-            color: var(--king-red);
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .btn-buy {
-            background-color: var(--king-red);
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
+        /* Search Bar Focus */
+        .navbar input[type="search"] {
             transition: 0.3s;
         }
 
-        .btn-buy:hover {
-            background-color: #d63031;
-            transform: scale(1.05);
+        .navbar input[type="search"]:focus {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            width: 250px;
+            /* Hiệu ứng giãn nhẹ thanh tìm kiếm khi click */
+            outline: none;
         }
 
-        /* Section Title */
-        .section-header {
-            border-bottom: 2px solid #eee;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-        }
-
-        .section-header h2 {
-            font-weight: 800;
-            color: #333;
-            position: relative;
-        }
-
-        .section-header h2::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 0;
-            width: 80px;
-            height: 3px;
-            background: var(--king-green);
-        }
-
-        /* Footer */
-        .main-footer {
-            background-color: #1a1b1e;
-            color: #adb5bd;
-            padding: 60px 0 30px;
-        }
-
-        .footer-logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-
-        /* Đảm bảo phần section chiếm trọn chiều ngang */
+        /* Video Footer Section */
         .video-footer-section {
             position: relative;
             width: 100vw;
-            /* Chiều ngang bằng 100% màn hình */
             left: 50%;
             right: 50%;
             margin-left: -50vw;
@@ -155,7 +94,6 @@
             align-items: center;
             justify-content: center;
             margin-top: 50px;
-            /* Tạo khoảng cách với phần trên */
         }
 
         .video-container {
@@ -179,8 +117,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            /* Làm tối nền để nổi chữ */
+            background: rgba(0, 0, 0, 0.5);
             z-index: 2;
         }
 
@@ -189,9 +126,56 @@
             z-index: 3;
         }
 
-        .navbar input[type="search"]:focus {
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            outline: none;
+        .main-footer {
+            background-color: #1a1b1e;
+            color: #adb5bd;
+            padding: 60px 0 30px;
+        }
+
+        /* Ép toàn bộ khung card phải bằng nhau */
+        .product-card {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            /* Quan trọng nhất: bắt card cao hết cỡ hàng đó */
+            border-radius: 15px;
+            border: none;
+            transition: 0.4s ease;
+            overflow: hidden;
+        }
+
+        /* Ép ảnh không được làm vỡ khung */
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            /* Cố định chiều cao cho tất cả ảnh */
+            object-fit: cover;
+            /* Cắt ảnh sao cho lấp đầy khung mà không bị méo */
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        /* Xử lý phần nội dung chữ bên dưới */
+        .card-body {
+            flex-grow: 1;
+            /* Tự động lấp đầy phần còn lại của card */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Đẩy nút 'Mua ngay' xuống sát đáy cho thẳng hàng */
+            padding: 1.25rem;
+        }
+
+        /* Đảm bảo tên sản phẩm không quá dài làm nhảy dòng */
+        .card-title {
+            font-size: 1.1rem;
+            height: 2.4em;
+            /* Cố định chiều cao cho 2 dòng chữ */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-bottom: 0.5rem;
         }
     </style>
 </head>
@@ -199,7 +183,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">
+            <a class="navbar-brand fw-bold fs-3" href="{{ route('home') }}">
                 <i class="bi bi-apple me-2"></i>KING FRUIT
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#kingNav">
@@ -217,6 +201,7 @@
                                 class="form-control rounded-pill ps-4 pe-5 border-0 shadow-sm"
                                 type="search"
                                 name="query"
+                                value="{{ request('query') }}"
                                 placeholder="Tìm trái cây..."
                                 style="min-width: 220px; height: 38px; font-size: 0.9rem;">
                             <button
@@ -227,14 +212,14 @@
                             </button>
                         </form>
                     </li>
+
                     <li class="nav-item"><a class="nav-link text-warning" href="#"><i class="bi bi-gift me-1"></i> Khuyến mãi</a></li>
+
                     <li class="nav-item ms-lg-3 d-flex align-items-center">
                         @guest
-                        {{-- Hiển thị khi chưa đăng nhập --}}
                         <a class="btn btn-outline-light rounded-pill px-4 me-2" href="{{ route('login') }}">Đăng nhập</a>
                         <a class="btn btn-light text-success rounded-pill px-4" href="{{ route('register') }}">Đăng ký</a>
                         @else
-                        {{-- Hiển thị khi đã đăng nhập --}}
                         <div class="dropdown">
                             <a class="btn btn-light text-success rounded-pill px-4 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
@@ -254,7 +239,6 @@
                                 </li>
                             </ul>
                         </div>
-
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
