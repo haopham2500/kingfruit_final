@@ -141,52 +141,60 @@
         }
 
         /* Đảm bảo phần section chiếm trọn chiều ngang */
-    .video-footer-section {
-        position: relative;
-        width: 100vw; /* Chiều ngang bằng 100% màn hình */
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        height: 550px;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 50px; /* Tạo khoảng cách với phần trên */
-    }
+        .video-footer-section {
+            position: relative;
+            width: 100vw;
+            /* Chiều ngang bằng 100% màn hình */
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 550px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+            /* Tạo khoảng cách với phần trên */
+        }
 
-    .video-container {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
 
-    .video-container video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Quan trọng: Giúp video không bị méo và lấp đầy khung */
-    }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    .video-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4); /* Làm tối nền để nổi chữ */
-        z-index: 2;
-    }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            /* Làm tối nền để nổi chữ */
+            z-index: 2;
+        }
 
-    .video-content {
-        position: relative;
-        z-index: 3;
-    }
+        .video-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .navbar input[type="search"]:focus {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            outline: none;
+        }
     </style>
-  </head>
+</head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
@@ -199,7 +207,26 @@
             </button>
             <div class="collapse navbar-collapse" id="kingNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item"><a class="nav-link text-white" href="#">Trang chủ</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('home') }}">Trang chủ</a>
+                    </li>
+
+                    <li class="nav-item mx-lg-3 my-2 my-lg-0">
+                        <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
+                            <input
+                                class="form-control rounded-pill ps-4 pe-5 border-0 shadow-sm"
+                                type="search"
+                                name="query"
+                                placeholder="Tìm trái cây..."
+                                style="min-width: 220px; height: 38px; font-size: 0.9rem;">
+                            <button
+                                class="btn position-absolute end-0 top-50 translate-middle-y border-0 text-success"
+                                type="submit"
+                                style="padding-right: 15px;">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
+                    </li>
                     <li class="nav-item"><a class="nav-link text-warning" href="#"><i class="bi bi-gift me-1"></i> Khuyến mãi</a></li>
                     <li class="nav-item ms-lg-3 d-flex align-items-center">
                         @guest
