@@ -40,7 +40,7 @@ class ProductController extends Controller
 
     // Tạm thời lấy bình luận nếu ní đã có bảng comments
     // Sửa thành 'reviews' và kiểm tra lại tên cột
-$comments = \DB::table('reviews')
+    $comments = \DB::table('reviews')
     ->leftJoin('users', 'reviews.user_id', '=', 'users.id')
     ->where('reviews.product_id', $id)
     ->select('reviews.*', 'users.name as user_name')
