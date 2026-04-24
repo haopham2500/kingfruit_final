@@ -91,7 +91,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="submit" class="btn btn-primary px-4">Lưu thay đổi</button>
+                                    <button type="submit" class="btn btn-primary px-4">Lưu thay đổi.</button>
                                 </div>
                             </form>
                         </div>
