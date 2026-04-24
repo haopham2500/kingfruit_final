@@ -136,7 +136,7 @@
     </div>
 </div> 
 
-<div class="video-footer-section position-relative w-100 mt-5" style="height: 400px; overflow: hidden;">
+<div class="video-footer-section position-relative w-100 mt-5" style="height: 600px; overflow: hidden;">
     <video autoplay muted loop playsinline class="w-100 h-100" style="object-fit: cover;">
         <source src="{{ asset('videos/bg-footer.mp4') }}" type="video/mp4">
     </video>
