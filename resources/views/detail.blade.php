@@ -18,11 +18,18 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="row gx-5">
         <div class="col-md-6 mb-4">
-            <div class="product-detail-img-container">
-                {{-- Sửa: Sử dụng cột 'image' từ database kingfruit_full --}}
-                <img src="{{ $product->image ? asset('images/' . $product->image) : 'https://placehold.co/600x600?text=' . $product->name }}" alt="{{ $product->name }}">
+            <div class="product-detail-img-container shadow-sm">
+                <img src="{{ $product->image ? asset('images/' . $product->image) : 'https://placehold.co/600x600?text=' . $product->name }}" 
+                     alt="{{ $product->name }}">
             </div>
         </div>
 
@@ -38,7 +45,9 @@
             <p class="text-danger fs-2 fw-bold my-3">
                 {{ number_format($product->price) }} VNĐ <small class="text-secondary fs-6 fw-normal">/ {{ $product->unit ?? 'Kg' }}</small>
             </p>
+            
             <hr class="my-4">
+            
             <div class="product-info">
                 <h5 class="fw-bold"><i class="bi bi-info-circle me-2"></i>Mô tả sản phẩm</h5>
                 <p class="text-muted" style="line-height: 1.8;">
@@ -46,10 +55,12 @@
                 </p>
             </div>
             
-            <form action="#" method="POST" class="mt-4 p-4 bg-light rounded-3 shadow-sm">
+            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="mt-4 p-4 bg-light rounded-3 shadow-sm">
                 @csrf
                 <div class="row align-items-center g-3">
-                    <div class="col-auto"><label class="fw-bold">Số lượng</label></div>
+                    <div class="col-auto">
+                        <label class="fw-bold">Số lượng</label>
+                    </div>
                     <div class="col-auto">
                         <input type="number" name="quantity" value="1" min="1" class="form-control text-center shadow-none" style="width: 100px;">
                     </div>
@@ -73,9 +84,6 @@
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <div>
                             <span class="fw-bold text-dark">{{ $comment->user_name }}</span>
-                            @if(isset($comment->role) && $comment->role == 'admin') 
-                                <span class="badge bg-danger ms-2">Quản trị viên</span> 
-                            @endif
                         </div>
                         <small class="text-muted">{{ date('d/m/Y', strtotime($comment->created_at)) }}</small>
                     </div>
@@ -84,7 +92,7 @@
                             <i class="bi bi-star{{ $i <= $comment->rating ? '-fill' : '' }}"></i>
                         @endfor
                     </div>
-                    <p class="text-secondary mb-2">{{ $comment->content }}</p>
+                    <p class="text-secondary mb-2">{{ $comment->comment }}</p>
                 </div>
                 @endforeach
             @else

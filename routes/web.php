@@ -33,6 +33,21 @@ Route::post('/logout', [CrudUserController::class, 'logout'])->name('logout');
 
 
 
+// --- GIỎ HÀNG ---quyền
+// Route hiển thị chi tiết (GET) - Cái này đã có sẵn
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
+
+// ĐỔI THÀNH POST để nhận dữ liệu từ Form trang chi tiết
+// Cho phép cả GET (từ link trang chủ) và POST (từ form trang chi tiết)
+Route::match(['get', 'post'], '/add-to-cart/{id}', [ProductController::class, 'addToCart'])->name('cart.add');// Các route khác giữ nguyên
+Route::get('/cart', [ProductController::class, 'cart'])->name('cart.index');
+Route::patch('/update-cart', [ProductController::class, 'updateCart'])->name('cart.update');
+Route::delete('/remove-from-cart', [ProductController::class, 'removeCart'])->name('cart.remove');
+
+// Thêm dòng này để định nghĩa route xóa sạch giỏ hàng
+Route::get('/clear-cart', [ProductController::class, 'clearCart'])->name('cart.clear');
+
+
 
 
 
