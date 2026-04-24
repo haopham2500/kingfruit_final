@@ -10,7 +10,7 @@
             </div>
 
             @if(session('error'))
-                <div class="alert alert-danger text-center py-2">{{ session('error') }}</div>
+            <div class="alert alert-danger text-center py-2">{{ session('error') }}</div>
             @endif
 
             <form action="{{ route('login') }}" method="POST">

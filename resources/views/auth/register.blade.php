@@ -5,7 +5,7 @@
     <div class="card shadow-lg border-0 rounded-4">
         <div class="card-body p-5">
             <h2 class="text-center fw-bold text-success mb-4">ĐĂNG KÝ</h2>
-            
+
             <form action="{{ route('register') }}" method="POST">
                 @csrf
                 <div class="mb-3">
