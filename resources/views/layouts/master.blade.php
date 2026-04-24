@@ -21,53 +21,169 @@
 
         .navbar {
             background-color: var(--king-green) !important;
-            padding: 15px 0;
+            padding: 12px 0;
+            z-index: 1050;
+            /* Đảm bảo menu luôn nằm trên cùng */
         }
 
         .nav-link {
             font-weight: 500;
             text-transform: uppercase;
             margin: 0 10px;
+            transition: 0.3s;
         }
 
-        /* Hiệu ứng rung nhẹ cho icon giỏ hàng khi có hàng */
-        .cart-icon-wrapper {
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+
+        /* Banner Slider */
+        .carousel-item {
+            height: 500px;
+        }
+
+        .carousel-item img {
+            object-fit: cover;
+            height: 100%;
+            filter: brightness(70%);
+        }
+
+        .carousel-caption {
+            bottom: 30%;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        /* Product Card */
+        .product-card {
+            border-radius: 15px;
+            border: none;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Search Bar Focus */
+        .navbar input[type="search"] {
+            transition: 0.3s;
+        }
+
+        .navbar input[type="search"]:focus {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            width: 250px;
+            /* Hiệu ứng giãn nhẹ thanh tìm kiếm khi click */
+            outline: none;
+        }
+
+        /* Video Footer Section */
+        .video-footer-section {
             position: relative;
-            display: inline-block;
-            transition: transform 0.2s;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            height: 550px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
         }
 
-        .cart-icon-wrapper:hover {
-            transform: scale(1.1);
-        }
-
-        .badge-cart {
+        .video-container {
             position: absolute;
-            top: -5px;
-            right: -10px;
-            background-color: var(--king-red);
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 10px;
-            font-weight: bold;
-            border: 2px solid var(--king-green);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
-        /* ... Giữ nguyên các Style cũ của bạn ... */
-        .carousel-item { height: 500px; }
-        .carousel-item img { object-fit: cover; height: 100%; filter: brightness(70%); }
-        .product-card { border-radius: 15px; border: none; transition: 0.3s; position: relative; overflow: hidden; }
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); }
-        .price-text { color: var(--king-red); font-size: 1.2rem; font-weight: bold; }
-        .main-footer { background-color: #1a1b1e; color: #adb5bd; padding: 60px 0 30px; }
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .video-content {
+            position: relative;
+            z-index: 3;
+        }
+
+        .main-footer {
+            background-color: #1a1b1e;
+            color: #adb5bd;
+            padding: 60px 0 30px;
+        }
+
+        /* Ép toàn bộ khung card phải bằng nhau */
+        .product-card {
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100% !important;
+            /* Quan trọng nhất: bắt card cao hết cỡ hàng đó */
+            border-radius: 15px;
+            border: none;
+            transition: 0.4s ease;
+            overflow: hidden;
+        }
+
+        /* Ép ảnh không được làm vỡ khung */
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            /* Cố định chiều cao cho tất cả ảnh */
+            object-fit: cover;
+            /* Cắt ảnh sao cho lấp đầy khung mà không bị méo */
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        /* Xử lý phần nội dung chữ bên dưới */
+        .card-body {
+            flex-grow: 1;
+            /* Tự động lấp đầy phần còn lại của card */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Đẩy nút 'Mua ngay' xuống sát đáy cho thẳng hàng */
+            padding: 1.25rem;
+        }
+
+        /* Đảm bảo tên sản phẩm không quá dài làm nhảy dòng */
+        .card-title {
+            font-size: 1.1rem;
+            height: 2.4em;
+            /* Cố định chiều cao cho 2 dòng chữ */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="/">
+            <a class="navbar-brand fw-bold fs-3" href="{{ route('home') }}">
                 <i class="bi bi-apple me-2"></i>KING FRUIT
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#kingNav">
@@ -75,62 +191,58 @@
             </button>
             <div class="collapse navbar-collapse" id="kingNav">
                 <ul class="navbar-nav ms-auto align-items-center">
-    <li class="nav-item">
-        <a class="nav-link text-white" href="{{ route('home') }}">Trang chủ</a>
-    </li>
-
-    <li class="nav-item mx-lg-2">
-        <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
-            <input class="form-control rounded-pill ps-3 pe-5 border-0 shadow-sm" 
-                   type="search" name="query" placeholder="Tìm trái cây..." 
-                   style="width: 200px; height: 35px; font-size: 0.85rem;">
-            <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 text-success" type="submit">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
-    </li>
-
-    <li class="nav-item px-2">
-        <a href="{{ route('cart.index') }}" class="cart-icon-wrapper text-decoration-none">
-            <i class="bi bi-cart3 fs-4 text-white"></i>
-            @if(session('cart') && count(session('cart')) > 0)
-                <span class="badge-cart">
-                    {{ count(session('cart')) }}
-                </span>
-            @endif
-        </a>
-    </li>
-
-    <li class="nav-item"><a class="nav-link text-warning small" href="#"><i class="bi bi-gift"></i> Khuyến mãi</a></li>
-    
-    <li class="nav-item ms-lg-2">
-        @guest
-            <div class="d-flex gap-2">
-                <a class="btn btn-sm btn-outline-light rounded-pill px-3" href="{{ route('login') }}">Đăng nhập</a>
-                <a class="btn btn-sm btn-light text-success rounded-pill px-3" href="{{ route('register') }}">Đăng ký</a>
-            </div>
-        @else
-            <div class="dropdown">
-                <a class="btn btn-sm btn-light text-success rounded-pill px-3 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                    <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                    @if(Auth::user()->role == 'admin')
-                        <li><a class="dropdown-item" href="{{ route('crud') }}"><i class="bi bi-speedometer2"></i> Quản trị</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                    @endif
-                    <li>
-                        <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Đăng xuất
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('home') }}">Trang chủ</a>
                     </li>
-                </ul>
-            </div>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
-        @endguest
-    </li>
-</ul>
+
+                    <li class="nav-item mx-lg-3 my-2 my-lg-0">
+                        <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
+                            <input
+                                class="form-control rounded-pill ps-4 pe-5 border-0 shadow-sm"
+                                type="search"
+                                name="query"
+                                value="{{ request('query') }}"
+                                placeholder="Tìm trái cây..."
+                                style="min-width: 220px; height: 38px; font-size: 0.9rem;">
+                            <button
+                                class="btn position-absolute end-0 top-50 translate-middle-y border-0 text-success"
+                                type="submit"
+                                style="padding-right: 15px;">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link text-warning" href="#"><i class="bi bi-gift me-1"></i> Khuyến mãi</a></li>
+
+                    <li class="nav-item ms-lg-3 d-flex align-items-center">
+                        @guest
+                        <a class="btn btn-outline-light rounded-pill px-4 me-2" href="{{ route('login') }}">Đăng nhập</a>
+                        <a class="btn btn-light text-success rounded-pill px-4" href="{{ route('register') }}">Đăng ký</a>
+                        @else
+                        <div class="dropdown">
+                            <a class="btn btn-light text-success rounded-pill px-4 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                                @if(Auth::user()->email == 'admin@kingfruit.com')
+                                <li><a class="dropdown-item" href="{{ route('crud') }}"><i class="bi bi-speedometer2 me-2"></i>Quản trị hệ thống</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                @endif
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                        @endguest
                     </li>
                 </ul>
             </div>
@@ -153,4 +265,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
