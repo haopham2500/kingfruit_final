@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Để dùng Query Builder giống file cũ của ní
+use Illuminate\Support\Facades\DB; 
 
 class ProductController extends Controller
 {
