@@ -13,43 +13,34 @@ class CrudUserController extends Controller
      * --- ĐĂNG NHẬP ---
      */
 
-    // Hiển thị trang đăng nhập
+    // Hàm hiển thị form đăng nhập (Phải có hàm này để web.php gọi)
     public function login()
     {
-        // Trỏ đến file: resources/views/auth/login.blade.php
         return view('auth.login'); 
     }
 
-    // Xử lý logic đăng nhập
+    // Xử lý thực hiện đăng nhập
     public function authUser(Request $request)
     {
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ], [
-            'email.required' => 'Vui lòng nhập email.',
-            'email.email' => 'Email không đúng định dạng.',
-            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'email.required' => 'Ní chưa nhập email kìa.',
+            'password.required' => 'Mật khẩu đâu ní ơi?',
         ]);
 
-        // Thử đăng nhập với thông tin người dùng nhập vào
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            // Lấy thông tin user vừa đăng nhập
             $user = Auth::user();
 
-            // PHÂN QUYỀN: Kiểm tra cột 'role' trong database
+            // Phân quyền admin/user
             if ($user->role === 'admin') {
-                // Nếu là admin thì vào trang quản trị sản phẩm
                 return redirect()->route('crud');
             }
-            
-            // Nếu là user bình thường thì về trang chủ
             return redirect()->intended('/');
         }
 
-        // Trả về kèm thông báo lỗi nếu sai tài khoản hoặc mật khẩu
         return back()->with('error', 'Email hoặc mật khẩu không chính xác.');
     }
 
@@ -57,37 +48,37 @@ class CrudUserController extends Controller
      * --- ĐĂNG KÝ ---
      */
 
-    // Hiển thị trang đăng ký
+    // Hiển thị form đăng ký
     public function showRegister()
     {
-        // Trỏ đến file: resources/views/auth/register.blade.php
         return view('auth.register');
     }
 
-    // Xử lý logic tạo tài khoản
+    // Xử lý tạo tài khoản (Gọi Model)
     public function createUser(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string',
         ], [
-            'email.unique' => 'Email này đã được đăng ký rồi ní ơi.',
-            'password.min' => 'Mật khẩu phải ít nhất 6 ký tự nhé.',
+            'email.unique' => 'Email này có người dùng rồi ní.',
+            'password.min' => 'Mật khẩu ít nhất 6 ký tự nhé.',
         ]);
 
-        // Mặc định khi đăng ký qua form này, role sẽ luôn là 'user'
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'role' => 'user', 
-        ]);
+        // GỌI MODEL XỬ LÝ (Chuẩn MVC)
+        User::registerUser($data);
 
-        // Đăng ký xong chuyển về trang đăng nhập kèm thông báo thành công
-        return redirect()->route('login')->with('success', 'Đăng ký thành công! Đăng nhập đi ní.');
+        return redirect()->route('login')->with('success', 'Đăng ký thành công! Đăng nhập ngay cho nóng.');
+    }
+
+    /**
+     * --- QUẢN LÝ USER ---
+     */
+    public function index() {
+        $users = User::getAllUsers();
+        return view('admin.users', compact('users'));
     }
 
     /**

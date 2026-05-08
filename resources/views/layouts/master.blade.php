@@ -218,7 +218,7 @@
                                 <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                                @if(Auth::user()->email == 'admin@kingfruit.com')
+                                @if(Auth::user()->email == 'admin@gmail.com')
                                 <li><a class="dropdown-item" href="{{ route('crud') }}"><i class="bi bi-speedometer2 me-2"></i>Quản trị hệ thống</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
