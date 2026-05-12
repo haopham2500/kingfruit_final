@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VoucherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,4 +77,16 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // Cập nhật người dùng
     Route::get('/users/edit/{id}', [CrudUserController::class, 'edit'])->name('admin.users.edit');
     Route::put('/users/update/{id}', [CrudUserController::class, 'update'])->name('admin.users.update');
+
+    // 4.4 QUẢN LÝ vouchers
+    Route::prefix('admin')->group(function () {
+    // Tên route vẫn giữ admin.vouchers.index cho chuẩn Laravel 
+    // nhưng trỏ vào URL /vouchers
+    Route::get('/vouchers', [VoucherController::class, 'index'])->name('admin.vouchers.index');
+    Route::post('/vouchers', [VoucherController::class, 'store'])->name('admin.vouchers.store');
+    Route::delete('/vouchers/{id}', [VoucherController::class, 'destroy'])->name('admin.vouchers.destroy');
+    // cập nhật voucher
+    Route::get('/vouchers/{id}/edit', [VoucherController::class, 'edit'])->name('admin.vouchers.edit');
+    Route::put('/vouchers/{id}', [VoucherController::class, 'update'])->name('admin.vouchers.update');
+});
 });
