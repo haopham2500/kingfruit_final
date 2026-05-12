@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,5 +89,16 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // cập nhật voucher
     Route::get('/vouchers/{id}/edit', [VoucherController::class, 'edit'])->name('admin.vouchers.edit');
     Route::put('/vouchers/{id}', [VoucherController::class, 'update'])->name('admin.vouchers.update');
-});
+    });
+
+    // 4.5 QUẢN LÝ ĐƠN HÀNG
+    Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // Trang danh sách đơn hàng
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    //xem chi tiết đơn hàng
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    
+    // Xử lý cập nhật trạng thái đơn hàng (Dùng POST vì có gửi dữ liệu thay đổi lên DB)
+    Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    });
 });
