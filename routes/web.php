@@ -50,7 +50,7 @@ Route::prefix('cart')->group(function () {
 // --- 4. HỆ THỐNG QUẢN TRỊ (ADMIN) ---
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     
-    // Quản lý sản phẩm (CRUD)
+    // 4.1. Quản lý sản phẩm (CRUD)
     Route::get('/crud', [ProductController::class, 'indexAdmin'])->name('crud');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
@@ -58,9 +58,22 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
     Route::get('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
 
-    // Quản lý danh mục (Categories)
+    // 4.2. Quản lý danh mục (Categories)
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('category.store');
     Route::post('/categories/update/{id}', [CategoryController::class, 'update'])->name('category.update');
     Route::get('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
+
+    // 4.3. QUẢN LÝ NGƯỜI DÙNG (MỚI THÊM)
+    // Hiển thị danh sách user
+    Route::get('/users', [\App\Http\Controllers\CrudUserController::class, 'index'])->name('admin.users.index');
+    
+    // Xóa người dùng (Dùng DELETE cho đúng chuẩn Laravel)
+    Route::delete('/users/{id}', [\App\Http\Controllers\CrudUserController::class, 'destroy'])->name('admin.users.destroy');
+
+    // khóa người dùng
+    Route::patch('/admin/users/toggle/{id}', [CrudUserController::class, 'toggleRole'])->name('admin.users.toggle');
+    // Cập nhật người dùng
+    Route::get('/users/edit/{id}', [CrudUserController::class, 'edit'])->name('admin.users.edit');
+    Route::put('/users/update/{id}', [CrudUserController::class, 'update'])->name('admin.users.update');
 });
