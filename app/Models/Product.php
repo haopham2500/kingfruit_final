@@ -51,9 +51,26 @@ class Product extends Model
      * Hàm tìm kiếm sản phẩm
      */
     public static function searchProducts($query)
-{
-    return self::with('category')
-        ->where('name', 'LIKE', "%{$query}%")
-        ->get();
-}
+    {
+        return self::with('category')
+            ->where('name', 'LIKE', "%{$query}%")
+            ->get();
+    }
+    // app/Models/Product.php
+    public function scopeFilter($query, $request)
+    {
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        return $query;
+    }
 }
