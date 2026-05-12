@@ -42,6 +42,10 @@
             <i class="bi bi-people me-2"></i> Quản lý khách hàng
         </a>
 
+        <a href="{{ route('admin.vouchers.index') }}" class="nav-link {{ request()->routeIs('admin.vouchers.*') ? 'active' : '' }}">
+            <i class="bi bi-ticket-perforated me-2"></i> Quản lý Voucher
+        </a>
+
         <a class="nav-link" href="{{ route('home') }}">
             <i class="bi bi-house me-2"></i> Quay lại trang chủ
         </a>
