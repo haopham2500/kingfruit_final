@@ -25,30 +25,37 @@
 <body>
     <div class="d-flex">
         <div class="sidebar shadow">
-            <div class="p-4 text-center">
-                <h4 class="fw-bold text-uppercase">King Fruit</h4>
-                <small class="opacity-75">Hệ thống quản trị</small>
-            </div>
-            <nav class="nav flex-column mt-3">
-                <a class="nav-link {{ request()->routeIs('crud') ? 'active' : '' }}" href="{{ route('crud') }}">
-                    <i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm
-                </a>
-                <a class="nav-link {{ request()->routeIs('category.index') ? 'active' : '' }}" href="{{ route('category.index') }}">
-                    <i class="bi bi-tags me-2"></i> Quản lý danh mục
-                </a>
-                <a class="nav-link" href="{{ route('home') }}">
-                    <i class="bi bi-house me-2"></i> Quay lại trang chủ
-                </a>
-                <hr class="mx-3 opacity-25">
-                <form action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
-                        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
-                    </button>
-                </form>
-            </nav>
-        </div>
+    <div class="p-4 text-center">
+        <h4 class="fw-bold text-uppercase">King Fruit</h4>
+        <small class="opacity-75">Hệ thống quản trị</small>
+    </div>
+    <nav class="nav flex-column mt-3">
+        <a class="nav-link {{ request()->routeIs('crud') ? 'active' : '' }}" href="{{ route('crud') }}">
+            <i class="bi bi-box-seam me-2"></i> Quản lý sản phẩm
+        </a>
+        
+        <a class="nav-link {{ request()->routeIs('category.index') ? 'active' : '' }}" href="{{ route('category.index') }}">
+            <i class="bi bi-tags me-2"></i> Quản lý danh mục
+        </a>
 
+        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
+            <i class="bi bi-people me-2"></i> Quản lý khách hàng
+        </a>
+
+        <a class="nav-link" href="{{ route('home') }}">
+            <i class="bi bi-house me-2"></i> Quay lại trang chủ
+        </a>
+        
+        <hr class="mx-3 opacity-25">
+        
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+                <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+            </button>
+        </form>
+    </nav>
+</div>
         <div class="main-wrapper">
             <div class="content">
                 @yield('content') </div>
