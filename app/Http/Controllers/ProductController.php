@@ -15,6 +15,76 @@ class ProductController extends Controller
 
     // Trang chủ: Hiển thị sản phẩm và sản phẩm bán chạy
     public function index()
+{
+    // Lấy tất cả sản phẩm
+    $products = DB::table('san_pham')
+        ->join('loai_trai_cay', 'san_pham.id_loai', '=', 'loai_trai_cay.id_loai')
+        ->select('san_pham.*', 'loai_trai_cay.ten_loai')
+        ->get();
+
+    // Lấy 4 sản phẩm ngẫu nhiên cho Best Seller
+    $bestSellers = DB::table('san_pham')
+        ->join('loai_trai_cay', 'san_pham.id_loai', '=', 'loai_trai_cay.id_loai')
+        ->inRandomOrder()
+        ->limit(4)
+        ->get();
+
+    return view('home', compact('products', 'bestSellers'));
+}
+
+    // Logic của trang chi_tiet.php
+    public function show($id)
+{
+    // Lấy chi tiết sản phẩm và tên loại
+    $product = DB::table('products')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->select('products.*', 'categories.name as category_name')
+        ->where('products.id', $id)
+        ->first();
+
+    if (!$product) { return redirect()->route('home'); }
+
+    // Tạm thời lấy bình luận nếu ní đã có bảng comments
+    // Sửa thành 'reviews' và kiểm tra lại tên cột
+    $comments = DB::table('reviews')
+    ->leftJoin('users', 'reviews.user_id', '=', 'users.id')
+    ->where('reviews.product_id', $id)
+    ->select('reviews.*', 'users.name as user_name')
+    ->get();
+
+    return view('detail', compact('product', 'comments'));
+}
+public function indexAdmin() {
+    // Lấy danh sách sản phẩm kèm tên danh mục
+    $products = DB::table('products')
+        ->leftJoin('categories', 'products.category_id', '=', 'categories.id')
+        ->select('products.*', 'categories.name as category_name')
+        ->get();
+
+        // 2. Lấy danh sách danh mục (CÁI NÀY ĐANG THIẾU NÈ)
+    $categories = DB::table('categories')->get();
+
+    // 3. Gửi CẢ HAI biến sang View
+    return view('admin.crud', compact('products', 'categories'));
+}
+// Hàm thêm sản phẩm
+public function store(Request $request)
+{
+    // 1. Kiểm tra dữ liệu đầu vào
+    $request->validate([
+        'name' => 'required',
+        'price' => 'required|numeric',
+        'category_id' => 'required',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Bắt buộc chọn ảnh khi thêm mới
+    ]);
+
+    // 2. Xử lý lưu file ảnh
+    $fileName = null;
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('images'), $fileName);
+
     {
         // Sử dụng các hàm Static đã viết trong Model Product (Chuẩn MVC)
         $products = Product::getListWithCategory();
