@@ -18,7 +18,7 @@
         }
         .sidebar .nav-link { color: rgba(255,255,255,0.8); padding: 15px 20px; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.1); color: white; }
-        .main-wrapper { margin-left: 250px; width: 100%; } /* Đẩy nội dung sang phải để không bị sidebar đè */
+        .main-wrapper { margin-left: 250px; width: calc(100% - 250px); } /* Đẩy nội dung sang phải để không bị sidebar đè */
         .content { padding: 30px; }
     </style>
 </head>
