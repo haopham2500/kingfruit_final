@@ -98,9 +98,9 @@
                         <span class="fs-5 fw-bold text-dark">Tổng cộng:</span>
                         <span class="fs-4 fw-bold text-danger">{{ number_format($total) }} đ</span>
                     </div>
-                    <button class="btn btn-success btn-lg w-100 rounded-pill shadow-sm fw-bold py-3 mb-3 btn-checkout">
-                        TIẾN HÀNH ĐẶT HÀNG
-                    </button>
+<a href="{{ route('checkout.index') }}" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm fw-bold py-3 mb-3 text-decoration-none d-flex align-items-center justify-content-center">
+    TIẾN HÀNH ĐẶT HÀNG
+</a>
                     <div class="bg-light p-3 rounded-3 text-center">
                         <small class="text-muted"><i class="bi bi-info-circle me-1"></i> Đơn hàng sẽ được giao trong 24h.</small>
                     </div>
@@ -197,11 +197,9 @@
                 });
             }
         });
+        
 
-        // Nút tiến hành đặt hàng (chỗ này ní có thể redirect tới trang thanh toán sau này)
-        $(".btn-checkout").click(function() {
-            alert('Tính năng đặt hàng đang được "Vua Trái Cây" phát triển nhé ní!');
-        });
+        
     });
 </script>
 @endsection
