@@ -44,8 +44,22 @@
     @else
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
         @foreach($allProducts as $product)
-        @include('partials.product_card', ['product' => $product])
-        @endforeach
+        <div class="col">
+            <div class="card h-100 product-card shadow-sm border-0 position-relative">
+                <span class="badge rounded-pill px-3 bg-success text-white" style="position: absolute; top: 10px; left: 10px;">
+                    {{ $product->category_name ?? 'Trái cây' }}
+                </span>
+                <img src="{{ $product->image ? asset('images/' . $product->image) : 'https://placehold.co/400x400?text=' . $product->name }}" class="card-img-top" alt="{{ $product->name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
+                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">Chi tiết</a>
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 btn-sm rounded-pill">Mua ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div> @endforeach
     </div>
     @endif
 
@@ -119,7 +133,8 @@
                     <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
                     <div class="d-flex gap-2">
                         <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">Chi tiết</a>
-<a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 py-2 rounded-pill shadow-sm">Mua ngay</a>                    </div>
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 py-2 rounded-pill shadow-sm">Mua ngay</a>
+                    </div>
                 </div>
             </div>
         </div>

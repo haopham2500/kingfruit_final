@@ -8,7 +8,8 @@ use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\OrderController;
-
+// routes/web.php
+use App\Http\Controllers\ReviewController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes - DỰ ÁN VUA TRÁI CÂY
@@ -34,16 +35,16 @@ Route::post('/logout', [CrudUserController::class, 'logout'])->name('logout');
 Route::prefix('cart')->group(function () {
     // Hiển thị giỏ hàng
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    
+
     // Thêm vào giỏ (Dùng match để nhận cả nút "Mua ngay" và Form từ trang chi tiết)
     Route::match(['get', 'post'], '/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-    
+
     // Cập nhật số lượng (Ajax Patch)
     Route::patch('/update', [CartController::class, 'updateCart'])->name('cart.update');
-    
+
     // Xóa từng món (Ajax Delete)
     Route::delete('/remove', [CartController::class, 'removeCart'])->name('cart.remove');
-    
+
     // Xóa sạch giỏ hàng
     Route::get('/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 });
@@ -51,7 +52,7 @@ Route::prefix('cart')->group(function () {
 
 // --- 4. HỆ THỐNG QUẢN TRỊ (ADMIN) ---
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    
+
     // 4.1. Quản lý sản phẩm (CRUD)
     Route::get('/crud', [ProductController::class, 'indexAdmin'])->name('crud');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
@@ -69,7 +70,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     // 4.3. QUẢN LÝ NGƯỜI DÙNG (MỚI THÊM)
     // Hiển thị danh sách user
     Route::get('/users', [\App\Http\Controllers\CrudUserController::class, 'index'])->name('admin.users.index');
-    
+
     // Xóa người dùng (Dùng DELETE cho đúng chuẩn Laravel)
     Route::delete('/users/{id}', [\App\Http\Controllers\CrudUserController::class, 'destroy'])->name('admin.users.destroy');
 
@@ -81,24 +82,33 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     // 4.4 QUẢN LÝ vouchers
     Route::prefix('admin')->group(function () {
-    // Tên route vẫn giữ admin.vouchers.index cho chuẩn Laravel 
-    // nhưng trỏ vào URL /vouchers
-    Route::get('/vouchers', [VoucherController::class, 'index'])->name('admin.vouchers.index');
-    Route::post('/vouchers', [VoucherController::class, 'store'])->name('admin.vouchers.store');
-    Route::delete('/vouchers/{id}', [VoucherController::class, 'destroy'])->name('admin.vouchers.destroy');
-    // cập nhật voucher
-    Route::get('/vouchers/{id}/edit', [VoucherController::class, 'edit'])->name('admin.vouchers.edit');
-    Route::put('/vouchers/{id}', [VoucherController::class, 'update'])->name('admin.vouchers.update');
+        // Tên route vẫn giữ admin.vouchers.index cho chuẩn Laravel 
+        // nhưng trỏ vào URL /vouchers
+        Route::get('/vouchers', [VoucherController::class, 'index'])->name('admin.vouchers.index');
+        Route::post('/vouchers', [VoucherController::class, 'store'])->name('admin.vouchers.store');
+        Route::delete('/vouchers/{id}', [VoucherController::class, 'destroy'])->name('admin.vouchers.destroy');
+        // cập nhật voucher
+        Route::get('/vouchers/{id}/edit', [VoucherController::class, 'edit'])->name('admin.vouchers.edit');
+        Route::put('/vouchers/{id}', [VoucherController::class, 'update'])->name('admin.vouchers.update');
     });
 
     // 4.5 QUẢN LÝ ĐƠN HÀNG
     Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-    // Trang danh sách đơn hàng
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    //xem chi tiết đơn hàng
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-    
-    // Xử lý cập nhật trạng thái đơn hàng (Dùng POST vì có gửi dữ liệu thay đổi lên DB)
-    Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        // Trang danh sách đơn hàng
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        //xem chi tiết đơn hàng
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+        // Xử lý cập nhật trạng thái đơn hàng (Dùng POST vì có gửi dữ liệu thay đổi lên DB)
+        Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
+
+
+
+
+
+
+Route::post('/product/{id}/review', [ReviewController::class, 'store'])
+    ->name('review.store')
+    ->middleware('auth');
 });
