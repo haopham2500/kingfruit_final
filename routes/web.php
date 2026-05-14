@@ -8,7 +8,6 @@ use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\OrderController;
-// routes/web.php
 use App\Http\Controllers\ReviewController;
 /*
 |--------------------------------------------------------------------------
@@ -102,13 +101,30 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         // Xử lý cập nhật trạng thái đơn hàng (Dùng POST vì có gửi dữ liệu thay đổi lên DB)
         Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
-
-
-
-
-
-
-Route::post('/product/{id}/review', [ReviewController::class, 'store'])
-    ->name('review.store')
-    ->middleware('auth');
 });
+// --- HỆ THỐNG BÌNH LUẬN (DÀNH CHO MỌI NGƯỜI) ---
+
+// 1. Khách gửi bình luận mới (Đây là route đang bị báo lỗi thiếu)
+Route::post('/product/{id}/review', [ReviewController::class, 'store'])
+    ->name('review.store') 
+    ->middleware('auth');
+
+// 2. Mọi người trả lời bình luận của nhau (Dùng cho cả trang Detail và Admin)
+Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply'])
+    ->name('review.reply')
+    ->middleware('auth');
+
+
+// --- QUẢN LÝ ADMIN (Nằm trong group admin) ---
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Quản lý danh sách bình luận
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    
+    // Route trả lời riêng cho trang admin (nếu ní đang dùng tên admin.reviews.reply trong view admin)
+    Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
+    
+    // Xóa bình luận
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+
