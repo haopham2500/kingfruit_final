@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Voucher; // Quan trọng: Phải có dòng này để lấy dữ liệu voucher
+use App\Models\Voucher;
 
 class CheckoutController extends Controller
 {
@@ -14,12 +14,10 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        // 1. Lấy danh sách voucher còn hạn và còn số lượng từ database
         $vouchers = Voucher::where('expiry_date', '>=', now())
                            ->where('quantity', '>', 0)
                            ->get();
 
-        // 2. Truyền biến $vouchers sang view checkout/index.blade.php
         return view('checkout.index', compact('vouchers'));
     }
 
@@ -28,31 +26,51 @@ class CheckoutController extends Controller
      */
     public function placeOrder(Request $request)
     {
-        // Lấy giỏ hàng từ session
+        // 1. Lấy giỏ hàng từ session
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
             return redirect()->back()->with('error', 'Giỏ hàng đang trống!');
         }
 
-        // Tính tổng tiền
-        $total = 0;
+        // 2. Tính tổng tiền hàng (Tạm tính)
+        $subtotal = 0;
         foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $subtotal += $item['price'] * $item['quantity'];
         }
 
-        // Lưu thông tin đơn hàng vào bảng orders
+        // 3. Xử lý giảm giá (Logic sửa lỗi tiền âm)
+        $discountAmount = 0;
+        if ($request->has('voucher_code') && !empty($request->voucher_code)) {
+            $voucher = Voucher::where('code', $request->voucher_code)
+                              ->where('expiry_date', '>=', now())
+                              ->first();
+            
+            if ($voucher) {
+                $discountAmount = $voucher->discount_value;
+                
+                // Nếu tiền giảm lớn hơn tổng đơn hàng, chỉ giảm tối đa bằng tổng đơn
+                if ($discountAmount > $subtotal) {
+                    $discountAmount = $subtotal;
+                }
+            }
+        }
+
+        // 4. Tính tổng tiền thực tế khách phải trả
+        $finalTotal = $subtotal - $discountAmount;
+
+        // 5. Lưu thông tin đơn hàng vào bảng orders
         $order = Order::create([
             'name'           => $request->customer_name,
             'phone'          => $request->phone,
             'address'        => $request->address,
             'note'           => $request->note,
             'payment_method' => $request->payment_method,
-            'total_amount'   => $total,
+            'total_amount'   => $finalTotal, // Lưu số tiền đã xử lý (không bị âm)
             'status'         => 'pending',
         ]);
 
-        // Lưu chi tiết từng sản phẩm vào bảng order_items
+        // 6. Lưu chi tiết từng sản phẩm vào bảng order_items
         foreach ($cart as $id => $item) {
             OrderItem::create([
                 'order_id'   => $order->id,
@@ -62,9 +80,9 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Xóa giỏ hàng sau khi đặt thành công
+        // 7. Xóa giỏ hàng sau khi đặt thành công
         session()->forget('cart');
 
-        return redirect('/')->with('success', 'Đặt hàng thành công!');
+        return redirect('/')->with('success', 'Đặt hàng thành công! Tổng thanh toán: ' . number_format($finalTotal) . 'đ');
     }
 }

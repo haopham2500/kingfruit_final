@@ -8,33 +8,30 @@
 
     <form action="{{ route('checkout.placeOrder') }}" method="POST">
         @csrf
+        {{-- Thêm input hidden để gửi mã voucher khi submit form đặt hàng --}}
+        <input type="hidden" name="voucher_code" id="applied_voucher_code">
 
         <div class="row">
             <!-- CỘT TRÁI: THÔNG TIN GIAO HÀNG -->
             <div class="col-md-7">
                 <div class="card shadow-sm border-0 p-4 rounded-4">
                     <h5 class="fw-bold mb-4">Thông tin giao hàng</h5>
-                    
                     <div class="mb-3">
                         <label class="form-label fw-bold">Họ và tên</label>
                         <input type="text" name="customer_name" class="form-control" required placeholder="Nhập họ tên">
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label fw-bold">Số điện thoại</label>
                         <input type="text" name="phone" class="form-control" required placeholder="Nhập số điện thoại">
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label fw-bold">Địa chỉ giao hàng</label>
                         <textarea name="address" rows="3" class="form-control" required placeholder="Số nhà, tên đường, phường/xã..."></textarea>
                     </div>
-
                     <div class="mb-3">
                         <label class="form-label fw-bold">Ghi chú</label>
                         <textarea name="note" rows="2" class="form-control" placeholder="Ghi chú thêm về đơn hàng"></textarea>
                     </div>
-
                     <div class="mb-0">
                         <label class="form-label fw-bold">Phương thức thanh toán</label>
                         <select name="payment_method" class="form-select">
@@ -68,7 +65,7 @@
                     <label class="form-label fw-bold small">Mã giảm giá</label>
                     <div class="input-group mb-2">
                         <input type="text" class="form-control border-end-0" placeholder="Nhập mã" id="voucher_code">
-                        <button class="btn btn-dark px-3 fw-bold" type="button">Áp dụng</button>
+                        <button class="btn btn-dark px-3 fw-bold" type="button" id="apply_voucher_btn">Áp dụng</button>
                     </div>
                     <div class="text-end mb-4">
                         <a href="javascript:void(0)" class="text-success small text-decoration-none fw-bold" data-bs-toggle="modal" data-bs-target="#modalVoucher">
@@ -79,7 +76,7 @@
                     <!-- TÍNH TOÁN TIỀN -->
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Tạm tính:</span>
-                        <span class="fw-semibold">{{ number_format($total) }} đ</span>
+                        <span class="fw-semibold" id="subtotal_val" data-value="{{ $total }}">{{ number_format($total) }} đ</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2 text-success">
                         <span>Giảm giá:</span>
@@ -87,7 +84,8 @@
                     </div>
                     <div class="d-flex justify-content-between mb-4">
                         <span class="fs-5 fw-bold">Tổng cộng:</span>
-                        <span class="fs-4 fw-bold text-danger">{{ number_format($total) }} đ</span>
+                        {{-- Sửa class ở đây để khớp với CSS của bạn --}}
+                        <span class="fs-4 fw-bold text-danger" id="total_final_display">{{ number_format($total) }} đ</span>
                     </div>
 
                     <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow-sm">
@@ -126,33 +124,67 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+        // Khi nhấn nút "Dùng" trong Modal
         $(document).on('click', '.btn-use-voucher', function() {
             let code = $(this).data('code');
             $('#voucher_code').val(code);
             $('#modalVoucher').modal('hide');
+            $('#apply_voucher_btn').click(); // Tự động nhấn áp dụng sau khi chọn
+        });
+
+        // Nút Áp dụng Ajax
+        $('#apply_voucher_btn').click(function() {
+            let voucherCode = $('#voucher_code').val();
+            let subtotal = parseInt($('#subtotal_val').attr('data-value'));
+
+            if (voucherCode == "") {
+                alert("Vui lòng nhập mã giảm giá");
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route("voucher.apply") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    code: voucherCode
+                },
+                success: function(res) {
+                    if(res.success) {
+        // ... Cập nhật tiền ...
+    } else {
+        // Đây chính là nơi hiển thị thông báo "Mã giảm giá này đã hết hạn sử dụng!" 
+        // mà Controller gửi về.
+        alert(res.message); 
+    }
+                    if (res.success) {
+                        let discount = parseInt(res.discount);
+                        
+                        // CHẶN LỖI GIÁ ÂM: Nếu giảm giá > tiền hàng, thì chỉ giảm tối đa bằng tiền hàng
+                        let actualDiscount = (discount > subtotal) ? subtotal : discount;
+                        let newTotal = subtotal - actualDiscount;
+
+                        // Cập nhật giao diện
+                        $('#discount_display').text('-' + actualDiscount.toLocaleString() + ' đ');
+                        $('#total_final_display').text(newTotal.toLocaleString() + ' đ');
+                        
+                        // Lưu mã voucher vào hidden input để gửi cùng form đặt hàng
+                        $('#applied_voucher_code').val(voucherCode);
+
+                        alert(res.message);
+                    } else {
+                        alert(res.message);
+                        // Reset giao diện nếu mã sai
+                        $('#discount_display').text('-0 đ');
+                        $('#total_final_display').text(subtotal.toLocaleString() + ' đ');
+                        $('#applied_voucher_code').val('');
+                    }
+                },
+                error: function() {
+                    alert('Lỗi kết nối hệ thống!');
+                }
+            });
         });
     });
-$('.btn-dark').click(function() { // Nút Áp dụng
-    let voucherCode = $('#voucher_code').val();
-    
-    $.ajax({
-        url: '{{ route("voucher.apply") }}',
-        method: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}',
-            code: voucherCode
-        },
-        success: function(res) {
-            if(res.success) {
-                // Cập nhật số tiền hiển thị trên giao diện (image_8504d9.jpg)
-                $('#discount_display').text('-' + res.discount.toLocaleString() + ' đ');
-                $('.text-danger.fs-4').text(res.newTotal.toLocaleString() + ' đ');
-                alert(res.message);
-            } else {
-                alert(res.message);
-            }
-        }
-    });
-});
 </script>
 @endsection

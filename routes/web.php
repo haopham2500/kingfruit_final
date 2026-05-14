@@ -119,6 +119,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     //route cho áp dụng voucher khi checkout
     Route::post('/apply-voucher', [App\Http\Controllers\VoucherController::class, 'applyVoucher'])->name('voucher.apply');
 
+    // Route để lưu voucher vào danh sách "đã lấy" của người dùng
+Route::post('/collect-voucher', [App\Http\Controllers\VoucherController::class, 'collectVoucher'])->name('voucher.collect');
 
 
 
