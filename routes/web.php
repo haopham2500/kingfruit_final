@@ -10,6 +10,15 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\OrderController;
 // routes/web.php
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CheckoutController;
+Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
+
+Route::get('/checkout', [CheckoutController::class, 'index'])
+    ->name('checkout.index');
+
+Route::post('/checkout/place-order',
+    [CheckoutController::class, 'placeOrder'])
+    ->name('checkout.placeOrder');
 /*
 |--------------------------------------------------------------------------
 | Web Routes - DỰ ÁN VUA TRÁI CÂY
@@ -102,6 +111,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         // Xử lý cập nhật trạng thái đơn hàng (Dùng POST vì có gửi dữ liệu thay đổi lên DB)
         Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
+    
 
 
 
