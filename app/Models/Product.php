@@ -73,4 +73,7 @@ class Product extends Model
 
         return $query;
     }
+    public function reviews() {
+    return $this->hasMany(Review::class)->latest();
+}
 }

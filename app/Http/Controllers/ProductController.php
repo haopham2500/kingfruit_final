@@ -19,24 +19,25 @@ class ProductController extends Controller
         // Sử dụng các hàm Static đã viết trong Model Product (Chuẩn MVC)
         $products = Product::getListWithCategory();
         $bestSellers = Product::getBestSellers(4);
-        
+
         return view('home', compact('products', 'bestSellers'));
     }
 
     // Trang tìm kiếm sản phẩm
-  
+
 
     // Xem chi tiết một sản phẩm (Xử lý khi bấm nút "Chi tiết")
     public function show($id)
     {
         // Eager loading 'category' để lấy tên loại trái cây
         $product = Product::with('category')->find($id);
-        
+
         if (!$product) {
             return redirect()->route('home')->with('error', 'Sản phẩm không tồn tại!');
         }
-        
+
         return view('detail', compact('product'));
+
     }
 
 
@@ -50,7 +51,7 @@ class ProductController extends Controller
         // Lấy danh sách sản phẩm kèm danh mục
         $products = Product::getListWithCategory();
         // Lấy tất cả danh mục để hiện trong Form Thêm/Sửa
-        $categories = Category::all(); 
+        $categories = Category::all();
 
         return view('admin.crud', compact('products', 'categories'));
     }
@@ -115,7 +116,7 @@ class ProductController extends Controller
             $fileName = time() . '_' . $request->image->getClientOriginalName();
             $request->image->move(public_path('images'), $fileName);
             $data['image'] = $fileName;
-            
+
             // Lưu ý: Ní có thể code thêm đoạn xóa ảnh cũ ở đây để nhẹ máy chủ
         }
 
@@ -124,18 +125,19 @@ class ProductController extends Controller
         return back()->with('success', 'Cập nhật sản phẩm thành công!');
     }
     // Trang tìm kiếm sản phẩm
-public function search(Request $request)
+    public function search(Request $request)
     {
         $query = $request->input('query');
-        
-        // Gọi hàm từ Model Product
-        $products = Product::searchProducts($query); 
-        
-        // Lấy Best Sellers để trang web không bị trống nếu tìm không ra
-        $bestSellers = Product::getBestSellers(4);
-        
-        // Trả về view 'home' như ní mong muốn
-        return view('home', compact('products', 'bestSellers', 'query'));
+
+        // 1. Lấy kết quả tìm kiếm
+        $allProducts = Product::where('name', 'LIKE', "%{$query}%")->get();
+
+        // 2. Bổ sung các biến mà View home.blade.php đang yêu cầu
+        $hotProducts = Product::inRandomOrder()->limit(4)->get();
+        $categories = Category::all();
+
+        // 3. Truyền tất cả sang View
+        return view('home', compact('allProducts', 'query', 'hotProducts', 'categories'));
     }
 
     // Xử lý xóa sản phẩm
