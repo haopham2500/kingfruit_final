@@ -52,4 +52,34 @@ public function update(Request $request, $id) {
 
     return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật voucher xong rồi nhé ní!');
 }
+public function showPromotions() {
+    $vouchers = Voucher::where('quantity', '>', 0)->get();
+    // Phải có "client." ở phía trước tên file
+    return view('client.promotions', compact('vouchers')); 
+}
+public function applyVoucher(Request $request) {
+    $voucher = Voucher::where('code', $request->code)
+                      ->where('expiry_date', '>=', now())
+                      ->where('quantity', '>', 0)
+                      ->first();
+
+    if (!$voucher) {
+        return response()->json(['success' => false, 'message' => 'Mã không hợp lệ hoặc đã hết hạn']);
+    }
+
+    // Giả sử bạn lấy tổng tiền từ session giỏ hàng
+    $cart = session()->get('cart');
+    $total = 0;
+    foreach($cart as $item) { $total += $item['price'] * $item['quantity']; }
+
+    $discount = $voucher->discount_value; // Hoặc tính % tùy bạn
+    $newTotal = $total - $discount;
+
+    return response()->json([
+        'success' => true,
+        'discount' => $discount,
+        'newTotal' => $newTotal,
+        'message' => 'Áp dụng mã thành công!'
+    ]);
+}
 }

@@ -204,7 +204,9 @@
                             @endif
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link text-warning" href="#"><i class="bi bi-gift me-1"></i> Khuyến mãi</a></li>
+                    <li class="nav-item"><a href="{{ route('promotions.index') }}" class="nav-link">
+    <i class="bi bi-gift me-1"></i> KHUYẾN MÃI
+</a></li>
 
                     
 
