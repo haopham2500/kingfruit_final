@@ -30,24 +30,40 @@
 <div class="container py-5">
 
     {{-- 2. XỬ LÝ TÌM KIẾM --}}
-    @if(isset($query))
-        <div class="section-header mb-4">
-            <h2 class="fw-bold"><i class="bi bi-search me-2"></i>KẾT QUẢ TÌM KIẾM: <span class="text-success">"{{ $query }}"</span></h2>
-            <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Quay lại tất cả sản phẩm</a>
+@if(isset($query))
+    <div class="section-header mb-4">
+        <h2 class="fw-bold"><i class="bi bi-search me-2"></i>KẾT QUẢ TÌM KIẾM: <span class="text-success">"{{ $query }}"</span></h2>
+        <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Quay lại tất cả sản phẩm</a>
+    </div>
+    
+    @if($allProducts->isEmpty())
+        <div class="alert alert-light shadow-sm border-0 rounded-4 p-5 text-center my-5">
+            <h4 class="fw-bold text-dark">Hic, King Fruit tìm không ra rồi ní ơi!</h4>
+            <p class="text-muted">Ní thử tìm tên khác xem sao nhé.</p>
         </div>
-        
-        @if($allProducts->isEmpty())
-            <div class="alert alert-light shadow-sm border-0 rounded-4 p-5 text-center my-5">
-                <h4 class="fw-bold text-dark">Hic, King Fruit tìm không ra rồi ní ơi!</h4>
-                <p class="text-muted">Ní thử tìm tên khác xem sao nhé.</p>
-            </div>
-        @else
-            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
-                @foreach($allProducts as $product)
-                    @include('partials.product_card', ['product' => $product])
-                @endforeach
-            </div>
-        @endif
+    @else
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
+            @foreach($allProducts as $product)
+                {{-- ĐÃ SỬA: Thay @include bằng code card thực tế --}}
+                <div class="col">
+                    <div class="card h-100 product-card shadow-sm border-0 position-relative">
+                        <span class="badge rounded-pill px-3 bg-success text-white" style="position: absolute; top: 10px; left: 10px;">
+                            {{ $product->category_name ?? 'Trái cây' }}
+                        </span>
+                        <img src="{{ $product->image ? asset('images/' . $product->image) : 'https://placehold.co/400x400?text=' . $product->name }}" class="card-img-top" alt="{{ $product->name }}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
+                            <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">Chi tiết</a>
+                                <button class="btn btn-success w-100 btn-sm rounded-pill">Mua ngay</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @endif
 
     {{-- 3. TRANG CHỦ BÌNH THƯỜNG --}}
     @else
