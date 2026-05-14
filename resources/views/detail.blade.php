@@ -126,22 +126,55 @@
         </div>
 
         <div class="col-lg-7 mb-4">
-            {{-- ĐÃ SỬA: Kiểm tra reviews từ quan hệ Model --}}
-            @if($product->reviews && $product->reviews->count() > 0)
-            @foreach($product->reviews as $review)
+            {{-- Chỉ lấy các bình luận gốc (parent_id là null) --}}
+            @php
+            $rootReviews = $product->reviews->where('parent_id', null);
+            @endphp
+
+            @if($rootReviews->count() > 0)
+            @foreach($rootReviews as $review)
             <div class="comment-item">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <div>
-                        <span class="fw-bold text-dark">{{ $review->user?->name }}</span>
-                    </div>
+                    <span class="fw-bold text-dark">{{ $review->user?->name }}</span>
                     <small class="text-muted">{{ $review->created_at->format('d/m/Y') }}</small>
                 </div>
-                <div class="star-rating mb-2">
-                    @for($i = 1; $i <= 5; $i++)
-                        <i class="bi bi-star{{ $i <= $review->rating ? '-fill' : '' }}"></i>
-                        @endfor
-                </div>
                 <p class="text-secondary mb-2">{{ $review->comment }}</p>
+
+                {{-- HIỂN THỊ CÁC CÂU TRẢ LỜI --}}
+                @if($review->replies->count() > 0)
+                @foreach($review->replies as $reply)
+                <div class="ms-4 ms-md-5 mt-2 p-2 bg-light rounded shadow-sm border-start border-success border-3">
+                    <small class="fw-bold {{ $reply->user->role == 'admin' ? 'text-success' : 'text-primary' }}">
+                        {{ $reply->user->role == 'admin' ? 'KING FRUIT PHẢN HỒI' : $reply->user->name }}
+                    </small>
+                    <p class="mb-0 small italic">"{{ $reply->comment }}"</p>
+                </div>
+                @endforeach
+                @endif
+
+                {{-- FORM ĐỂ MỌI NGƯỜI TRẢ LỜI --}}
+                @auth
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-link text-success p-0 text-decoration-none"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#replyForm{{ $review->id }}">
+                        <i class="bi bi-reply-fill"></i> Trả lời
+                    </button>
+
+                    <div class="collapse mt-2" id="replyForm{{ $review->id }}">
+                        <form action="{{ route('review.reply', $review->id) }}" method="POST">
+                            @csrf
+                        </form> @csrf
+                        <form action="{{ route('review.reply', $review->id) }}" method="POST">
+                            @csrf
+                            <input type="text" name="reply_content" required placeholder="Viết câu trả lời...">
+                            <button type="submit" class="btn btn-success">Gửi</button>
+                        </form>
+                        </form>
+                    </div>
+                </div>
+                @else
+                <small class="text-muted mt-2 d-block"><a href="{{ route('login') }}">Đăng nhập</a> để trả lời bình luận này.</small>
+                @endauth
             </div>
             @endforeach
             @else
