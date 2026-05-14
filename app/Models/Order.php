@@ -14,14 +14,16 @@ class Order extends Model
     protected $primaryKey = 'id'; 
 
     // Cho phép cập nhật các cột hiện có và các cột mới sẽ thêm vào
-    protected $fillable = [
-        'user_id',
-        'receiver_name',
-        'phone_number',
-        'address',
-        'total_amount',
-        'status',
-    ];
+   protected $fillable = [
+
+    'name',
+    'phone',
+    'address',
+    'note',
+    'payment_method',
+    'total_amount',
+    'status',
+];
 
     /**
      * Thiết lập mối quan hệ với bảng Users
