@@ -35,7 +35,7 @@ class VoucherController extends Controller
     // Trang sửa voucher
     public function edit($id) {
         $voucher = Voucher::findOrFail($id);
-        return view('admin.vouchers_edit', compact($voucher));
+        return view('admin.vouchers_edit', compact('voucher'));
     }
 
     // Cập nhật voucher
