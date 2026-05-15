@@ -1,132 +1,112 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CrudUserController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\VoucherController;
-use App\Http\Controllers\OrderController;
-// Route cho trang khuyến mãi công khai
-Route::get('/khuyen-mai', [App\Http\Controllers\VoucherController::class, 'showPromotions'])->name('promotions.index');
-// routes/web.php
-use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\{
+    HomeController,
+    ProductController,
+    CartController,
+    CrudUserController,
+    CategoryController,
+    VoucherController,
+    OrderController,
+    ReviewController,
+    CheckoutController
+};
 
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
-Route::get('/checkout', [App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout');
-
-Route::get('/checkout', [CheckoutController::class, 'index'])
-    ->name('checkout.index');
-
-Route::post('/checkout/place-order',
-    [CheckoutController::class, 'placeOrder'])
-    ->name('checkout.placeOrder');
 /*
 |--------------------------------------------------------------------------
 | Web Routes - DỰ ÁN VUA TRÁI CÂY
 |--------------------------------------------------------------------------
 */
 
-// --- 1. TRANG CHỦ & CHI TIẾT SẢN PHẨM ---
+// --- 1. TRANG CHỦ, CHI TIẾT, TÌM KIẾM & KHUYẾN MÃI ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
 Route::get('/search', [ProductController::class, 'search'])->name('search');
+Route::get('/khuyen-mai', [VoucherController::class, 'showPromotions'])->name('promotions.index');
 
 
 // --- 2. HỆ THỐNG ĐĂNG KÝ / ĐĂNG NHẬP ---
 Route::get('/register', [CrudUserController::class, 'showRegister'])->name('register');
 Route::post('/register', [CrudUserController::class, 'createUser']);
-
 Route::get('/login', [CrudUserController::class, 'login'])->name('login');
 Route::post('/login', [CrudUserController::class, 'authUser']);
 Route::post('/logout', [CrudUserController::class, 'logout'])->name('logout');
 
 
-// --- 3. HỆ THỐNG GIỎ HÀNG (SỬ DỤNG CARTCONTROLLER & SERVICE) ---
+// --- 3. HỆ THỐNG GIỎ HÀNG ---
 Route::prefix('cart')->group(function () {
-    // Hiển thị giỏ hàng
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
-
-    // Thêm vào giỏ (Dùng match để nhận cả nút "Mua ngay" và Form từ trang chi tiết)
     Route::match(['get', 'post'], '/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-
-    // Cập nhật số lượng (Ajax Patch)
     Route::patch('/update', [CartController::class, 'updateCart'])->name('cart.update');
-
-    // Xóa từng món (Ajax Delete)
     Route::delete('/remove', [CartController::class, 'removeCart'])->name('cart.remove');
-
-    // Xóa sạch giỏ hàng
     Route::get('/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 });
 
 
-// --- 4. HỆ THỐNG QUẢN TRỊ (ADMIN) ---
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+// --- 4. THANH TOÁN & VOUCHER (Yêu cầu đăng nhập) ---
+Route::middleware(['auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
+    
+    // Voucher
+    Route::post('/apply-voucher', [VoucherController::class, 'applyVoucher'])->name('voucher.apply');
+    Route::post('/collect-voucher', [VoucherController::class, 'collectVoucher'])->name('voucher.collect');
 
-    // 4.1. Quản lý sản phẩm (CRUD)
-    Route::get('/crud', [ProductController::class, 'indexAdmin'])->name('crud');
+    // Bình luận (Khách hàng)
+    Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('review.store');
+    Route::post('/reviews/{id}/reply-user', [ReviewController::class, 'reply'])->name('review.reply');
+});
+
+
+// --- 5. HỆ THỐNG QUẢN TRỊ (ADMIN) ---
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+
+    // 5.1. Quản lý sản phẩm (Vẫn giữ name 'crud' theo ý bạn)
+    Route::get('/crud', [ProductController::class, 'indexAdmin'])->name('product.index'); // Bạn có thể dùng route('admin.product.index')
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
     Route::get('/product/edit/{id}', [ProductController::class, 'edit'])->name('product.edit');
     Route::post('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
     Route::get('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
 
-    // 4.2. Quản lý danh mục (Categories)
-    Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
-    Route::post('/categories/store', [CategoryController::class, 'store'])->name('category.store');
-    Route::post('/categories/update/{id}', [CategoryController::class, 'update'])->name('category.update');
-    Route::get('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
-
-    // 4.3. QUẢN LÝ NGƯỜI DÙNG (MỚI THÊM)
-    // Hiển thị danh sách user
-    Route::get('/users', [\App\Http\Controllers\CrudUserController::class, 'index'])->name('admin.users.index');
-
-    // Xóa người dùng (Dùng DELETE cho đúng chuẩn Laravel)
-    Route::delete('/users/{id}', [\App\Http\Controllers\CrudUserController::class, 'destroy'])->name('admin.users.destroy');
-
-    // khóa người dùng
-    Route::patch('/admin/users/toggle/{id}', [CrudUserController::class, 'toggleRole'])->name('admin.users.toggle');
-    // Cập nhật người dùng
-    Route::get('/users/edit/{id}', [CrudUserController::class, 'edit'])->name('admin.users.edit');
-    Route::put('/users/update/{id}', [CrudUserController::class, 'update'])->name('admin.users.update');
-
-    // 4.4 QUẢN LÝ vouchers
-    Route::prefix('admin')->group(function () {
-        // Tên route vẫn giữ admin.vouchers.index cho chuẩn Laravel 
-        // nhưng trỏ vào URL /vouchers
-        Route::get('/vouchers', [VoucherController::class, 'index'])->name('admin.vouchers.index');
-        Route::post('/vouchers', [VoucherController::class, 'store'])->name('admin.vouchers.store');
-        Route::delete('/vouchers/{id}', [VoucherController::class, 'destroy'])->name('admin.vouchers.destroy');
-        // cập nhật voucher
-        Route::get('/vouchers/{id}/edit', [VoucherController::class, 'edit'])->name('admin.vouchers.edit');
-        Route::put('/vouchers/{id}', [VoucherController::class, 'update'])->name('admin.vouchers.update');
+    // 5.2. Quản lý danh mục
+    Route::prefix('categories')->name('category.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::post('/store', [CategoryController::class, 'store'])->name('store');
+        Route::post('/update/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [CategoryController::class, 'destroy'])->name('delete');
     });
 
-    // 4.5 QUẢN LÝ ĐƠN HÀNG
-    Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
-        // Trang danh sách đơn hàng
-        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-        //xem chi tiết đơn hàng
-        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-
-        // Xử lý cập nhật trạng thái đơn hàng (Dùng POST vì có gửi dữ liệu thay đổi lên DB)
-        Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    // 5.3. Quản lý người dùng
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [CrudUserController::class, 'index'])->name('index');
+        Route::get('/edit/{id}', [CrudUserController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [CrudUserController::class, 'update'])->name('update');
+        Route::delete('/{id}', [CrudUserController::class, 'destroy'])->name('destroy');
+        Route::patch('/toggle/{id}', [CrudUserController::class, 'toggleRole'])->name('toggle');
     });
-    //route cho áp dụng voucher khi checkout
-    Route::post('/apply-voucher', [App\Http\Controllers\VoucherController::class, 'applyVoucher'])->name('voucher.apply');
 
-    // Route để lưu voucher vào danh sách "đã lấy" của người dùng
-Route::post('/collect-voucher', [App\Http\Controllers\VoucherController::class, 'collectVoucher'])->name('voucher.collect');
+    // 5.4. Quản lý Vouchers
+    Route::prefix('vouchers')->name('vouchers.')->group(function () {
+        Route::get('/', [VoucherController::class, 'index'])->name('index');
+        Route::post('/', [VoucherController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [VoucherController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [VoucherController::class, 'update'])->name('update');
+        Route::delete('/{id}', [VoucherController::class, 'destroy'])->name('destroy');
+    });
 
+    // 5.5. Quản lý Đơn hàng
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+        Route::post('/update-status/{id}', [OrderController::class, 'updateStatus'])->name('updateStatus');
+    });
 
-
-
-
-Route::post('/product/{id}/review', [ReviewController::class, 'store'])
-    ->name('review.store')
-    ->middleware('auth');
+    // 5.6. Quản lý Bình luận
+    Route::prefix('reviews')->name('reviews.')->group(function () {
+        Route::get('/', [ReviewController::class, 'index'])->name('index');
+        Route::post('/{id}/reply', [ReviewController::class, 'reply'])->name('reply');
+        Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('destroy');
+    });
 });
