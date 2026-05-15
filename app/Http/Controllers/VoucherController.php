@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class VoucherController extends Controller
 {
+    // Trang quản trị danh sách Voucher
     public function index() {
-    $vouchers = Voucher::orderBy('id', 'desc')->get();
-    // Đổi từ 'admin.vouchers.index' thành 'admin.vouchers'
-    return view('admin.vouchers', compact('vouchers')); 
+        $vouchers = Voucher::orderBy('id', 'desc')->get();
+        return view('admin.vouchers', compact('vouchers')); 
     }
 
+    // Lưu voucher mới
     public function store(Request $request) {
         $request->validate([
             'code' => 'required|unique:vouchers,code',
@@ -26,60 +26,86 @@ class VoucherController extends Controller
         return back()->with('success', 'Tạo mã thành công!');
     }
 
+    // Xóa voucher
     public function destroy($id) {
         Voucher::findOrFail($id)->delete();
         return back()->with('success', 'Đã xóa voucher!');
     }
-    // Hàm hiển thị trang sửa
-public function edit($id) {
-    $voucher = Voucher::findOrFail($id);
-    return view('admin.vouchers_edit', compact('voucher'));
-}
 
-// Hàm xử lý cập nhật dữ liệu vào DB
-public function update(Request $request, $id) {
-    $data = $request->validate([
-        'code' => 'required|unique:vouchers,code,'.$id,
-        'discount_value' => 'required|numeric',
-        'expiry_date' => 'required|date',
-        'type' => 'required|in:fixed,percent',
-        'min_order_value' => 'required|numeric',
-        'quantity' => 'required|integer',
-    ]);
-
-    $voucher = Voucher::findOrFail($id);
-    $voucher->update($data);
-
-    return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật voucher xong rồi nhé ní!');
-}
-public function showPromotions() {
-    $vouchers = Voucher::where('quantity', '>', 0)->get();
-    // Phải có "client." ở phía trước tên file
-    return view('client.promotions', compact('vouchers')); 
-}
-public function applyVoucher(Request $request) {
-    $voucher = Voucher::where('code', $request->code)
-                      ->where('expiry_date', '>=', now())
-                      ->where('quantity', '>', 0)
-                      ->first();
-
-    if (!$voucher) {
-        return response()->json(['success' => false, 'message' => 'Mã không hợp lệ hoặc đã hết hạn']);
+    // Trang sửa voucher
+    public function edit($id) {
+        $voucher = Voucher::findOrFail($id);
+        return view('admin.vouchers_edit', compact($voucher));
     }
 
-    // Giả sử bạn lấy tổng tiền từ session giỏ hàng
-    $cart = session()->get('cart');
-    $total = 0;
-    foreach($cart as $item) { $total += $item['price'] * $item['quantity']; }
+    // Cập nhật voucher
+    public function update(Request $request, $id) {
+        $data = $request->validate([
+            'code' => 'required|unique:vouchers,code,'.$id,
+            'discount_value' => 'required|numeric',
+            'expiry_date' => 'required|date',
+            'type' => 'required|in:fixed,percent',
+            'min_order_value' => 'required|numeric',
+            'quantity' => 'required|integer',
+        ]);
 
-    $discount = $voucher->discount_value; // Hoặc tính % tùy bạn
-    $newTotal = $total - $discount;
+        Voucher::findOrFail($id)->update($data);
+        return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật xong rồi nhé ní!');
+    }
 
-    return response()->json([
-        'success' => true,
-        'discount' => $discount,
-        'newTotal' => $newTotal,
-        'message' => 'Áp dụng mã thành công!'
-    ]);
-}
+    // Trang hiển thị khuyến mãi cho khách (Hiển thị tất cả)
+    public function showPromotions() {
+        $vouchers = Voucher::orderBy('expiry_date', 'desc')->get();
+        return view('client.promotions', compact('vouchers'));
+    }
+
+    // Logic "Lấy mã" - Lưu vào Session
+    public function collectVoucher(Request $request) {
+        $collected = session()->get('collected_vouchers', []);
+
+        if (!in_array($request->code, $collected)) {
+            $collected[] = $request->code;
+            session()->put('collected_vouchers', $collected);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Đã thu thập mã!']);
+    }
+
+    // Logic áp dụng mã trong trang Checkout
+    public function applyVoucher(Request $request) {
+        $voucher = Voucher::where('code', $request->code)->first();
+
+        if (!$voucher) {
+            return response()->json(['success' => false, 'message' => 'Mã không tồn tại!']);
+        }
+
+        if ($voucher->expiry_date < now()->format('Y-m-d')) {
+            return response()->json(['success' => false, 'message' => 'Mã này đã hết hạn!']);
+        }
+
+        if ($voucher->quantity <= 0) {
+            return response()->json(['success' => false, 'message' => 'Mã này đã hết lượt dùng!']);
+        }
+
+        $cart = session()->get('cart', []);
+        $total = 0;
+        foreach($cart as $item) { $total += $item['price'] * $item['quantity']; }
+
+        // Tính toán số tiền giảm
+        $discount = $voucher->discount_value; 
+        if ($voucher->type == 'percent') {
+            $discount = ($total * $voucher->discount_value) / 100;
+        }
+
+        // Chặn tiền âm
+        $actualDiscount = ($discount > $total) ? $total : $discount;
+        $newTotal = $total - $actualDiscount;
+
+        return response()->json([
+            'success' => true,
+            'discount' => $actualDiscount,
+            'newTotal' => $newTotal,
+            'message' => 'Áp dụng mã thành công!'
+        ]);
+    }
 }
