@@ -105,12 +105,12 @@
                 <h6 class="modal-title fw-bold"><i class="bi bi-gift-fill me-2"></i>Mã Giảm Giá King Fruit</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4 bg-light">
+            <div class="modal-body p-4 bg-body-tertiary">
                 @foreach($vouchers as $v)
-                <div class="bg-white border-success-subtle border-2 border p-3 rounded-3 d-flex justify-content-between align-items-center mb-3 shadow-sm" style="border-style: dashed !important;">
+                <div class="bg-body-tertiary border-success-subtle border-2 border p-3 rounded-3 d-flex justify-content-between align-items-center mb-3 shadow-sm" style="border-style: dashed !important;">
                     <div>
                         <div class="fw-bold text-success">Giảm {{ number_format($v->discount_value) }}đ</div>
-                        <div class="small fw-bold text-dark">Mã: {{ $v->code }}</div>
+                        <div class="small fw-bold text-body">Mã: {{ $v->code }}</div>
                         <div class="text-muted" style="font-size: 11px;">HSD: {{ $v->expiry_date }}</div>
                     </div>
                     <button type="button" class="btn btn-success btn-sm px-3 fw-bold rounded-pill btn-use-voucher" data-code="{{ $v->code }}">Dùng</button>

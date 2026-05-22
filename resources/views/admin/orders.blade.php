@@ -41,7 +41,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold m-0"><i class="bi bi-cart-check me-2 text-success"></i>Danh sách đơn hàng</h4>
-        <div class="badge bg-white text-dark shadow-sm p-2 border">
+        <div class="badge bg-body-tertiary text-body shadow-sm p-2 border">
             Hệ thống có: <span class="fw-bold text-success">{{ $orders->count() }}</span> đơn hàng
         </div>
     </div>
@@ -66,7 +66,7 @@
                             <span class="badge bg-dark">#{{ $order->id }}</span>
                         </td>
                         <td>
-                            <div class="fw-bold text-dark">{{ $order->receiver_name ?? ($order->user->name ?? 'Khách lẻ') }}</div>
+                            <div class="fw-bold text-body">{{ $order->receiver_name ?? ($order->user->name ?? 'Khách lẻ') }}</div>
                             <div class="text-primary small" style="font-size: 0.75rem;">
                                 <i class="bi bi-telephone me-1"></i>0911901782
                             </div>

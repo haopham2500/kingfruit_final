@@ -16,7 +16,15 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        [data-bs-theme="light"] body {
             background-color: #f4f7f6;
+        }
+
+        [data-bs-theme="dark"] body {
+            background-color: #121212;
+            color: #e0e0e0;
         }
 
         .navbar {
@@ -169,7 +177,7 @@
             <div class="collapse navbar-collapse" id="kingNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ route('home') }}">Trang chủ</a>
+                        <a class="nav-link text-white" href="{{ route('home') }}">{{ __('messages.home') }}</a>
                     </li>
 
                     <li class="nav-item mx-lg-3 my-2 my-lg-0">
@@ -179,7 +187,7 @@
                                 type="search"
                                 name="query"
                                 value="{{ request('query') }}"
-                                placeholder="Tìm trái cây..."
+                                placeholder="{{ __('messages.search_placeholder') }}"
                                 style="min-width: 220px; height: 38px; font-size: 0.9rem;">
                             <button
                                 class="btn position-absolute end-0 top-50 translate-middle-y border-0 text-success"
@@ -194,26 +202,42 @@
                         </form>
                     </li>
 
+                    <li class="nav-item dropdown me-2">
+                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe fs-5 me-1"></i> {{ strtoupper(session('locale', 'vi')) }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="langDropdown">
+                            <li><a class="dropdown-item" href="{{ route('lang.switch', 'vi') }}">Tiếng Việt</a></li>
+                            <li><a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">English</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item me-3 d-flex align-items-center">
+                        <button class="btn btn-link nav-link text-white p-0 border-0" id="theme-toggle" title="Chế độ Sáng/Tối">
+                            <i class="bi bi-moon-stars fs-5"></i>
+                        </button>
+                    </li>
+
                     <li class="nav-item me-3">
-                        <a href="{{ route('cart.index') }}" class="nav-link position-relative d-inline-block">
+                        <a href="{{ route('cart.index') }}" class="nav-link position-relative d-inline-block d-flex align-items-center">
                             <i class="bi bi-cart3 fs-4 text-white"></i>
                             @if(session('cart') && count(session('cart')) > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem;">
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; margin-top: 5px;">
                                 {{ count(session('cart')) }}
                             </span>
                             @endif
                         </a>
                     </li>
-                    <li class="nav-item"><a href="{{ route('promotions.index') }}" class="nav-link">
-    <i class="bi bi-gift me-1"></i> KHUYẾN MÃI
+                    <li class="nav-item d-flex align-items-center"><a href="{{ route('promotions.index') }}" class="nav-link text-white">
+    <i class="bi bi-gift me-1"></i> {{ __('messages.promotions') }}
 </a></li>
 
                     
 
                     <li class="nav-item ms-lg-3 d-flex align-items-center">
                         @guest
-                        <a class="btn btn-outline-light rounded-pill px-4 me-2" href="{{ route('login') }}">Đăng nhập</a>
-                        <a class="btn btn-light text-success rounded-pill px-4" href="{{ route('register') }}">Đăng ký</a>
+                        <a class="btn btn-outline-light rounded-pill px-4 me-2" href="{{ route('login') }}">{{ __('messages.login') }}</a>
+                        <a class="btn btn-light text-success rounded-pill px-4" href="{{ route('register') }}">{{ __('messages.register') }}</a>
                         @else
                         <div class="dropdown">
                             <a class="btn btn-light text-success rounded-pill px-4 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -221,7 +245,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                                 @if(Auth::user()->email == 'admin@gmail.com')
-                                <li><a class="dropdown-item" href="{{ route('crud') }}"><i class="bi bi-speedometer2 me-2"></i>Quản trị hệ thống</a></li>
+                                <li><a class="dropdown-item" href="{{ route('crud') }}"><i class="bi bi-speedometer2 me-2"></i>{{ __('messages.admin_panel') }}</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -229,7 +253,7 @@
                                 <li>
                                     <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+                                        <i class="bi bi-box-arrow-right me-2"></i> {{ __('messages.logout') }}
                                     </a>
                                 </li>
                             </ul>
@@ -251,14 +275,46 @@
     <footer class="main-footer">
         <div class="container text-center">
             <div class="footer-logo">KING FRUIT</div>
-            <p>Địa chỉ: 53 Đ. Võ Văn Ngân, Thủ Đức, TP. HCM</p>
-            <p>Hotline: 0911 90 90 90</p>
+            <p>{{ __('messages.address') }}</p>
+            <p>{{ __('messages.hotline') }}</p>
             <hr class="my-4 border-secondary">
-            <p class="mb-0">© 2026 King Fruit - Dự án Môn Back End 2</p>
+            <p class="mb-0">{{ __('messages.copyright') }}</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlElement = document.documentElement;
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            if (themeToggleBtn) {
+                const themeIcon = themeToggleBtn.querySelector('i');
+                
+                // Set current theme from localStorage
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                htmlElement.setAttribute('data-bs-theme', currentTheme);
+                updateIcon(currentTheme);
+
+                // Toggle theme
+                themeToggleBtn.addEventListener('click', () => {
+                    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+                    htmlElement.setAttribute('data-bs-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateIcon(newTheme);
+                });
+
+                function updateIcon(theme) {
+                    if (theme === 'dark') {
+                        themeIcon.classList.remove('bi-moon-stars');
+                        themeIcon.classList.add('bi-sun', 'text-warning');
+                    } else {
+                        themeIcon.classList.remove('bi-sun', 'text-warning');
+                        themeIcon.classList.add('bi-moon-stars');
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

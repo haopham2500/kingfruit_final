@@ -18,7 +18,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light">
+                    <thead class="bg-body-tertiary">
                         <tr>
                             <th class="ps-4 py-3">Khách hàng / Liên hệ</th>
                             <th class="py-3">Nội dung đánh giá</th>
@@ -31,7 +31,7 @@
                         <tr>
                             <td class="ps-4">
                                 <div class="d-flex flex-column">
-                                    <span class="fw-bold text-dark">{{ $review->user?->name }}</span>
+                                    <span class="fw-bold text-body">{{ $review->user?->name }}</span>
                                     <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ $review->created_at->format('d/m/Y H:i') }}</small>
                                     <div class="mt-1">
                                         @for($i = 1; $i <= 5; $i++)
@@ -47,12 +47,12 @@
                                 {{-- Danh sách các câu đã trả lời --}}
                                 <div class="reply-container mb-2">
                                     @foreach($review->replies as $reply)
-                                    <div class="p-2 mb-2 bg-light rounded border-start border-success border-3 shadow-xs">
+                                    <div class="p-2 mb-2 bg-body-tertiary rounded border-start border-success border-3 shadow-xs">
                                         <div class="d-flex justify-content-between">
                                             <span class="badge bg-success-soft text-success mb-1" style="font-size: 0.7rem;">ADMIN PHẢN HỒI</span>
                                             <small class="text-muted" style="font-size: 0.7rem;">{{ $reply->created_at->format('H:i d/m') }}</small>
                                         </div>
-                                        <p class="mb-0 small text-dark italic">"{{ $reply->comment }}"</p>
+                                        <p class="mb-0 small text-body italic">"{{ $reply->comment }}"</p>
                                     </div>
                                     @endforeach
                                 </div>

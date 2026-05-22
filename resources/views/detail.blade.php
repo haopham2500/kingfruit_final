@@ -86,7 +86,7 @@
                 </ol>
             </nav>
 
-            <h1 class="display-5 fw-bold text-dark">{{ $product->name }}</h1>
+            <h1 class="display-5 fw-bold text-body">{{ $product->name }}</h1>
             <p class="text-danger fs-2 fw-bold my-3">
                 {{ number_format($product->price) }} VNĐ <small class="text-secondary fs-6 fw-normal">/ {{ $product->unit ?? 'Kg' }}</small>
             </p>
@@ -100,7 +100,7 @@
                 </p>
             </div>
 
-            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="mt-4 p-4 bg-light rounded-3 shadow-sm">
+            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="mt-4 p-4 bg-body-tertiary rounded-3 shadow-sm">
                 @csrf
                 <div class="row align-items-center g-3">
                     <div class="col-auto">
@@ -135,7 +135,7 @@
             @foreach($rootReviews as $review)
             <div class="comment-item">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="fw-bold text-dark">{{ $review->user?->name }}</span>
+                    <span class="fw-bold text-body">{{ $review->user?->name }}</span>
                     <small class="text-muted">{{ $review->created_at->format('d/m/Y') }}</small>
                 </div>
                 <p class="text-secondary mb-2">{{ $review->comment }}</p>
@@ -143,7 +143,7 @@
                 {{-- HIỂN THỊ CÁC CÂU TRẢ LỜI --}}
                 @if($review->replies->count() > 0)
                 @foreach($review->replies as $reply)
-                <div class="ms-4 ms-md-5 mt-2 p-2 bg-light rounded shadow-sm border-start border-success border-3">
+                <div class="ms-4 ms-md-5 mt-2 p-2 bg-body-tertiary rounded shadow-sm border-start border-success border-3">
                     <small class="fw-bold {{ $reply->user->role == 'admin' ? 'text-success' : 'text-primary' }}">
                         {{ $reply->user->role == 'admin' ? 'KING FRUIT PHẢN HỒI' : $reply->user->name }}
                     </small>
@@ -178,7 +178,7 @@
             </div>
             @endforeach
             @else
-            <div class="text-center py-5 bg-light rounded shadow-sm">
+            <div class="text-center py-5 bg-body-tertiary rounded shadow-sm">
                 <i class="bi bi-chat-left-dots text-muted fs-1"></i>
                 <p class="text-muted mt-2">Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên!</p>
             </div>
@@ -186,7 +186,7 @@
         </div>
 
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm bg-light">
+            <div class="card border-0 shadow-sm bg-body-tertiary">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-3">Gửi đánh giá của bạn</h5>
 
