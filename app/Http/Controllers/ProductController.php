@@ -87,7 +87,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0|max:999999999',
             'unit' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
@@ -97,6 +97,8 @@ class ProductController extends Controller
             'category_id.exists' => 'Loại sản phẩm không tồn tại.',
             'price.required' => 'Vui lòng nhập giá.',
             'price.numeric' => 'Giá sản phẩm phải là một số.',
+            'price.min' => 'Giá sản phẩm không được là số âm.',
+            'price.max' => 'Giá sản phẩm quá lớn, vui lòng nhập số nhỏ hơn 1 tỷ.',
             'unit.required' => 'Vui lòng nhập đơn vị.',
             'image.image' => 'File tải lên phải là hình ảnh.',
             'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
@@ -147,7 +149,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'category_id' => 'required|exists:categories,id',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0|max:999999999',
             'unit' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
@@ -157,6 +159,8 @@ class ProductController extends Controller
             'category_id.exists' => 'Loại sản phẩm không tồn tại.',
             'price.required' => 'Vui lòng nhập giá.',
             'price.numeric' => 'Giá sản phẩm phải là một số.',
+            'price.min' => 'Giá sản phẩm không được là số âm.',
+            'price.max' => 'Giá sản phẩm quá lớn, vui lòng nhập số nhỏ hơn 1 tỷ.',
             'unit.required' => 'Vui lòng nhập đơn vị.',
             'image.image' => 'File tải lên phải là hình ảnh.',
             'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',

@@ -55,7 +55,10 @@
                                     <div class="row mb-3">
                                         <div class="col-md-8">
                                             <label class="form-label fw-bold">Tên sản phẩm</label>
-                                            <input type="text" name="name" class="form-control" value="{{ $pro->name }}" required>
+                                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ $pro->name }}" required>
+                                            @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="col-md-4">
                                             <label class="form-label fw-bold">Loại</label>
@@ -69,11 +72,17 @@
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold">Giá</label>
-                                            <input type="number" name="price" class="form-control" value="{{ $pro->price }}" required>
+                                            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ $pro->price }}" required>
+                                            @error('price')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label fw-bold">Đơn vị</label>
-                                            <input type="text" name="unit" class="form-control" value="{{ $pro->unit }}" required>
+                                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror" value="{{ $pro->unit }}" required>
+                                            @error('unit')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -113,7 +122,10 @@
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <label class="form-label fw-bold">Tên sản phẩm</label>
-                            <input type="text" name="name" class="form-control" placeholder="Nhập tên..." required>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Nhập tên..." required>
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Loại</label>
@@ -127,11 +139,17 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Giá</label>
-                            <input type="number" name="price" class="form-control" required>
+                            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" required>
+                            @error('price')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Đơn vị</label>
-                            <input type="text" name="unit" class="form-control" placeholder="kg, hộp..." required>
+                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror" placeholder="kg, hộp..." required>
+                            @error('unit')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="mb-3">
