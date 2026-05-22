@@ -6,7 +6,7 @@
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
         <div>
-            <h2 class="fw-bold text-dark">Quản lý người dùng</h2>
+            <h2 class="fw-bold text-body">Quản lý người dùng</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('crud') }}">Dashboard</a></li>
@@ -17,13 +17,13 @@
     </div>
 
     <div class="card shadow-sm border-0 mt-3">
-        <div class="card-header bg-white py-3">
+        <div class="card-header bg-body-tertiary py-3">
             <h5 class="mb-0 fw-bold">Danh sách thành viên</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead class="bg-light">
+                    <thead class="bg-body-tertiary">
                         <tr>
                             <th class="ps-4" style="width: 80px;">ID</th>
                             <th>Thông tin khách hàng</th>
@@ -43,7 +43,7 @@
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>
                                     <div>
-                                        <div class="fw-bold text-dark">{{ $user->name }}</div>
+                                        <div class="fw-bold text-body">{{ $user->name }}</div>
                                         <div class="text-muted small">{{ $user->email }}</div>
                                     </div>
                                 </div>

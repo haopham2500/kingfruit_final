@@ -4,7 +4,7 @@
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold m-0">Quản lý Khuyến mãi</h2>
-        <div class="badge bg-white text-dark p-2 border shadow-sm rounded-pill px-3">
+        <div class="badge bg-body-tertiary text-body p-2 border shadow-sm rounded-pill px-3">
             <i class="bi bi-calendar3 me-2 text-success"></i>{{ date('d/m/Y') }}
         </div>
     </div>
@@ -71,12 +71,12 @@
                             @forelse($vouchers as $v)
                             <tr>
                                 <td>
-                                    <span class="badge bg-light text-success border border-success px-3 py-2">
+                                    <span class="badge bg-body-tertiary text-success border border-success px-3 py-2">
                                         {{ $v->code }}
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-dark">
+                                    <span class="fw-bold text-body">
                                         {{ number_format($v->discount_value) }}{{ $v->type == 'percent' ? '%' : 'đ' }}
                                     </span>
                                     <div class="text-muted" style="font-size: 0.7rem;">Đơn > {{ number_format($v->min_order_value) }}đ</div>

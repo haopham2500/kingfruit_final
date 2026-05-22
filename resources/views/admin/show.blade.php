@@ -13,7 +13,7 @@
 <div class="main-content p-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
-            <h4 class="fw-bold m-0 text-dark">
+            <h4 class="fw-bold m-0 text-body">
                 <i class="bi bi-receipt me-2 text-success"></i>Chi tiết đơn hàng #{{ $order->id }}
             </h4>
             <span class="text-muted small">Ngày đặt: {{ $order->created_at->format('d/m/Y H:i') }}</span>
@@ -84,7 +84,7 @@
                                              onerror="this.src='https://via.placeholder.com/100x100?text=Fruit'">
                                     </td>
                                     <td>
-                                        <div class="fw-bold text-dark">{{ $item->product->name ?? 'Sản phẩm đã xóa' }}</div>
+                                        <div class="fw-bold text-body">{{ $item->product->name ?? 'Sản phẩm đã xóa' }}</div>
                                         <div class="text-muted small">Mã SP: #{{ $item->product_id }}</div>
                                     </td>
                                     <td class="text-center fw-bold">x{{ $item->quantity }}</td>

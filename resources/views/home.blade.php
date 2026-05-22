@@ -12,15 +12,15 @@
         <div class="carousel-item active">
             <img src="{{ asset('images/banner1.jpg') }}" class="d-block w-100" alt="Banner 1">
             <div class="carousel-caption">
-                <h1 class="display-3 fw-bold text-uppercase">Mùa Thu Tươi Mát</h1>
-                <p class="lead">Trái cây tươi ngon, bổ dưỡng từ thiên nhiên</p>
+                <h1 class="display-3 fw-bold text-uppercase">{{ __('messages.banner1_title') }}</h1>
+                <p class="lead">{{ __('messages.banner1_desc') }}</p>
             </div>
         </div>
         <div class="carousel-item">
             <img src="{{ asset('images/banner2.jpg') }}" class="d-block w-100" alt="Banner 2">
             <div class="carousel-caption">
-                <h1 class="display-3 fw-bold text-uppercase">Sạch Từ Nông Trại</h1>
-                <p class="lead">Đảm bảo an toàn vệ sinh thực phẩm</p>
+                <h1 class="display-3 fw-bold text-uppercase">{{ __('messages.banner2_title') }}</h1>
+                <p class="lead">{{ __('messages.banner2_desc') }}</p>
             </div>
         </div>
     </div>
@@ -32,14 +32,14 @@
     {{-- 2. XỬ LÝ TÌM KIẾM --}}
     @if(isset($query))
     <div class="section-header mb-4">
-        <h2 class="fw-bold"><i class="bi bi-search me-2"></i>KẾT QUẢ TÌM KIẾM: <span class="text-success">"{{ $query }}"</span></h2>
-        <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Quay lại tất cả sản phẩm</a>
+        <h2 class="fw-bold"><i class="bi bi-search me-2"></i>{{ __('messages.search_result') }} <span class="text-success">"{{ $query }}"</span></h2>
+        <a href="{{ route('home') }}" class="btn btn-sm btn-outline-secondary rounded-pill">{{ __('messages.back_to_all') }}</a>
     </div>
 
     @if($allProducts->isEmpty())
-    <div class="alert alert-light shadow-sm border-0 rounded-4 p-5 text-center my-5">
-        <h4 class="fw-bold text-dark">Hic, King Fruit tìm không ra rồi ní ơi!</h4>
-        <p class="text-muted">Ní thử tìm tên khác xem sao nhé.</p>
+    <div class="alert bg-body-tertiary shadow-sm border-0 rounded-4 p-5 text-center my-5">
+        <h4 class="fw-bold text-body">{{ __('messages.not_found_title') }}</h4>
+        <p class="text-muted">{{ __('messages.not_found_desc') }}</p>
     </div>
     @else
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
@@ -54,8 +54,8 @@
                     <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
                     <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
                     <div class="d-flex gap-2">
-                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">Chi tiết</a>
-                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 btn-sm rounded-pill">Mua ngay</a>
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">{{ __('messages.detail') }}</a>
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 btn-sm rounded-pill">{{ __('messages.buy_now') }}</a>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
     @else
     {{-- SECTION: SẢN PHẨM BÁN CHẠY --}}
     <div class="section-header d-flex align-items-center justify-content-between mb-4">
-        <h2 class="fw-bold text-danger"><i class="bi bi-fire me-2"></i>SẢN PHẨM BÁN CHẠY</h2>
+        <h2 class="fw-bold text-danger"><i class="bi bi-fire me-2"></i>{{ __('messages.hot_products') }}</h2>
     </div>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-2">
@@ -82,7 +82,7 @@
                     <p class="text-success small mb-1 fw-bold text-uppercase">{{ $best->category_name ?? 'Nội địa' }}</p>
                     <h5 class="card-title fw-bold mb-3">{{ $best->name }}</h5>
                     <div class="price-text mb-3 text-danger fw-bold">{{ number_format($best->price) }} đ</div>
-                    <a href="{{ route('product.detail', $best->id) }}" class="btn btn-danger text-white w-100 py-2 rounded-pill shadow-sm">Mua ngay</a>
+                    <a href="{{ route('product.detail', $best->id) }}" class="btn btn-danger text-white w-100 py-2 rounded-pill shadow-sm">{{ __('messages.buy_now') }}</a>
                 </div>
             </div>
         </div>
@@ -90,12 +90,12 @@
     </div>
 
     {{-- SECTION: BỘ LỌC SẢN PHẨM (GIỮA TRANG) --}}
-    <div class="filter-section my-5 p-4 shadow-sm" style="background: #fdfdfd; border: 1px solid #eee; border-radius: 15px;">
-        <h4 class="mb-3 fw-bold text-muted text-center">BẠN ĐANG TÌM LOẠI NÀO?</h4>
+    <div class="filter-section my-5 p-4 shadow-sm bg-body-tertiary border rounded-4">
+        <h4 class="mb-3 fw-bold text-muted text-center">{{ __('messages.filter_title') }}</h4>
         <form action="{{ route('home') }}#all-products" method="GET" class="row g-3">
             <div class="col-md-4">
                 <select name="category_id" class="form-select border-success rounded-pill">
-                    <option value="">-- Tất cả danh mục --</option>
+                    <option value="">{{ __('messages.all_categories') }}</option>
                     @foreach($categories as $cat)
                     <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
                         {{ $cat->name }}
@@ -104,20 +104,20 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <input type="number" name="min_price" class="form-control rounded-pill" placeholder="Giá từ (VNĐ)..." value="{{ request('min_price') }}">
+                <input type="number" name="min_price" class="form-control rounded-pill" placeholder="{{ __('messages.price_from') }}" value="{{ request('min_price') }}">
             </div>
             <div class="col-md-3">
-                <input type="number" name="max_price" class="form-control rounded-pill" placeholder="Đến giá..." value="{{ request('max_price') }}">
+                <input type="number" name="max_price" class="form-control rounded-pill" placeholder="{{ __('messages.price_to') }}" value="{{ request('max_price') }}">
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold">LỌC NGAY</button>
+                <button type="submit" class="btn btn-success w-100 rounded-pill fw-bold">{{ __('messages.filter_btn') }}</button>
             </div>
         </form>
     </div>
 
     {{-- SECTION: TẤT CẢ SẢN PHẨM --}}
     <div id="all-products" class="section-header mt-5 mb-4">
-        <h2 class="fw-bold text-success"><i class="bi bi-grid-fill me-2"></i>TẤT CẢ SẢN PHẨM</h2>
+        <h2 class="fw-bold text-success"><i class="bi bi-grid-fill me-2"></i>{{ __('messages.all_products') }}</h2>
     </div>
 
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4 mt-2">
@@ -132,8 +132,8 @@
                     <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
                     <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
                     <div class="d-flex gap-2">
-                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">Chi tiết</a>
-                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 py-2 rounded-pill shadow-sm">Mua ngay</a>
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">{{ __('messages.detail') }}</a>
+                        <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 py-2 rounded-pill shadow-sm">{{ __('messages.buy_now') }}</a>
                     </div>
                 </div>
             </div>
@@ -150,9 +150,9 @@
     </video>
     <div class="video-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);"></div>
     <div class="video-content text-center text-white position-absolute top-50 start-50 translate-middle w-100">
-        <p class="text-uppercase mb-2 fw-bold" style="letter-spacing: 2px;">SẢN PHẨM MỚI</p>
-        <h2 class="display-4 fw-bold mb-4">Mùa Thu Tươi Mát</h2>
-        <a href="#" class="btn btn-outline-light btn-lg px-5 rounded-pill text-uppercase fw-bold">Xem thêm</a>
+        <p class="text-uppercase mb-2 fw-bold" style="letter-spacing: 2px;">{{ __('messages.new_products') }}</p>
+        <h2 class="display-4 fw-bold mb-4">{{ __('messages.banner1_title') }}</h2>
+        <a href="#" class="btn btn-outline-light btn-lg px-5 rounded-pill text-uppercase fw-bold">{{ __('messages.see_more') }}</a>
     </div>
 </div>
 @endsection

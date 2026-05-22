@@ -35,8 +35,8 @@
                                                          style="width: 70px; height: 70px; object-fit: cover;">
                                                 </div>
                                                 <div class="ms-3">
-                                                    <h6 class="mb-1 fw-bold text-dark">{{ $details['name'] }}</h6>
-                                                    <span class="badge bg-light text-success border border-success-subtle fw-normal">
+                                                    <h6 class="mb-1 fw-bold text-body">{{ $details['name'] }}</h6>
+                                                    <span class="badge bg-body-tertiary text-success border border-success-subtle fw-normal">
                                                         Đơn vị: {{ $details['unit'] ?? 'Kg' }}
                                                     </span>
                                                 </div>
@@ -95,24 +95,24 @@
                     </div>
                     <hr class="my-4 opacity-50">
                     <div class="d-flex justify-content-between mb-4">
-                        <span class="fs-5 fw-bold text-dark">Tổng cộng:</span>
+                        <span class="fs-5 fw-bold text-body">Tổng cộng:</span>
                         <span class="fs-4 fw-bold text-danger">{{ number_format($total) }} đ</span>
                     </div>
 <a href="{{ route('checkout.index') }}" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm fw-bold py-3 mb-3 text-decoration-none d-flex align-items-center justify-content-center">
     TIẾN HÀNH ĐẶT HÀNG
 </a>
-                    <div class="bg-light p-3 rounded-3 text-center">
+                    <div class="bg-body-tertiary p-3 rounded-3 text-center">
                         <small class="text-muted"><i class="bi bi-info-circle me-1"></i> Đơn hàng sẽ được giao trong 24h.</small>
                     </div>
                 </div>
             </div>
         </div>
     @else
-        <div class="text-center py-5 bg-white shadow-sm rounded-5 my-5 border border-dashed border-2">
+        <div class="text-center py-5 bg-body-tertiary shadow-sm rounded-5 my-5 border border-dashed border-2">
             <div class="mb-4">
                 <i class="bi bi-basket3 text-success opacity-25" style="font-size: 7rem;"></i>
             </div>
-            <h3 class="fw-bold text-dark">Giỏ hàng đang trống!</h3>
+            <h3 class="fw-bold text-body">Giỏ hàng đang trống!</h3>
             <p class="text-muted mb-4 px-4">Hiện tại bạn chưa chọn sản phẩm nào cho vào giỏ hàng cả.</p>
             <a href="{{ route('home') }}" class="btn btn-success btn-lg rounded-pill px-5 shadow fw-bold">CHỌN TRÁI CÂY NGAY</a>
         </div>

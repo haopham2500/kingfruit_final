@@ -17,6 +17,9 @@ use App\Http\Controllers\CheckoutController;
 |--------------------------------------------------------------------------
 */
 
+// --- ĐA NGÔN NGỮ ---
+Route::get('/lang/{locale}', [\App\Http\Controllers\LanguageController::class, 'switchLang'])->name('lang.switch');
+
 // --- 1. TRANG CHỦ, CHI TIẾT & TÌM KIẾM ---
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
