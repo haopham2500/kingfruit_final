@@ -9,13 +9,6 @@
         </button>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
@@ -47,6 +40,7 @@
                         <div class="modal-dialog">
                             <form action="{{ route('category.update', $cat->id) }}" method="POST">
                                 @csrf
+                                <input type="hidden" name="original_updated_at" value="{{ $cat->updated_at }}">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">Sửa danh mục</h5>

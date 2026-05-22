@@ -35,23 +35,9 @@
     .table-responsive::-webkit-scrollbar { height: 8px; }
     .table-responsive::-webkit-scrollbar-thumb { background: #198754; border-radius: 10px; }
 
-    /* 3. TOAST THÔNG BÁO GỌN GÀNG */
-    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
 </style>
 
 <div class="main-content p-3">
-    <div class="toast-container">
-        @if(session('success'))
-        <div class="toast show align-items-center text-white bg-success border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body">
-                    <i class="bi bi-check-circle me-2"></i> {{ session('success') }}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-        @endif
-    </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="fw-bold m-0"><i class="bi bi-cart-check me-2 text-success"></i>Danh sách đơn hàng</h4>
@@ -123,6 +109,7 @@
                                             <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
                                                 @csrf
                                                 <input type="hidden" name="status" value="{{ $key }}">
+                                                <input type="hidden" name="original_updated_at" value="{{ $order->updated_at }}">
                                                 <button type="submit" class="dropdown-item {{ $order->status == $key ? 'active' : '' }}">
                                                     {{ $label }}
                                                 </button>
@@ -145,14 +132,5 @@
     </div>
 </div>
 
-<script>
-    // Tự động tắt thông báo sau 3 giây
-    document.addEventListener('DOMContentLoaded', function () {
-        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-        var toastList = toastElList.map(function (toastEl) {
-            return new bootstrap.Toast(toastEl, { delay: 3000 });
-        });
-        toastList.forEach(toast => toast.show());
-    });
-</script>
+
 @endsection

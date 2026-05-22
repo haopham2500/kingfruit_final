@@ -9,13 +9,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Thành công!</strong> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
     <div class="row">
         <div class="col-xl-4 col-lg-5">
             <div class="card p-4 mb-4 shadow-sm border-0" style="border-radius: 15px;">

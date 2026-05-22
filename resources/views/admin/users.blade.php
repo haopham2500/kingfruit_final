@@ -16,22 +16,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger border-0 shadow-sm alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
     <div class="card shadow-sm border-0 mt-3">
         <div class="card-header bg-white py-3">
             <h5 class="mb-0 fw-bold">Danh sách thành viên</h5>

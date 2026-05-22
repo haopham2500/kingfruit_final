@@ -8,10 +8,6 @@
     </button>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success border-0 shadow-sm">{{ session('success') }}</div>
-@endif
-
 <div class="card border-0 shadow-sm rounded-3">
     <div class="card-body p-0">
         <table class="table table-hover align-middle mb-0">
@@ -50,6 +46,7 @@
                         <div class="modal-content border-0 shadow">
                             <form action="{{ route('product.update', $pro->id) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="original_updated_at" value="{{ $pro->updated_at }}">
                                 <div class="modal-header bg-primary text-white">
                                     <h5 class="modal-title">Sửa sản phẩm: {{ $pro->name }}</h5>
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -82,7 +79,7 @@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold d-block">Ảnh hiện tại</label>
                                         <img src="{{ asset('images/' . $pro->image) }}" width="80" class="mb-2 border rounded">
-                                        <input type="file" name="image" class="form-control">
+                                        <input type="file" name="image" class="form-control" accept="image/*">
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Mô tả</label>
@@ -139,7 +136,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Hình ảnh</label>
-                        <input type="file" name="image" class="form-control" required>
+                        <input type="file" name="image" class="form-control" accept="image/*" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Mô tả</label>

@@ -8,6 +8,7 @@
             <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="original_updated_at" value="{{ $user->updated_at }}">
                 <div class="mb-3">
                     <label class="form-label">Họ tên</label>
                     <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>

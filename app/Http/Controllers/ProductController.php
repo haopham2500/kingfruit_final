@@ -13,7 +13,10 @@ class ProductController extends Controller
      * --- DÀNH CHO NGƯỜI DÙNG (FRONTEND) ---
      */
 
-    // Trang chủ: Hiển thị sản phẩm và sản phẩm bán chạy
+    /**
+     * Hiển thị trang chủ với danh sách sản phẩm mới nhất và bán chạy.
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         // Sử dụng các hàm Static đã viết trong Model Product (Chuẩn MVC)
@@ -26,7 +29,11 @@ class ProductController extends Controller
     // Trang tìm kiếm sản phẩm
 
 
-    // Xem chi tiết một sản phẩm (Xử lý khi bấm nút "Chi tiết")
+    /**
+     * Lấy dữ liệu chi tiết của 1 sản phẩm theo ID và hiển thị trang Chi tiết.
+     * @param int $id ID của sản phẩm
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function show($id)
     {
         // Eager loading 'category' để lấy tên loại trái cây
@@ -45,7 +52,10 @@ class ProductController extends Controller
      * --- DÀNH CHO ADMIN (BACKEND - CRUD) ---
      */
 
-    // Trang quản trị sản phẩm (Hàm này khớp với route 'crud')
+    /**
+     * Lấy toàn bộ sản phẩm và danh mục để hiển thị trên trang Quản lý sản phẩm (Admin).
+     * @return \Illuminate\View\View
+     */
     public function indexAdmin()
     {
         // Lấy danh sách sản phẩm kèm danh mục
@@ -56,14 +66,22 @@ class ProductController extends Controller
         return view('admin.crud', compact('products', 'categories'));
     }
 
-    // Hiển thị form tạo mới (Nếu ní dùng trang riêng, còn nếu dùng Modal ở trang crud thì không cần)
+    /**
+     * Hiển thị form tạo mới sản phẩm (Trang riêng nếu không dùng Modal).
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $categories = Category::all();
         return view('admin.product_create', compact('categories'));
     }
 
-    // Xử lý lưu sản phẩm mới
+    /**
+     * Xử lý dữ liệu từ form Thêm sản phẩm, kiểm tra tính hợp lệ và lưu vào Database.
+     * Bao gồm cả logic xử lý upload file ảnh.
+     * @param Request $request Dữ liệu người dùng gửi lên
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -72,6 +90,17 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'unit' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Vui lòng nhập tên sản phẩm.',
+            'name.max' => 'Tên sản phẩm không được vượt quá 255 ký tự.',
+            'category_id.required' => 'Vui lòng chọn loại sản phẩm.',
+            'category_id.exists' => 'Loại sản phẩm không tồn tại.',
+            'price.required' => 'Vui lòng nhập giá.',
+            'price.numeric' => 'Giá sản phẩm phải là một số.',
+            'unit.required' => 'Vui lòng nhập đơn vị.',
+            'image.image' => 'File tải lên phải là hình ảnh.',
+            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'image.max' => 'Kích thước ảnh không được vượt quá 2MB.',
         ]);
 
         $data = $request->all();
@@ -88,7 +117,11 @@ class ProductController extends Controller
         return back()->with('success', 'Thêm sản phẩm thành công!');
     }
 
-    // Hiển thị form chỉnh sửa
+    /**
+     * Lấy thông tin sản phẩm cần sửa và các danh mục để hiển thị lên form sửa.
+     * @param int $id ID sản phẩm cần sửa
+     * @return \Illuminate\View\View
+     */
     public function edit($id)
     {
         $product = Product::findOrFail($id);
@@ -96,10 +129,20 @@ class ProductController extends Controller
         return view('admin.product_edit', compact('product', 'categories'));
     }
 
-    // Xử lý cập nhật sản phẩm
+    /**
+     * Xử lý cập nhật sản phẩm. Bao gồm kiểm tra Khóa Lạc Quan (Optimistic Locking)
+     * để chống xung đột cập nhật dữ liệu khi có nhiều người cùng thao tác.
+     * @param Request $request Dữ liệu form và original_updated_at
+     * @param int $id ID sản phẩm
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
+
+        if ($request->has('original_updated_at') && $product->updated_at != $request->original_updated_at) {
+            return back()->with('error', 'Lỗi: Dữ liệu đã bị thay đổi bởi người khác trước đó. Vui lòng tải lại trang để xem dữ liệu mới nhất.');
+        }
 
         $request->validate([
             'name' => 'required|max:255',
@@ -107,6 +150,17 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'unit' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'name.required' => 'Vui lòng nhập tên sản phẩm.',
+            'name.max' => 'Tên sản phẩm không được vượt quá 255 ký tự.',
+            'category_id.required' => 'Vui lòng chọn loại sản phẩm.',
+            'category_id.exists' => 'Loại sản phẩm không tồn tại.',
+            'price.required' => 'Vui lòng nhập giá.',
+            'price.numeric' => 'Giá sản phẩm phải là một số.',
+            'unit.required' => 'Vui lòng nhập đơn vị.',
+            'image.image' => 'File tải lên phải là hình ảnh.',
+            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'image.max' => 'Kích thước ảnh không được vượt quá 2MB.',
         ]);
 
         $data = $request->all();
@@ -124,7 +178,11 @@ class ProductController extends Controller
 
         return back()->with('success', 'Cập nhật sản phẩm thành công!');
     }
-    // Trang tìm kiếm sản phẩm
+    /**
+     * Xử lý logic tìm kiếm sản phẩm theo tên và trả về trang chủ kèm kết quả tìm kiếm.
+     * @param Request $request Chứa tham số 'query' (từ khóa tìm kiếm)
+     * @return \Illuminate\View\View
+     */
     public function search(Request $request)
     {
         $query = $request->input('query');
@@ -140,7 +198,11 @@ class ProductController extends Controller
         return view('home', compact('allProducts', 'query', 'hotProducts', 'categories'));
     }
 
-    // Xử lý xóa sản phẩm
+    /**
+     * Xóa một sản phẩm khỏi Database dựa vào ID.
+     * @param int $id ID sản phẩm
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $product = Product::findOrFail($id);

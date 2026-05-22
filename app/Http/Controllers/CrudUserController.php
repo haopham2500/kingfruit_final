@@ -13,13 +13,21 @@ class CrudUserController extends Controller
      * --- ĐĂNG NHẬP ---
      */
 
-    // Hiển thị form đăng nhập
+    /**
+     * Hiển thị trang Form đăng nhập.
+     * @return \Illuminate\View\View
+     */
     public function login()
     {
         return view('auth.login'); 
     }
 
-    // Xử lý thực hiện đăng nhập
+    /**
+     * Xử lý xác thực người dùng khi submit form đăng nhập.
+     * Kiểm tra cả trạng thái bị khóa (banned).
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function authUser(Request $request)
     {
         $credentials = $request->validate([
@@ -57,21 +65,38 @@ class CrudUserController extends Controller
      * --- ĐĂNG KÝ ---
      */
 
+    /**
+     * Hiển thị trang Đăng ký tài khoản.
+     * @return \Illuminate\View\View
+     */
     public function showRegister()
     {
         return view('auth.register');
     }
 
+    /**
+     * Xử lý tạo người dùng mới khi submit form đăng ký.
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function createUser(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'phone' => 'nullable|string',
+            'password' => 'required|string|min:6|max:255',
+            'phone' => 'nullable|string|max:20',
         ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'name.max' => 'Tên không được dài quá 255 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.max' => 'Email không được dài quá 255 ký tự.',
             'email.unique' => 'Email này có người dùng rồi ní.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
             'password.min' => 'Mật khẩu ít nhất 6 ký tự nhé.',
+            'password.max' => 'Mật khẩu không được dài quá 255 ký tự.',
+            'phone.max' => 'Số điện thoại không được dài quá 20 ký tự.',
         ]);
 
         User::registerUser($data);
@@ -83,7 +108,11 @@ class CrudUserController extends Controller
      * --- QUẢN LÝ USER (ADMIN) ---
      */
     
-    // Danh sách người dùng
+    /**
+     * Hiển thị danh sách tất cả người dùng (Dành riêng cho Admin).
+     * Chặn các user thường truy cập.
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function index() {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
             return redirect('/')->with('error', 'Ní không có quyền vào đây!');
@@ -93,7 +122,11 @@ class CrudUserController extends Controller
         return view('admin.users', compact('users'));
     }
 
-    // HIỂN THỊ FORM CHỈNH SỬA (Mới cập nhật)
+    /**
+     * Hiển thị form chỉnh sửa thông tin của một người dùng.
+     * @param int $id ID người dùng
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function edit($id) {
         $user = User::getUserById($id);
         
@@ -104,16 +137,35 @@ class CrudUserController extends Controller
         return view('admin.users_edit', compact('user'));
     }
 
-    // XỬ LÝ CẬP NHẬT THÔNG TIN (Mới cập nhật - Đã sửa lỗi 500)
+    /**
+     * Xử lý cập nhật thông tin người dùng từ Form sửa.
+     * Có tích hợp kiểm tra Khóa Lạc Quan (Optimistic Locking).
+     * @param Request $request Dữ liệu form và original_updated_at
+     * @param int $id ID người dùng
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $id) {
+        $user = User::findOrFail($id);
+
+        if ($request->has('original_updated_at') && $user->updated_at != $request->original_updated_at) {
+            return back()->with('error', 'Lỗi: Dữ liệu đã bị thay đổi bởi người khác trước đó. Vui lòng tải lại trang để xem dữ liệu mới nhất.');
+        }
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$id,
-            'phone' => 'nullable|string',
+            'email' => 'required|email|max:255|unique:users,email,'.$id,
+            'phone' => 'nullable|string|max:20',
             'role' => 'required|in:admin,user,banned',
         ], [
             'name.required' => 'Tên không được để trống.',
+            'name.max' => 'Tên không được dài quá 255 ký tự.',
+            'email.required' => 'Email không được để trống.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.max' => 'Email không được dài quá 255 ký tự.',
             'email.unique' => 'Email này bị trùng mất rồi.',
+            'phone.max' => 'Số điện thoại không được dài quá 20 ký tự.',
+            'role.required' => 'Vui lòng chọn vai trò.',
+            'role.in' => 'Vai trò không hợp lệ.',
         ]);
 
         // Gọi logic lưu từ Model
@@ -126,7 +178,12 @@ class CrudUserController extends Controller
         return back()->with('error', 'Có lỗi xảy ra, cập nhật thất bại.');
     }
 
-    // CHỨC NĂNG KHÓA/MỞ KHÓA NHANH (Đổi Role)
+    /**
+     * Khóa hoặc Mở khóa nhanh một tài khoản bằng cách thay đổi Role.
+     * Không cho phép tự khóa chính mình.
+     * @param int $id ID người dùng
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function toggleRole($id)
     {
         if ($id == Auth::id()) {
@@ -142,7 +199,12 @@ class CrudUserController extends Controller
         return back()->with('error', 'Có lỗi xảy ra khi cập nhật trạng thái.');
     }
 
-    // XÓA NGƯỜI DÙNG
+    /**
+     * Xóa vĩnh viễn một tài khoản khỏi hệ thống.
+     * Không cho phép Admin tự xóa chính mình.
+     * @param int $id ID người dùng
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         if ($id == Auth::id()) {

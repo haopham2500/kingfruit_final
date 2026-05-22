@@ -8,6 +8,7 @@
         <form action="{{ route('admin.vouchers.update', $voucher->id) }}" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" name="original_updated_at" value="{{ $voucher->updated_at }}">
             
             <div class="mb-3">
                 <label class="form-label fw-bold">Mã Code</label>
