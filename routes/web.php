@@ -47,38 +47,19 @@ Route::prefix('cart')->group(function () {
 });
 
 
-// --- 4. THANH TOÁN (CHECKOUT) ---
-Route::middleware(['auth'])->group(function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
-    // Route áp dụng voucher khi thanh toán
-    Route::post('/apply-voucher', [VoucherController::class, 'applyVoucher'])->name('voucher.apply');
-});
-
 // --- 4. THANH TOÁN & VOUCHER (Dành cho khách hàng đã đăng nhập) ---
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
-    
+
     // Voucher cho người dùng
     Route::post('/apply-voucher', [VoucherController::class, 'applyVoucher'])->name('voucher.apply');
-    
-    // ĐÂY LÀ DÒNG QUAN TRỌNG: Sửa lại tên route cho khớp với View
     Route::post('/collect-voucher', [VoucherController::class, 'collectVoucher'])->name('voucher.collect');
 
     // Bình luận
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('review.store');
     Route::post('/reviews/{id}/reply-user', [ReviewController::class, 'reply'])->name('review.reply');
 });
-// --- 5. HỆ THỐNG BÌNH LUẬN (DÀNH CHO KHÁCH - Sửa lỗi review.store) ---
-Route::post('/product/{id}/review', [ReviewController::class, 'store'])
-    ->name('review.store')
-    ->middleware('auth');
-
-Route::post('/reviews/{id}/reply-user', [ReviewController::class, 'reply'])
-    ->name('review.reply')
-    ->middleware('auth');
-
 
 // --- 6. HỆ THỐNG QUẢN TRỊ (ADMIN) ---
 // Lưu ý: Mình giữ nguyên name('crud') để khớp với Controller và View hiện tại của ní
