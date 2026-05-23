@@ -6,7 +6,7 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        z-index: 5;
+        z-index: 1070; /* ensure favorite sits above badges */
     }
 
     .favorite-action button {
@@ -109,7 +109,7 @@
         @foreach($hotProducts as $best)
         <div class="col">
             <div class="card h-100 product-card shadow-sm border-0 position-relative">
-                <span class="badge badge-hot rounded-pill p-2" style="position: absolute; top: 10px; right: 10px; background: rgba(255,0,0,0.8); color: white;">
+                <span class="badge badge-hot rounded-pill p-2" style="position: absolute; top: 10px; left: 10px; background: rgba(255,0,0,0.8); color: white;">
                     <i class="bi bi-star-fill"></i> HOT
                 </span>
                 <form action="{{ route('cart.add', $best->id) }}" method="POST" class="favorite-action">
