@@ -33,8 +33,12 @@ class ReviewController extends Controller
     public function index()
     {
         // Chỉ lấy bình luận gốc (parent_id là null) để hiển thị
-        $reviews = Review::with(['user', 'replies'])->whereNull('parent_id')->latest()->get();
-        return view('admin.reviews', compact('reviews')); // Đảm bảo tên view khớp với thư mục: admin/reviews.blade.php
+        $reviews = Review::with(['user', 'product', 'replies.user'])
+            ->whereNull('parent_id')
+            ->latest()
+            ->get();
+
+        return view('admin.reviews', compact('reviews'));
     }
 
 
