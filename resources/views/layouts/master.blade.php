@@ -61,6 +61,12 @@
             background: rgba(0, 0, 0, 0.4);
             border-radius: 20px;
             padding: 30px;
+            color: #ffffff;
+        }
+
+        .carousel-caption h1,
+        .carousel-caption p {
+            color: #ffffff;
         }
 
         /* Product Card */
