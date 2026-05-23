@@ -40,9 +40,9 @@
 <div class="main-content p-3">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="fw-bold m-0"><i class="bi bi-cart-check me-2 text-success"></i>Danh sách đơn hàng</h4>
+        <h4 class="fw-bold m-0"><i class="bi bi-cart-check me-2 text-success"></i>{{ __('messages.order_list') }}</h4>
         <div class="badge bg-body-tertiary text-body shadow-sm p-2 border">
-            Hệ thống có: <span class="fw-bold text-success">{{ $orders->count() }}</span> đơn hàng
+            {{ __('messages.system_orders_count', ['count' => $orders->count()]) }}
         </div>
     </div>
 
@@ -51,12 +51,12 @@
             <table class="table table-hover table-custom mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th class="text-center col-id">Mã đơn</th>
-                        <th class="col-user">Khách hàng / Liên hệ</th>
-                        <th class="text-end col-total">Tổng tiền</th>
-                        <th class="text-center col-date">Ngày đặt</th>
-                        <th class="text-center col-stt">Trạng thái</th>
-                        <th class="text-center col-opt">Xử lý</th>
+                        <th class="text-center col-id">{{ __('messages.order_id') }}</th>
+                        <th class="col-user">{{ __('messages.customer_contact') }}</th>
+                        <th class="text-end col-total">{{ __('messages.order_total') }}</th>
+                        <th class="text-center col-date">{{ __('messages.order_date') }}</th>
+                        <th class="text-center col-stt">{{ __('messages.order_status') }}</th>
+                        <th class="text-center col-opt">{{ __('messages.order_manage') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,7 +66,7 @@
                             <span class="badge bg-dark">#{{ $order->id }}</span>
                         </td>
                         <td>
-                            <div class="fw-bold text-body">{{ $order->receiver_name ?? ($order->user->name ?? 'Khách lẻ') }}</div>
+                            <div class="fw-bold text-body">{{ $order->receiver_name ?? ($order->user->name ?? __('messages.guest_customer')) }}</div>
                             <div class="text-primary small" style="font-size: 0.75rem;">
                                 <i class="bi bi-telephone me-1"></i>0911901782
                             </div>
@@ -79,12 +79,12 @@
                         <td class="text-center">
                             @php
                                 $status_map = [
-                                    'pending'    => ['c' => 'bg-warning text-dark', 't' => 'Chờ duyệt'],
-                                    'processing' => ['c' => 'bg-info text-white', 't' => 'Đang giao'],
-                                    'completed'  => ['c' => 'bg-success', 't' => 'Đã giao'],
-                                    'cancelled'  => ['c' => 'bg-danger', 't' => 'Hủy đơn'],
-                                    'refunded'   => ['c' => 'bg-primary', 't' => 'Hoàn tiền'],
-                                    'wait_refund'=> ['c' => 'bg-dark', 't' => 'Chờ hoàn'],
+                                    'pending'    => ['c' => 'bg-warning text-dark', 't' => __('messages.order_pending')],
+                                    'processing' => ['c' => 'bg-info text-white', 't' => __('messages.order_processing')],
+                                    'completed'  => ['c' => 'bg-success', 't' => __('messages.order_completed')],
+                                    'cancelled'  => ['c' => 'bg-danger', 't' => __('messages.order_cancelled')],
+                                    'refunded'   => ['c' => 'bg-primary', 't' => __('messages.order_refunded')],
+                                    'wait_refund'=> ['c' => 'bg-dark', 't' => __('messages.order_wait_refund')],
                                 ];
                                 $st = $status_map[$order->status] ?? ['c' => 'bg-secondary', 't' => $order->status];
                             @endphp
@@ -94,17 +94,22 @@
                         </td>
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-1">
-                                <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-outline-info btn-sm py-0 px-2 shadow-sm" title="Xem chi tiết" style="font-size: 0.7rem;">
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-outline-info btn-sm py-0 px-2 shadow-sm" title="{{ __('messages.view_details') }}" style="font-size: 0.7rem;">
                                     <i class="bi bi-eye"></i>
                                 </a>
 
                                 <div class="dropdown">
                                     <button class="btn btn-outline-success btn-sm py-0 px-2 shadow-sm" type="button" data-bs-toggle="dropdown" style="font-size: 0.7rem;">
-                                        <i class="bi bi-pencil-square"></i> Sửa
+                                        <i class="bi bi-pencil-square"></i> {{ __('messages.edit') }}
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="font-size: 0.75rem;">
-                                        <li><h6 class="dropdown-header">Đổi trạng thái</h6></li>
-                                        @foreach(['pending' => 'Chờ duyệt', 'processing' => 'Đang giao', 'completed' => 'Đã giao', 'cancelled' => 'Hủy đơn'] as $key => $label)
+                                        <li><h6 class="dropdown-header">{{ __('messages.change_status') }}</h6></li>
+                                        @foreach([
+                                            'pending' => __('messages.order_pending'),
+                                            'processing' => __('messages.order_processing'),
+                                            'completed' => __('messages.order_completed'),
+                                            'cancelled' => __('messages.order_cancelled'),
+                                        ] as $key => $label)
                                         <li>
                                             <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
                                                 @csrf
@@ -123,7 +128,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">Chưa có đơn hàng nào!</td>
+                        <td colspan="6" class="text-center py-5 text-muted">{{ __('messages.no_orders') }}</td>
                     </tr>
                     @endforelse
                 </tbody>

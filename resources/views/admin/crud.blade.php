@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold text-success">Quản lý sản phẩm</h2>
+    <h2 class="fw-bold text-success">{{ __('messages.manage_products') }}</h2>
     <button class="btn btn-success rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalAdd">
-        <i class="bi bi-plus-circle me-2"></i>Thêm sản phẩm mới
+        <i class="bi bi-plus-circle me-2"></i>{{ __('messages.add_product') }}
     </button>
 </div>
 
@@ -13,12 +13,12 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th class="ps-4">ID</th>
-                    <th>Hình ảnh</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Đơn vị</th>
-                    <th class="text-end pe-4">Hành động</th>
+                    <th class="ps-4">{{ __('messages.product_id') }}</th>
+                    <th>{{ __('messages.product_image') }}</th>
+                    <th>{{ __('messages.product_name') }}</th>
+                    <th>{{ __('messages.product_price') }}</th>
+                    <th>{{ __('messages.product_unit') }}</th>
+                    <th class="text-end pe-4">{{ __('messages.product_action') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,7 +28,7 @@
                     <td><img src="{{ asset('images/' . $pro->image) }}" width="50" class="rounded border"></td>
                     <td class="fw-bold">{{ $pro->name }}</td>
                     <td class="text-danger fw-bold">{{ number_format($pro->price) }}đ</td>
-                    <td>{{ $pro->unit ?? 'Đang cập nhật' }}</td>
+                    <td>{{ $pro->unit ?? __('messages.not_available') }}</td>
                     <td class="text-end pe-4">
                         <button class="btn btn-sm btn-outline-primary me-2" 
                                 data-bs-toggle="modal" 
@@ -48,20 +48,20 @@
                                 @csrf
                                 <input type="hidden" name="original_updated_at" value="{{ $pro->updated_at }}">
                                 <div class="modal-header bg-primary text-white">
-                                    <h5 class="modal-title">Sửa sản phẩm: {{ $pro->name }}</h5>
+                                    <h5 class="modal-title">{{ __('messages.edit_product') }}: {{ $pro->name }}</h5>
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body p-4">
                                     <div class="row mb-3">
                                         <div class="col-md-8">
-                                            <label class="form-label fw-bold">Tên sản phẩm</label>
+                                            <label class="form-label fw-bold">{{ __('messages.product_name') }}</label>
                                             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ $pro->name }}" required>
                                             @error('name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="col-md-4">
-                                            <label class="form-label fw-bold">Loại</label>
+                                            <label class="form-label fw-bold">{{ __('messages.category') }}</label>
                                             <select name="category_id" class="form-select">
                                                 @foreach($categories as $cat)
                                                     <option value="{{ $cat->id }}" {{ $pro->category_id == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -71,14 +71,14 @@
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <label class="form-label fw-bold">Giá</label>
+                                            <label class="form-label fw-bold">{{ __('messages.product_price') }}</label>
                                             <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ $pro->price }}" required>
                                             @error('price')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label fw-bold">Đơn vị</label>
+                                            <label class="form-label fw-bold">{{ __('messages.product_unit') }}</label>
                                             <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror" value="{{ $pro->unit }}" required>
                                             @error('unit')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -86,18 +86,18 @@
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold d-block">Ảnh hiện tại</label>
+                                        <label class="form-label fw-bold d-block">{{ __('messages.current_image') }}</label>
                                         <img src="{{ asset('images/' . $pro->image) }}" width="80" class="mb-2 border rounded">
                                         <input type="file" name="image" class="form-control" accept="image/*">
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Mô tả</label>
+                                        <label class="form-label fw-bold">{{ __('messages.product_description') }}</label>
                                         <textarea name="description" class="form-control" rows="3">{{ $pro->description }}</textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                    <button type="submit" class="btn btn-primary px-4">Lưu thay đổi.</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                                    <button type="submit" class="btn btn-primary px-4">{{ __('messages.save_changes') }}</button>
                                 </div>
                             </form>
                         </div>
@@ -115,20 +115,20 @@
             <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">Thêm sản phẩm mới</h5>
+                    <h5 class="modal-title">{{ __('messages.add_product') }}</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="row mb-3">
                         <div class="col-md-8">
-                            <label class="form-label fw-bold">Tên sản phẩm</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Nhập tên..." required>
+                            <label class="form-label fw-bold">{{ __('messages.product_name') }}</label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="{{ __('messages.product_name') }}" required>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-bold">Loại</label>
+                            <label class="form-label fw-bold">{{ __('messages.category') }}</label>
                             <select name="category_id" class="form-select">
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -138,32 +138,32 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Giá</label>
+                            <label class="form-label fw-bold">{{ __('messages.product_price') }}</label>
                             <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" required>
                             @error('price')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Đơn vị</label>
-                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror" placeholder="kg, hộp..." required>
+                            <label class="form-label fw-bold">{{ __('messages.product_unit') }}</label>
+                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror" placeholder="{{ __('messages.product_unit') }}" required>
                             @error('unit')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Hình ảnh</label>
+                        <label class="form-label fw-bold">{{ __('messages.product_image') }}</label>
                         <input type="file" name="image" class="form-control" accept="image/*" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Mô tả</label>
+                        <label class="form-label fw-bold">{{ __('messages.product_description') }}</label>
                         <textarea name="description" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-success px-4">Lưu ngay</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="submit" class="btn btn-success px-4">{{ __('messages.add_product') }}</button>
                 </div>
             </form>
         </div>

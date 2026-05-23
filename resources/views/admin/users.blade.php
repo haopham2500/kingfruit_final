@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý người dùng - KingFruit Admin')
+@section('title', __('messages.user_management') . ' - KingFruit Admin')
 
 @section('content')
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
         <div>
-            <h2 class="fw-bold text-body">Quản lý người dùng</h2>
+            <h2 class="fw-bold text-body">{{ __('messages.user_management') }}</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('crud') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Người dùng</li>
+                    <li class="breadcrumb-item"><a href="{{ route('crud') }}">{{ __('messages.admin_dashboard') }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ __('messages.user_management') }}</li>
                 </ol>
             </nav>
         </div>
@@ -25,12 +25,12 @@
                 <table class="table table-hover mb-0 align-middle">
                     <thead class="bg-body-tertiary">
                         <tr>
-                            <th class="ps-4" style="width: 80px;">ID</th>
-                            <th>Thông tin khách hàng</th>
-                            <th>Số điện thoại</th>
-                            <th>Trạng thái / Vai trò</th>
-                            <th>Ngày tham gia</th>
-                            <th class="text-end pe-4">Thao tác</th>
+                            <th class="ps-4" style="width: 80px;">{{ __('messages.id') }}</th>
+                            <th>{{ __('messages.customer_info') }}</th>
+                            <th>{{ __('messages.phone_number') }}</th>
+                            <th>{{ __('messages.status_role') }}</th>
+                            <th>{{ __('messages.joined_at') }}</th>
+                            <th class="text-end pe-4">{{ __('messages.product_action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,13 +51,13 @@
                             <td>{{ $user->phone ?? '---' }}</td>
                             <td>
                                 @if($user->role === 'admin')
-                                    <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2">Quản trị viên</span>
+                                    <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2">{{ __('messages.admin_role') }}</span>
                                 @elseif($user->role === 'banned')
                                     <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2">
-                                        <i class="bi bi-patch-exclamation-fill me-1"></i>Đã khóa
+                                        <i class="bi bi-patch-exclamation-fill me-1"></i>{{ __('messages.banned_role') }}
                                     </span>
                                 @else
-                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">Khách hàng</span>
+                                    <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">{{ __('messages.customer_role') }}</span>
                                 @endif
                             </td>
                             <td class="text-muted">
@@ -66,7 +66,7 @@
                             <td class="text-end pe-4">
                                 <div class="d-flex justify-content-end align-items-center gap-1">
                                     
-                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary border-0" title="Sửa thông tin">
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary border-0" title="{{ __('messages.edit_user') }}">
                                         <i class="bi bi-pencil-square fs-5"></i>
                                     </a>
 
@@ -75,27 +75,26 @@
                                             @csrf
                                             @method('PATCH')
                                             @if($user->role === 'banned')
-                                                <button type="submit" class="btn btn-sm btn-outline-success border-0" title="Mở khóa tài khoản">
+                                                <button type="submit" class="btn btn-sm btn-outline-success border-0" title="{{ __('messages.unlock_account') }}">
                                                     <i class="bi bi-unlock-fill fs-5"></i>
                                                 </button>
                                             @else
-                                                <button type="submit" class="btn btn-sm btn-outline-warning border-0" title="Khóa tài khoản">
+                                                <button type="submit" class="btn btn-sm btn-outline-warning border-0" title="{{ __('messages.ban_account') }}">
                                                     <i class="bi bi-lock-fill fs-5"></i>
                                                 </button>
                                             @endif
                                         </form>
 
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="m-0" onsubmit="return confirm('Ní chắc chắn muốn xóa vĩnh viễn người dùng này?')">
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="m-0" onsubmit="return confirm('{{ __('messages.ban_user_confirm') }}')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="Xóa người dùng">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="{{ __('messages.delete') }}">
                                                 <i class="bi bi-trash-fill fs-5"></i>
                                             </button>
                                         </form>
                                     @else
-                                        <span class="text-muted small px-2">Hệ thống</span>
+                                        <span class="text-muted small px-2">{{ __('messages.system') }}</span>
                                     @endif
-
                                 </div>
                             </td>
                         </tr>
@@ -103,7 +102,7 @@
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
                                 <i class="bi bi-people fs-1 d-block mb-3"></i>
-                                Chưa có người dùng nào!
+                                {{ __('messages.no_users_yet') }}
                             </td>
                         </tr>
                         @endforelse
