@@ -61,6 +61,12 @@
             background: rgba(0, 0, 0, 0.4);
             border-radius: 20px;
             padding: 30px;
+            color: #ffffff;
+        }
+
+        .carousel-caption h1,
+        .carousel-caption p {
+            color: #ffffff;
         }
 
         /* Product Card */
@@ -153,7 +159,7 @@
     .badge-hot {
         background-color: #ff4757; /* Màu đỏ nổi bật */
         color: white;
-        z-index: 10; /* Đảm bảo nó luôn nằm trên ảnh */
+        z-index: 5; /* Đảm bảo proper stacking */
         font-size: 0.75rem;
         letter-spacing: 1px;
     }
@@ -161,6 +167,162 @@
     .card-img-top {
         height: 250px;
         object-fit: cover; /* Giúp ảnh không bị méo khi kích thước khác nhau */
+    }
+
+    /* Promotion Popup Modal Styles */
+    .modal-promotion {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    .modal-promotion.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-promotion-content {
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 90%;
+        position: relative;
+        overflow: hidden;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    .modal-promotion-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 2001;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 24px;
+        transition: all 0.2s;
+    }
+
+    .modal-promotion-close:hover {
+        background: #dc3545;
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    /* Promotion Banner Styles */
+    .promotion-banner {
+        background: linear-gradient(135deg, #ff3838 0%, #dc143c 50%, #c41e3a 100%);
+        position: relative;
+        padding: 30px 20px;
+        text-align: center;
+        overflow: hidden;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .promotion-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .promotion-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+    }
+
+    .special-offer-text {
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .big-sale-text {
+        color: #FFD700;
+        font-size: 48px;
+        font-weight: 900;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        margin: 10px 0;
+        position: relative;
+        z-index: 1;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .sale-percentage {
+        color: white;
+        font-size: 36px;
+        font-weight: bold;
+        position: absolute;
+        right: 30px;
+        top: 60px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .promotion-content {
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    .promotion-logo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 20px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .promotion-logo i {
+        font-size: 60px;
+        color: #198754;
     }
     </style>
 </head>
@@ -181,7 +343,7 @@
                     </li>
 
                     <li class="nav-item mx-lg-3 my-2 my-lg-0">
-                        <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
+                        <form action="{{ Route::has('search') ? route('search') : url('/search') }}" method="GET" class="d-flex position-relative">
                             <input
                                 class="form-control rounded-pill ps-4 pe-5 border-0 shadow-sm"
                                 type="search"
@@ -196,26 +358,6 @@
                                 <i class="bi bi-search"></i>
                             </button>
                         </form>
-                    </li>
-                    <li class="nav-item mx-lg-3 my-2 my-lg-0">
-                        <form action="{{ route('search') }}" method="GET" class="d-flex position-relative">
-                        </form>
-                    </li>
-
-                    <li class="nav-item dropdown me-2">
-                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="langDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe fs-5 me-1"></i> {{ strtoupper(session('locale', 'vi')) }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" aria-labelledby="langDropdown">
-                            <li><a class="dropdown-item" href="{{ route('lang.switch', 'vi') }}">Tiếng Việt</a></li>
-                            <li><a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">English</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item me-3 d-flex align-items-center">
-                        <button class="btn btn-link nav-link text-white p-0 border-0" id="theme-toggle" title="Chế độ Sáng/Tối">
-                            <i class="bi bi-moon-stars fs-5"></i>
-                        </button>
                     </li>
 
                     <li class="nav-item me-3">
@@ -246,10 +388,28 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
                                 @if(Auth::user()->email == 'admin@gmail.com')
                                 <li><a class="dropdown-item" href="{{ route('crud') }}"><i class="bi bi-speedometer2 me-2"></i>{{ __('messages.admin_panel') }}</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 @endif
+                                <li>
+                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); showPromotionModal();">
+                                        <i class="bi bi-gift-fill me-2" style="color: #ff3838;"></i>Xem Lại Popup
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="#" onclick="event.preventDefault();" id="toggleThemeDropdown">
+                                        <i class="bi bi-moon-stars me-2" id="themeIconDropdown"></i>
+                                        <span id="themeTextDropdown">Chế độ Tối</span>
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('lang.switch', 'vi') }}">
+                                    <i class="bi bi-check-lg me-1" style="visibility: {{ session('locale', 'vi') === 'vi' ? 'visible' : 'hidden' }}; color: #198754;"></i>Tiếng Việt
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">
+                                    <i class="bi bi-check-lg me-1" style="visibility: {{ session('locale', 'vi') === 'en' ? 'visible' : 'hidden' }}; color: #198754;"></i>English
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <div class="px-3 py-2 border-bottom">
                                         <div class="fw-semibold text-dark">{{ Auth::user()->name }}</div>
@@ -284,6 +444,37 @@
         @yield('content')
     </main>
 
+    <!-- Promotion Popup Modal -->
+    <div id="promotionModal" class="modal-promotion">
+        <div class="modal-promotion-content">
+            <button type="button" class="modal-promotion-close" id="closePromotionModal" title="Đóng">
+                <i class="bi bi-x"></i>
+            </button>
+            <a href="{{ route('promotions.index') }}" style="text-decoration: none; color: inherit;">
+                <!-- Banner với Big Sale -->
+                <div class="promotion-banner">
+                    <div class="special-offer-text">✦ SPECIAL OFFER ✦</div>
+                    <div class="big-sale-text">BIG<br>SALE</div>
+                    <div class="sale-percentage">50%<br>OFF</div>
+                </div>
+                
+                <!-- Content -->
+                <div class="promotion-content">
+                    <div class="promotion-logo">
+                        <i class="bi bi-gift-fill"></i>
+                    </div>
+                    <h2 style="color: #333; font-weight: bold; margin-bottom: 10px; font-size: 22px;">RẢ MẮT KHUYẾN MÃI MỚI!</h2>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 15px; font-weight: 500;">
+                        TRUY CẬP - NHẬN QUÀ LIỀN TAY!
+                    </p>
+                    <button type="button" class="btn btn-success btn-lg" style="width: 100%; border-radius: 50px; font-weight: bold; padding: 12px;">
+                        <i class="bi bi-tag-fill me-2"></i>Xem Tất Cả Khuyến Mãi
+                    </button>
+                </div>
+            </a>
+        </div>
+    </div>
+
     <footer class="main-footer">
         <div class="container text-center">
             <div class="footer-logo">KING FRUIT</div>
@@ -296,34 +487,94 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Function to show promotion modal (can be called multiple times)
+        function showPromotionModal() {
+            const promotionModal = document.getElementById('promotionModal');
+            promotionModal.classList.add('show');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // === PROMOTION POPUP MODAL ===
+            const promotionModal = document.getElementById('promotionModal');
+            const closeBtn = document.getElementById('closePromotionModal');
+
+            // Close modal when X button is clicked
+            closeBtn.addEventListener('click', () => {
+                promotionModal.classList.remove('show');
+            });
+
+            // Close modal when clicking outside the content
+            promotionModal.addEventListener('click', (e) => {
+                if (e.target === promotionModal) {
+                    promotionModal.classList.remove('show');
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && promotionModal.classList.contains('show')) {
+                    promotionModal.classList.remove('show');
+                }
+            });
+
+            // === THEME TOGGLE IN ACCOUNT DROPDOWN ===
             const htmlElement = document.documentElement;
-            const themeToggleBtn = document.getElementById('theme-toggle');
-            if (themeToggleBtn) {
-                const themeIcon = themeToggleBtn.querySelector('i');
-                
-                // Set current theme from localStorage
+            const themeToggleInMenu = document.getElementById('toggleThemeDropdown');
+            
+            if (themeToggleInMenu) {
+                const updateThemeUI = (theme) => {
+                    const icon = document.getElementById('themeIconDropdown');
+                    const text = document.getElementById('themeTextDropdown');
+                    if (theme === 'dark') {
+                        icon.classList.remove('bi-moon-stars');
+                        icon.classList.add('bi-sun', 'text-warning');
+                        text.textContent = 'Chế độ Sáng';
+                    } else {
+                        icon.classList.remove('bi-sun', 'text-warning');
+                        icon.classList.add('bi-moon-stars');
+                        text.textContent = 'Chế độ Tối';
+                    }
+                };
+
+                // Set initial theme
                 const currentTheme = localStorage.getItem('theme') || 'light';
                 htmlElement.setAttribute('data-bs-theme', currentTheme);
-                updateIcon(currentTheme);
+                updateThemeUI(currentTheme);
 
                 // Toggle theme
-                themeToggleBtn.addEventListener('click', () => {
+                themeToggleInMenu.addEventListener('click', (e) => {
+                    e.preventDefault();
                     const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
                     htmlElement.setAttribute('data-bs-theme', newTheme);
                     localStorage.setItem('theme', newTheme);
-                    updateIcon(newTheme);
+                    updateThemeUI(newTheme);
                 });
+            }
 
-                function updateIcon(theme) {
+            // === OLD THEME TOGGLE SUPPORT (if exists in navbar) ===
+            const oldThemeToggleBtn = document.getElementById('theme-toggle');
+            if (oldThemeToggleBtn) {
+                const updateOldIcon = (theme) => {
+                    const icon = oldThemeToggleBtn.querySelector('i');
                     if (theme === 'dark') {
-                        themeIcon.classList.remove('bi-moon-stars');
-                        themeIcon.classList.add('bi-sun', 'text-warning');
+                        icon.classList.remove('bi-moon-stars');
+                        icon.classList.add('bi-sun', 'text-warning');
                     } else {
-                        themeIcon.classList.remove('bi-sun', 'text-warning');
-                        themeIcon.classList.add('bi-moon-stars');
+                        icon.classList.remove('bi-sun', 'text-warning');
+                        icon.classList.add('bi-moon-stars');
                     }
-                }
+                };
+
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                htmlElement.setAttribute('data-bs-theme', currentTheme);
+                updateOldIcon(currentTheme);
+
+                oldThemeToggleBtn.addEventListener('click', () => {
+                    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+                    htmlElement.setAttribute('data-bs-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateOldIcon(newTheme);
+                });
             }
         });
     </script>

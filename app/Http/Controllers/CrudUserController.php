@@ -83,7 +83,7 @@ class CrudUserController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users|regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/',
             'password' => 'required|string|min:6|max:255',
             'phone' => 'nullable|string|max:20',
         ], [
@@ -93,6 +93,7 @@ class CrudUserController extends Controller
             'email.email' => 'Email không hợp lệ.',
             'email.max' => 'Email không được dài quá 255 ký tự.',
             'email.unique' => 'Email này có người dùng rồi ní.',
+            'email.regex' => 'Vui lòng sử dụng địa chỉ Gmail chính thức (@gmail.com) để đăng ký.',
             'password.required' => 'Vui lòng nhập mật khẩu.',
             'password.min' => 'Mật khẩu ít nhất 6 ký tự nhé.',
             'password.max' => 'Mật khẩu không được dài quá 255 ký tự.',

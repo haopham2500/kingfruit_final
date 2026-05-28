@@ -3,15 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product;
+use App\Models\User;
 
 class Review extends Model
 {
-    // Thêm parent_id vào đây
-    // File: app/Models/Review.php
-    protected $fillable = ['product_id', 'user_id', 'rating', 'comment', 'parent_id']; // Đảm bảo có parent_id
+    protected $fillable = ['product_id', 'user_id', 'rating', 'comment', 'parent_id'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Review::class, 'parent_id');
     }
 
     public function replies()
