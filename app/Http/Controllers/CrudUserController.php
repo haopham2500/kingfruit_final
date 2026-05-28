@@ -107,8 +107,7 @@ class CrudUserController extends Controller
 
     /**
      * --- QUẢN LÝ USER (ADMIN) ---
-     */
-    
+     */    
     /**
      * Hiển thị danh sách tất cả người dùng (Dành riêng cho Admin).
      * Chặn các user thường truy cập.
@@ -230,5 +229,16 @@ class CrudUserController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    /**
+     * Hiển thị trang Profile của người dùng
+     */
+    public function profile()
+    {
+        $user = auth()->user();
+        $orders = $user->orders()->orderBy('created_at', 'desc')->get();
+
+        return view('profile', compact('user', 'orders'));
     }
 }

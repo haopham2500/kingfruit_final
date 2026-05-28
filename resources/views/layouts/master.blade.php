@@ -411,6 +411,18 @@
                                 </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
+                                    <div class="px-3 py-2 border-bottom">
+                                        <div class="fw-semibold text-dark">{{ Auth::user()->name }}</div>
+                                        <div class="small text-muted"><i class="bi bi-telephone me-1"></i>{{ Auth::user()->phone ?? 'Chưa cập nhật số điện thoại' }}</div>
+                                        <div class="small text-muted"><i class="bi bi-envelope me-1"></i>{{ Auth::user()->email }}</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('profile') }}">
+                                        <i class="bi bi-person me-2"></i> {{ __('messages.profile') }}
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item text-danger" href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <i class="bi bi-box-arrow-right me-2"></i> {{ __('messages.logout') }}
