@@ -6,7 +6,8 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        z-index: 1070; /* high so it appears above badges */
+        z-index: 10;
+        pointer-events: auto;
     }
 
     .favorite-action button {
@@ -21,6 +22,7 @@
         border: 1px solid rgba(0, 0, 0, 0.08);
         color: #dc3545;
         box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.08);
+        transition: all 0.3s ease;
     }
 
     .favorite-action button:hover {
@@ -31,8 +33,8 @@
 
     /* Ensure hot badge is slightly below the favorite button */
     .badge-hot {
-        z-index: 1060;
-        position: absolute; /* keep positioning explicit */
+        z-index: 5;
+        position: absolute;
         top: 10px;
         left: 50%;
         transform: translateX(-50%);
