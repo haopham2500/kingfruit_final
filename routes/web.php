@@ -126,3 +126,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
 });
+
+// Route cho trang Profile
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [CrudUserController::class, 'profile'])->name('profile');
+});

@@ -128,4 +128,12 @@ class User extends Authenticatable
     public function isAdmin() {
         return $this->role === 'admin';
     }
+
+    /**
+     * Lấy danh sách đơn hàng của user
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'id');
+    }
 }
