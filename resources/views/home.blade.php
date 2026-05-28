@@ -41,6 +41,15 @@
     }
 </style>
 
+@if(session('success'))
+<div class="container mt-4">
+    <div class="alert alert-success alert-dismissible fade show shadow-sm border-0" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+@endif
+
 {{-- 1. BANNER CAROUSEL --}}
 @if(!isset($query))
 <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -87,7 +96,7 @@
         <div class="col">
             <div class="card h-100 product-card shadow-sm border-0 position-relative">
                 <span class="badge rounded-pill px-3 bg-success text-white" style="position: absolute; top: 10px; left: 10px;">
-                    {{ $product->category_name ?? 'Trái cây' }}
+                    {{ $product->category_name ?? __('messages.default_category') }}
                 </span>
                 <form action="{{ route('cart.add', $product->id) }}" method="POST" class="favorite-action">
                     @csrf
@@ -98,7 +107,7 @@
                 <img src="{{ $product->image ? asset('images/' . $product->image) : 'https://placehold.co/400x400?text=' . $product->name }}" class="card-img-top" alt="{{ $product->name }}">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
-                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
+                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} {{ __('messages.currency') }}</div>
                     <div class="d-flex gap-2">
                         <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">{{ __('messages.detail') }}</a>
                         <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 btn-sm rounded-pill">{{ __('messages.buy_now') }}</a>
@@ -121,7 +130,7 @@
         <div class="col">
             <div class="card h-100 product-card shadow-sm border-0 position-relative">
                 <span class="badge badge-hot rounded-pill p-2" style="background: rgba(255,0,0,0.8); color: white;">
-                    <i class="bi bi-star-fill"></i> HOT
+                    <i class="bi bi-star-fill"></i> {{ __('messages.hot_badge') }}
                 </span>
                 <form action="{{ route('cart.add', $best->id) }}" method="POST" class="favorite-action">
                     @csrf
@@ -131,9 +140,9 @@
                 </form>
                 <img src="{{ $best->image ? asset('images/' . $best->image) : 'https://placehold.co/400x400?text=' . $best->name }}" class="card-img-top" alt="{{ $best->name }}">
                 <div class="card-body text-center">
-                    <p class="text-success small mb-1 fw-bold text-uppercase">{{ $best->category_name ?? 'Nội địa' }}</p>
+                    <p class="text-success small mb-1 fw-bold text-uppercase">{{ $best->category_name ?? __('messages.domestic') }}</p>
                     <h5 class="card-title fw-bold mb-3">{{ $best->name }}</h5>
-                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($best->price) }} đ</div>
+                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($best->price) }} {{ __('messages.currency') }}</div>
                     <a href="{{ route('product.detail', $best->id) }}" class="btn btn-danger text-white w-100 py-2 rounded-pill shadow-sm">{{ __('messages.buy_now') }}</a>
                 </div>
             </div>
@@ -177,7 +186,7 @@
         <div class="col">
             <div class="card h-100 product-card shadow-sm border-0 position-relative">
                 <span class="badge rounded-pill px-3 bg-success text-white" style="position: absolute; top: 10px; left: 10px;">
-                    {{ $product->category_name ?? 'Trái cây' }}
+                    {{ $product->category_name ?? __('messages.default_category') }}
                 </span>
                 <form action="{{ route('cart.add', $product->id) }}" method="POST" class="favorite-action">
                     @csrf
@@ -188,7 +197,7 @@
                 <img src="{{ $product->image ? asset('images/' . $product->image) : 'https://placehold.co/400x400?text=' . $product->name }}" class="card-img-top" alt="{{ $product->name }}">
                 <div class="card-body text-center">
                     <h5 class="card-title fw-bold mb-2">{{ $product->name }}</h5>
-                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} VNĐ</div>
+                    <div class="price-text mb-3 text-danger fw-bold">{{ number_format($product->price) }} {{ __('messages.currency') }}</div>
                     <div class="d-flex gap-2">
                         <a href="{{ route('product.detail', $product->id) }}" class="btn btn-outline-success w-100 btn-sm rounded-pill">{{ __('messages.detail') }}</a>
                         <a href="{{ route('product.detail', $product->id) }}" class="btn btn-success text-white w-100 py-2 rounded-pill shadow-sm">{{ __('messages.buy_now') }}</a>

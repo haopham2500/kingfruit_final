@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>King Fruit - Thế Giới Trái Cây Sạch</title>
+    <title>{{ __('messages.site_title') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
 
@@ -360,6 +360,19 @@
                         </form>
                     </li>
 
+                    <li class="nav-item d-flex align-items-center me-2">
+                        <button id="theme-toggle" class="btn btn-outline-light rounded-pill px-3" type="button" title="{{ __('messages.theme_toggle') }}">
+                            <i class="bi bi-moon-stars"></i>
+                        </button>
+                    </li>
+
+                    <li class="nav-item d-flex align-items-center me-2">
+                        <div class="btn-group" role="group" aria-label="Chọn ngôn ngữ">
+                            <a class="btn btn-outline-light btn-sm rounded-start-pill {{ session('locale', 'vi') === 'vi' ? 'active' : '' }}" href="{{ route('lang.switch', 'vi') }}">VI</a>
+                            <a class="btn btn-outline-light btn-sm rounded-end-pill {{ session('locale', 'vi') === 'en' ? 'active' : '' }}" href="{{ route('lang.switch', 'en') }}">EN</a>
+                        </div>
+                    </li>
+
                     <li class="nav-item me-3">
                         <a href="{{ route('cart.index') }}" class="nav-link position-relative d-inline-block d-flex align-items-center">
                             <i class="bi bi-cart3 fs-4 text-white"></i>
@@ -392,28 +405,14 @@
                                 @endif
                                 <li>
                                     <a class="dropdown-item" href="#" onclick="event.preventDefault(); showPromotionModal();">
-                                        <i class="bi bi-gift-fill me-2" style="color: #ff3838;"></i>Xem Lại Popup
+                                        <i class="bi bi-gift-fill me-2" style="color: #ff3838;"></i>{{ __('messages.promotion_popup_preview') }}
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item" href="#" onclick="event.preventDefault();" id="toggleThemeDropdown">
-                                        <i class="bi bi-moon-stars me-2" id="themeIconDropdown"></i>
-                                        <span id="themeTextDropdown">Chế độ Tối</span>
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ route('lang.switch', 'vi') }}">
-                                    <i class="bi bi-check-lg me-1" style="visibility: {{ session('locale', 'vi') === 'vi' ? 'visible' : 'hidden' }}; color: #198754;"></i>Tiếng Việt
-                                </a></li>
-                                <li><a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">
-                                    <i class="bi bi-check-lg me-1" style="visibility: {{ session('locale', 'vi') === 'en' ? 'visible' : 'hidden' }}; color: #198754;"></i>English
-                                </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <div class="px-3 py-2 border-bottom">
                                         <div class="fw-semibold text-dark">{{ Auth::user()->name }}</div>
-                                        <div class="small text-muted"><i class="bi bi-telephone me-1"></i>{{ Auth::user()->phone ?? 'Chưa cập nhật số điện thoại' }}</div>
+                                        <div class="small text-muted"><i class="bi bi-telephone me-1"></i>{{ Auth::user()->phone ?? __('messages.phone_not_updated') }}</div>
                                         <div class="small text-muted"><i class="bi bi-envelope me-1"></i>{{ Auth::user()->email }}</div>
                                     </div>
                                 </li>
@@ -453,8 +452,8 @@
             <a href="{{ route('promotions.index') }}" style="text-decoration: none; color: inherit;">
                 <!-- Banner với Big Sale -->
                 <div class="promotion-banner">
-                    <div class="special-offer-text">✦ SPECIAL OFFER ✦</div>
-                    <div class="big-sale-text">BIG<br>SALE</div>
+                    <div class="special-offer-text">{{ __('messages.special_offer') }}</div>
+                    <div class="big-sale-text">{{ __('messages.big_sale') }}</div>
                     <div class="sale-percentage">50%<br>OFF</div>
                 </div>
                 
@@ -463,12 +462,12 @@
                     <div class="promotion-logo">
                         <i class="bi bi-gift-fill"></i>
                     </div>
-                    <h2 style="color: #333; font-weight: bold; margin-bottom: 10px; font-size: 22px;">RẢ MẮT KHUYẾN MÃI MỚI!</h2>
+                    <h2 style="color: #333; font-weight: bold; margin-bottom: 10px; font-size: 22px;">{{ __('messages.promotion_popup_title') }}</h2>
                     <p style="color: #666; font-size: 14px; margin-bottom: 15px; font-weight: 500;">
-                        TRUY CẬP - NHẬN QUÀ LIỀN TAY!
+                        {{ __('messages.promotion_popup_desc') }}
                     </p>
                     <button type="button" class="btn btn-success btn-lg" style="width: 100%; border-radius: 50px; font-weight: bold; padding: 12px;">
-                        <i class="bi bi-tag-fill me-2"></i>Xem Tất Cả Khuyến Mãi
+                        <i class="bi bi-tag-fill me-2"></i>{{ __('messages.promotion_popup_cta') }}
                     </button>
                 </div>
             </a>
@@ -520,6 +519,8 @@
             // === THEME TOGGLE IN ACCOUNT DROPDOWN ===
             const htmlElement = document.documentElement;
             const themeToggleInMenu = document.getElementById('toggleThemeDropdown');
+            const lightModeLabel = @json(__('messages.light_mode'));
+            const darkModeLabel = @json(__('messages.dark_mode'));
             
             if (themeToggleInMenu) {
                 const updateThemeUI = (theme) => {
@@ -528,11 +529,11 @@
                     if (theme === 'dark') {
                         icon.classList.remove('bi-moon-stars');
                         icon.classList.add('bi-sun', 'text-warning');
-                        text.textContent = 'Chế độ Sáng';
+                        text.textContent = lightModeLabel;
                     } else {
                         icon.classList.remove('bi-sun', 'text-warning');
                         icon.classList.add('bi-moon-stars');
-                        text.textContent = 'Chế độ Tối';
+                        text.textContent = darkModeLabel;
                     }
                 };
 

@@ -32,7 +32,7 @@
 </style>
 
 <div class="container py-5">
-    <h2 class="text-success fw-bold mb-5 text-uppercase text-center">Kho Voucher Ưu Đãi</h2>
+    <h2 class="text-success fw-bold mb-5 text-uppercase text-center">{{ __('messages.voucher_heading') }}</h2>
     
     <div class="row"> 
         @foreach($vouchers as $v)
@@ -50,25 +50,25 @@
 
                     <div class="voucher-right p-3 text-start position-relative">
                         <h5 class="fw-bold mb-1 {{ $isExpired ? 'text-secondary' : 'text-success' }}">
-                            Giảm {{ number_format($v->discount_value) }}{{ $v->discount_type == 'percentage' ? '%' : 'đ' }}
+                            {{ __('messages.discount') }} {{ number_format($v->discount_value) }}{{ $v->discount_type == 'percentage' ? '%' : __('messages.currency') }}
                         </h5>
-                        <p class="text-muted small mb-2">Đơn tối thiểu: {{ number_format($v->min_order ?? 0) }}đ</p>
+                        <p class="text-muted small mb-2">{{ __('messages.min_order') }}: {{ number_format($v->min_order ?? 0) }} {{ __('messages.currency') }}</p>
                         
                         <div class="d-flex justify-content-between align-items-end">
                             <div>
-                                <span class="badge badge-code fw-bold px-2 py-1">Mã: {{ $v->code }}</span>
+                                <span class="badge badge-code fw-bold px-2 py-1">{{ __('messages.voucher_code') }}: {{ $v->code }}</span>
                                 <div class="text-danger mt-1 fw-bold" style="font-size: 11px;">
-                                    HSD: {{ date('d/m/Y', strtotime($v->expiry_date)) }}
-                                    @if($isExpired) <span class="badge bg-danger ms-1">HẾT HẠN</span> @endif
+                                    {{ __('messages.voucher_expiry') }}: {{ date('d/m/Y', strtotime($v->expiry_date)) }}
+                                    @if($isExpired) <span class="badge bg-danger ms-1">{{ __('messages.voucher_expired') }}</span> @endif
                                 </div>
                             </div>
                             
                             @if($isExpired)
-                                <button class="btn btn-secondary btn-sm px-3 rounded-pill disabled" disabled>Hết hạn</button>
+                                <button class="btn btn-secondary btn-sm px-3 rounded-pill disabled" disabled>{{ __('messages.voucher_expired') }}</button>
                             @elseif($isCollected)
-                                <button class="btn btn-outline-secondary btn-sm px-4 rounded-pill disabled" disabled>Đã lấy</button>
+                                <button class="btn btn-outline-secondary btn-sm px-4 rounded-pill disabled" disabled>{{ __('messages.voucher_used') }}</button>
                             @else
-                                <button class="btn btn-success btn-sm px-4 rounded-pill fw-bold collect-btn" data-code="{{ $v->code }}">Lấy mã</button>
+                                <button class="btn btn-success btn-sm px-4 rounded-pill fw-bold collect-btn" data-code="{{ $v->code }}">{{ __('messages.voucher_collect') }}</button>
                             @endif
                         </div>
                     </div>
@@ -80,6 +80,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    const collectedStateText = @json(__('messages.voucher_used'));
+    const collectedMessageTemplate = @json(__('messages.voucher_collected_message'));
+
     $(document).ready(function() {
         $('.collect-btn').click(function() {
             let btn = $(this);
@@ -93,8 +96,8 @@
                     code: code
                 },
                 success: function(res) {
-                    btn.removeClass('btn-success').addClass('btn-outline-secondary').text('Đã lấy').prop('disabled', true);
-                    alert('Ngon! Đã thu thập mã ' + code + '. Qua trang thanh toán dùng nhé ní!');
+                    btn.removeClass('btn-success').addClass('btn-outline-secondary').text(collectedStateText).prop('disabled', true);
+                    alert(collectedMessageTemplate.replace(':code', code));
                 }
             });
         });
