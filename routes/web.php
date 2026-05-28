@@ -56,6 +56,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/apply-voucher', [VoucherController::class, 'applyVoucher'])->name('voucher.apply');
     Route::post('/collect-voucher', [VoucherController::class, 'collectVoucher'])->name('voucher.collect');
 
+    // Theo dõi đơn hàng và hủy đơn
+    Route::get('/orders', [CheckoutController::class, 'trackOrders'])->name('orders.track');
+    Route::post('/orders/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('orders.cancel');
+
     // Bình luận
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('review.store');
     Route::post('/reviews/{id}/reply-user', [ReviewController::class, 'reply'])->name('review.reply');

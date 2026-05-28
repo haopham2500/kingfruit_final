@@ -3,7 +3,7 @@
 @section('content')
 <div class="container py-5" style="min-height: 600px;">
     <h2 class="fw-bold mb-4 text-uppercase">
-        <i class="bi bi-cart-check text-success me-2"></i>Giỏ hàng của bạn
+        <i class="bi bi-cart-check text-success me-2"></i>{{ __('messages.cart_title') }}
     </h2>
 
     @if(session('cart') && count(session('cart')) > 0)
@@ -15,10 +15,10 @@
                         <table class="table align-middle mb-0">
                             <thead class="table-light">
                                 <tr class="text-uppercase small fw-bold text-muted">
-                                    <th class="ps-4 py-3">Sản phẩm</th>
-                                    <th class="py-3">Giá</th>
-                                    <th class="py-3 text-center" style="width: 130px;">Số lượng</th>
-                                    <th class="py-3 text-end pe-4">Thành tiền</th>
+                                    <th class="ps-4 py-3">{{ __('messages.product_name') }}</th>
+                                    <th class="py-3">{{ __('messages.product_price') }}</th>
+                                    <th class="py-3 text-center" style="width: 130px;">{{ __('messages.quantity') }}</th>
+                                    <th class="py-3 text-end pe-4">{{ __('messages.total') }}</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -37,13 +37,13 @@
                                                 <div class="ms-3">
                                                     <h6 class="mb-1 fw-bold text-body">{{ $details['name'] }}</h6>
                                                     <span class="badge bg-body-tertiary text-success border border-success-subtle fw-normal">
-                                                        Đơn vị: {{ $details['unit'] ?? 'Kg' }}
+                                                        {{ __('messages.product_unit') }}: {{ $details['unit'] ?? __('messages.unit_kg') }}
                                                     </span>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="py-4 text-muted fw-semibold">
-                                            {{ number_format($details['price']) }} đ
+                                            {{ number_format($details['price']) }} {{ __('messages.currency') }}
                                         </td>
                                         <td class="py-4 text-center">
                                             <div class="input-group input-group-sm justify-content-center shadow-sm rounded-pill overflow-hidden border" style="max-width: 110px; margin: 0 auto;">
@@ -55,11 +55,11 @@
                                             </div>
                                         </td>
                                         <td class="py-4 text-end pe-4 fw-bold text-danger fs-5">
-                                            {{ number_format($details['price'] * $details['quantity']) }} đ
+                                            {{ number_format($details['price'] * $details['quantity']) }} {{ __('messages.currency') }}
                                         </td>
                                         <td class="py-4 text-center pe-3">
                                             <button class="btn btn-sm btn-outline-danger border-0 rounded-circle remove-from-cart" 
-                                                    style="width: 35px; height: 35px;" title="Xóa món này">
+                                                    style="width: 35px; height: 35px;" title="{{ __('messages.remove_item') }}">
                                                 <i class="bi bi-x-lg"></i>
                                             </button>
                                         </td>
@@ -72,11 +72,11 @@
                 
                 <div class="mt-4 d-flex justify-content-between align-items-center">
                     <a href="{{ route('home') }}" class="btn btn-link text-success text-decoration-none fw-bold p-0">
-                        <i class="bi bi-chevron-left me-1"></i> Quay lại cửa hàng
+                        <i class="bi bi-chevron-left me-1"></i> {{ __('messages.back_to_shop') }}
                     </a>
                     <a href="{{ route('cart.clear') }}" class="btn btn-light rounded-pill px-4 text-muted small shadow-sm" 
-                       onclick="return confirm('Ní muốn dọn sạch giỏ hàng thật hả?')">
-                        Làm trống giỏ hàng
+                       onclick="return confirm('{{ __('messages.clear_cart_confirm') }}')">
+                        {{ __('messages.clear_cart') }}
                     </a>
                 </div>
             </div>
@@ -84,25 +84,25 @@
             {{-- Checkout Card --}}
             <div class="col-lg-4 mt-4 mt-lg-0">
                 <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 20px;">
-                    <h5 class="fw-bold mb-4">Chi tiết hóa đơn</h5>
+                    <h5 class="fw-bold mb-4">{{ __('messages.order_detail') }}</h5>
                     <div class="d-flex justify-content-between mb-3">
-                        <span class="text-muted">Tạm tính:</span>
-                        <span class="fw-semibold">{{ number_format($total) }} đ</span>
+                        <span class="text-muted">{{ __('messages.subtotal') }}:</span>
+                        <span class="fw-semibold">{{ number_format($total) }} {{ __('messages.currency') }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
-                        <span class="text-muted">Phí vận chuyển:</span>
-                        <span class="text-success fw-semibold">Miễn phí</span>
+                        <span class="text-muted">{{ __('messages.shipping_fee') }}:</span>
+                        <span class="text-success fw-semibold">{{ __('messages.free_shipping') }}</span>
                     </div>
                     <hr class="my-4 opacity-50">
                     <div class="d-flex justify-content-between mb-4">
-                        <span class="fs-5 fw-bold text-body">Tổng cộng:</span>
-                        <span class="fs-4 fw-bold text-danger">{{ number_format($total) }} đ</span>
+                        <span class="fs-5 fw-bold text-body">{{ __('messages.total') }}:</span>
+                        <span class="fs-4 fw-bold text-danger">{{ number_format($total) }} {{ __('messages.currency') }}</span>
                     </div>
 <a href="{{ route('checkout.index') }}" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm fw-bold py-3 mb-3 text-decoration-none d-flex align-items-center justify-content-center">
-    TIẾN HÀNH ĐẶT HÀNG
+    {{ __('messages.proceed_checkout') }}
 </a>
                     <div class="bg-body-tertiary p-3 rounded-3 text-center">
-                        <small class="text-muted"><i class="bi bi-info-circle me-1"></i> Đơn hàng sẽ được giao trong 24h.</small>
+                        <small class="text-muted"><i class="bi bi-info-circle me-1"></i> {{ __('messages.order_will_deliver') }}</small>
                     </div>
                 </div>
             </div>
@@ -112,9 +112,9 @@
             <div class="mb-4">
                 <i class="bi bi-basket3 text-success opacity-25" style="font-size: 7rem;"></i>
             </div>
-            <h3 class="fw-bold text-body">Giỏ hàng đang trống!</h3>
-            <p class="text-muted mb-4 px-4">Hiện tại bạn chưa chọn sản phẩm nào cho vào giỏ hàng cả.</p>
-            <a href="{{ route('home') }}" class="btn btn-success btn-lg rounded-pill px-5 shadow fw-bold">CHỌN TRÁI CÂY NGAY</a>
+            <h3 class="fw-bold text-body">{{ __('messages.cart_empty') }}</h3>
+            <p class="text-muted mb-4 px-4">{{ __('messages.order_empty_message') }}</p>
+            <a href="{{ route('home') }}" class="btn btn-success btn-lg rounded-pill px-5 shadow fw-bold">{{ __('messages.shop_now') }}</a>
         </div>
     @endif
 </div>
@@ -122,6 +122,11 @@
 {{-- Script xử lý Ajax --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
+    const quantityMinimumMessage = @json(__('messages.quantity_minimum'));
+    const updateErrorMessage = @json(__('messages.update_error'));
+    const removeErrorMessage = @json(__('messages.remove_error'));
+    const removeItemConfirmMessage = @json(__('messages.delete_item_confirm'));
+
     $(document).ready(function() {
         
         // Nút cộng số lượng
@@ -147,7 +152,7 @@
             let id = ele.closest("tr").attr("data-id");
 
             if(quantity < 1) {
-                alert('Số lượng tối thiểu là 1 ní ơi!');
+                alert(quantityMinimumMessage);
                 ele.val(1);
                 return;
             }
@@ -168,7 +173,7 @@
                     window.location.reload();
                 },
                 error: function() {
-                    alert('Lỗi cập nhật rồi ní!');
+                    alert(updateErrorMessage);
                     window.location.reload();
                 }
             });
@@ -180,7 +185,7 @@
             let ele = $(this);
             let id = ele.closest("tr").attr("data-id");
 
-            if(confirm("Ní thực sự muốn bỏ sản phẩm này ra khỏi giỏ?")) {
+            if(confirm(removeItemConfirmMessage)) {
                 $.ajax({
                     url: '{{ route("cart.remove") }}',
                     method: "DELETE",
@@ -192,7 +197,7 @@
                         window.location.reload();
                     },
                     error: function() {
-                        alert('Xóa không được rồi ní!');
+                        alert(removeErrorMessage);
                     }
                 });
             }

@@ -3,10 +3,10 @@
 @section('content')
 <div class="container py-5">
     <h2 class="fw-bold mb-4 text-success text-uppercase">
-        <i class="bi bi-cart-check me-2"></i>Thanh toán đơn hàng
+        <i class="bi bi-cart-check me-2"></i>{{ __('messages.checkout_title') }}
     </h2>
 
-    <form action="{{ route('checkout.placeOrder') }}" method="POST">
+    <form action="{{ route('checkout.placeOrder') }}" method="POST" id="checkout-form">
         @csrf
         {{-- Thêm input hidden để gửi mã voucher khi submit form đặt hàng --}}
         <input type="hidden" name="voucher_code" id="applied_voucher_code">
@@ -15,28 +15,28 @@
             <!-- CỘT TRÁI: THÔNG TIN GIAO HÀNG -->
             <div class="col-md-7">
                 <div class="card shadow-sm border-0 p-4 rounded-4">
-                    <h5 class="fw-bold mb-4">Thông tin giao hàng</h5>
+                    <h5 class="fw-bold mb-4">{{ __('messages.shipping_info') }}</h5>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Họ và tên</label>
-                        <input type="text" name="customer_name" class="form-control" required placeholder="Nhập họ tên">
+                        <label class="form-label fw-bold">{{ __('messages.customer_name') }}</label>
+                        <input type="text" name="customer_name" class="form-control" required placeholder="{{ __('messages.customer_name_placeholder') }}">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Số điện thoại</label>
-                        <input type="text" name="phone" class="form-control" required placeholder="Nhập số điện thoại">
+                        <label class="form-label fw-bold">{{ __('messages.customer_phone') }}</label>
+                        <input type="text" name="phone" class="form-control" required placeholder="{{ __('messages.customer_phone_placeholder') }}">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Địa chỉ giao hàng</label>
-                        <textarea name="address" rows="3" class="form-control" required placeholder="Số nhà, tên đường, phường/xã..."></textarea>
+                        <label class="form-label fw-bold">{{ __('messages.shipping_address') }}</label>
+                        <textarea name="address" rows="3" class="form-control" required placeholder="{{ __('messages.shipping_address_placeholder') }}"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Ghi chú</label>
-                        <textarea name="note" rows="2" class="form-control" placeholder="Ghi chú thêm về đơn hàng"></textarea>
+                        <label class="form-label fw-bold">{{ __('messages.order_notes') }}</label>
+                        <textarea name="note" rows="2" class="form-control" placeholder="{{ __('messages.order_note_placeholder') }}"></textarea>
                     </div>
                     <div class="mb-0">
-                        <label class="form-label fw-bold">Phương thức thanh toán</label>
+                        <label class="form-label fw-bold">{{ __('messages.payment_method') }}</label>
                         <select name="payment_method" class="form-select">
-                            <option value="cod">Thanh toán khi nhận hàng (COD)</option>
-                            <option value="banking">Chuyển khoản ngân hàng</option>
+                            <option value="cod">{{ __('messages.cash_on_delivery') }}</option>
+                            <option value="banking">{{ __('messages.bank_transfer') }}</option>
                         </select>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
             <!-- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG & VOUCHER -->
             <div class="col-md-5 mt-4 mt-md-0">
                 <div class="card shadow-sm border-0 p-4 rounded-4">
-                    <h5 class="fw-bold mb-4">Đơn hàng của bạn</h5>
+                    <h5 class="fw-bold mb-4">{{ __('messages.checkout_order_title') }}</h5>
 
                     @php $total = 0; @endphp
                     @foreach(session('cart', []) as $id => $item)
@@ -55,41 +55,41 @@
                         @endphp
                         <div class="d-flex justify-content-between mb-3">
                             <span class="text-muted">{{ $item['name'] }} x {{ $item['quantity'] }}</span>
-                            <span class="fw-bold">{{ number_format($subtotal) }} đ</span>
+                            <span class="fw-bold">{{ number_format($subtotal) }} {{ __('messages.currency') }}</span>
                         </div>
                     @endforeach
 
                     <hr class="my-4 opacity-50">
 
                     <!-- PHẦN CHỌN VOUCHER -->
-                    <label class="form-label fw-bold small">Mã giảm giá</label>
+                    <label class="form-label fw-bold small">{{ __('messages.voucher_code') }}</label>
                     <div class="input-group mb-2">
-                        <input type="text" class="form-control border-end-0" placeholder="Nhập mã" id="voucher_code">
-                        <button class="btn btn-dark px-3 fw-bold" type="button" id="apply_voucher_btn">Áp dụng</button>
+                        <input type="text" class="form-control border-end-0" placeholder="{{ __('messages.voucher_code_placeholder') }}" id="voucher_code">
+                        <button class="btn btn-dark px-3 fw-bold" type="button" id="apply_voucher_btn">{{ __('messages.apply_voucher') }}</button>
                     </div>
                     <div class="text-end mb-4">
                         <a href="javascript:void(0)" class="text-success small text-decoration-none fw-bold" data-bs-toggle="modal" data-bs-target="#modalVoucher">
-                            <i class="bi bi-ticket-perforated me-1"></i> Chọn mã ưu đãi
+                            <i class="bi bi-ticket-perforated me-1"></i> {{ __('messages.choose_voucher') }}
                         </a>
                     </div>
 
                     <!-- TÍNH TOÁN TIỀN -->
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">Tạm tính:</span>
-                        <span class="fw-semibold" id="subtotal_val" data-value="{{ $total }}">{{ number_format($total) }} đ</span>
+                        <span class="text-muted">{{ __('messages.subtotal') }}:</span>
+                        <span class="fw-semibold" id="subtotal_val" data-value="{{ $total }}">{{ number_format($total) }} {{ __('messages.currency') }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2 text-success">
-                        <span>Giảm giá:</span>
-                        <span id="discount_display">-0 đ</span>
+                        <span>{{ __('messages.discount') }}:</span>
+                        <span id="discount_display">-0 {{ __('messages.currency') }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-4">
-                        <span class="fs-5 fw-bold">Tổng cộng:</span>
+                        <span class="fs-5 fw-bold">{{ __('messages.total') }}:</span>
                         {{-- Sửa class ở đây để khớp với CSS của bạn --}}
-                        <span class="fs-4 fw-bold text-danger" id="total_final_display">{{ number_format($total) }} đ</span>
+                        <span class="fs-4 fw-bold text-danger" id="total_final_display">{{ number_format($total) }} {{ __('messages.currency') }}</span>
                     </div>
 
                     <button type="submit" class="btn btn-success w-100 py-3 fw-bold rounded-pill shadow-sm">
-                        XÁC NHẬN ĐẶT HÀNG
+                        {{ __('messages.confirm_order') }}
                     </button>
                 </div>
             </div>
@@ -102,18 +102,18 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 rounded-4 shadow">
             <div class="modal-header bg-success text-white border-0 rounded-top-4">
-                <h6 class="modal-title fw-bold"><i class="bi bi-gift-fill me-2"></i>Mã Giảm Giá King Fruit</h6>
+                <h6 class="modal-title fw-bold"><i class="bi bi-gift-fill me-2"></i>{{ __('messages.voucher_modal_title') }}</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4 bg-body-tertiary">
                 @foreach($vouchers as $v)
                 <div class="bg-body-tertiary border-success-subtle border-2 border p-3 rounded-3 d-flex justify-content-between align-items-center mb-3 shadow-sm" style="border-style: dashed !important;">
                     <div>
-                        <div class="fw-bold text-success">Giảm {{ number_format($v->discount_value) }}đ</div>
-                        <div class="small fw-bold text-body">Mã: {{ $v->code }}</div>
-                        <div class="text-muted" style="font-size: 11px;">HSD: {{ $v->expiry_date }}</div>
+                        <div class="fw-bold text-success">{{ __('messages.discount') }} {{ number_format($v->discount_value) }}{{ $v->discount_type == 'percentage' ? '%' : __('messages.currency') }}</div>
+                        <div class="small fw-bold text-body">{{ __('messages.voucher_code') }}: {{ $v->code }}</div>
+                        <div class="text-muted" style="font-size: 11px;">{{ __('messages.voucher_expiry') }}: {{ $v->expiry_date }}</div>
                     </div>
-                    <button type="button" class="btn btn-success btn-sm px-3 fw-bold rounded-pill btn-use-voucher" data-code="{{ $v->code }}">Dùng</button>
+                    <button type="button" class="btn btn-success btn-sm px-3 fw-bold rounded-pill btn-use-voucher" data-code="{{ $v->code }}">{{ __('messages.use_voucher') }}</button>
                 </div>
                 @endforeach
             </div>
@@ -123,6 +123,9 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
+    const voucherRequiredMessage = @json(__('messages.please_enter_voucher'));
+    const currencySymbol = @json(__('messages.currency'));
+
     $(document).ready(function() {
         // Khi nhấn nút "Dùng" trong Modal
         $(document).on('click', '.btn-use-voucher', function() {
@@ -138,7 +141,7 @@
             let subtotal = parseInt($('#subtotal_val').attr('data-value'));
 
             if (voucherCode == "") {
-                alert("Vui lòng nhập mã giảm giá");
+                alert(voucherRequiredMessage);
                 return;
             }
 
@@ -165,8 +168,8 @@
                         let newTotal = subtotal - actualDiscount;
 
                         // Cập nhật giao diện
-                        $('#discount_display').text('-' + actualDiscount.toLocaleString() + ' đ');
-                        $('#total_final_display').text(newTotal.toLocaleString() + ' đ');
+                        $('#discount_display').text('-' + actualDiscount.toLocaleString() + ' ' + currencySymbol);
+                        $('#total_final_display').text(newTotal.toLocaleString() + ' ' + currencySymbol);
                         
                         // Lưu mã voucher vào hidden input để gửi cùng form đặt hàng
                         $('#applied_voucher_code').val(voucherCode);
@@ -175,13 +178,47 @@
                     } else {
                         alert(res.message);
                         // Reset giao diện nếu mã sai
-                        $('#discount_display').text('-0 đ');
-                        $('#total_final_display').text(subtotal.toLocaleString() + ' đ');
+                        $('#discount_display').text('-0 ' + currencySymbol);
+                        $('#total_final_display').text(subtotal.toLocaleString() + ' ' + currencySymbol);
                         $('#applied_voucher_code').val('');
                     }
                 },
                 error: function() {
                     alert('Lỗi kết nối hệ thống!');
+                }
+            });
+        });
+
+        // Xử lý submit form đặt hàng bằng AJAX
+        $('#checkout-form').submit(function(e) {
+            e.preventDefault();
+            
+            let form = $(this);
+            let submitBtn = form.find('button[type="submit"]');
+            
+            // Disable nút submit để tránh click nhiều lần
+            submitBtn.prop('disabled', true);
+
+            $.ajax({
+                url: form.attr('action'),
+                method: 'POST',
+                data: form.serialize(),
+                success: function(res) {
+                    if (res.success) {
+                        alert(res.message);
+                        window.location.href = res.redirect_url;
+                    } else {
+                        alert(res.message || 'Có lỗi xảy ra khi đặt hàng!');
+                        submitBtn.prop('disabled', false);
+                    }
+                },
+                error: function(xhr) {
+                    let errorMsg = 'Lỗi kết nối hệ thống!';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    alert(errorMsg);
+                    submitBtn.prop('disabled', false);
                 }
             });
         });

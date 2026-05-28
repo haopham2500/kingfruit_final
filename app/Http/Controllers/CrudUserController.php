@@ -237,7 +237,22 @@ class CrudUserController extends Controller
     public function profile()
     {
         $user = auth()->user();
+
         $orders = $user->orders()->orderBy('created_at', 'desc')->get();
+
+        if ($orders->isEmpty()) {
+            $orders = \App\Models\Order::query();
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'receiver_name')) {
+                $orders = $orders->where('receiver_name', $user->name);
+            }
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'phone_number')) {
+                $orders = $orders->orWhere('phone_number', $user->phone);
+            }
+
+            $orders = $orders->orderBy('created_at', 'desc')->get();
+        }
 
         return view('profile', compact('user', 'orders'));
     }

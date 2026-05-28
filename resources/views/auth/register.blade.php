@@ -48,7 +48,7 @@
 <div class="container py-5" style="max-width: 500px;">
     <div class="card shadow-lg border-0 rounded-4">
         <div class="card-body p-5">
-            <h2 class="text-center fw-bold text-success mb-4">ĐĂNG KÝ TÀI KHOẢN</h2>
+            <h2 class="text-center fw-bold text-success mb-4">{{ __('messages.register_title') }}</h2>
 
             <!-- Error Messages -->
             @if($errors->any())
@@ -67,18 +67,18 @@
             <form action="{{ route('register') }}" method="POST" id="registerForm">
                 @csrf
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Họ Tên</label>
-                    <input type="text" name="name" class="form-control @error('name') form-error @enderror" placeholder="Nhập họ tên" value="{{ old('name') }}" required>
+                    <label class="form-label fw-bold">{{ __('messages.full_name') }}</label>
+                    <input type="text" name="name" class="form-control @error('name') form-error @enderror" placeholder="{{ __('messages.full_name_placeholder') }}" value="{{ old('name') }}" required>
                     @error('name')
                     <span class="error-text">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Email</label>
-                    <input type="email" name="email" class="form-control @error('email') form-error @enderror" placeholder="example@gmail.com" pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="Vui lòng sử dụng địa chỉ Gmail chính thức (@gmail.com) để đăng ký" value="{{ old('email') }}" required>
+                    <label class="form-label fw-bold">{{ __('messages.email') }}</label>
+                    <input type="email" name="email" class="form-control @error('email') form-error @enderror" placeholder="example@gmail.com" pattern="[a-zA-Z0-9._%+-]+@gmail\.com" title="{{ __('messages.email_domain_hint') }}" value="{{ old('email') }}" required>
                     <small class="text-muted d-block mt-2">
-                        <i class="bi bi-info-circle"></i> Chỉ chấp nhận email @gmail.com
+                        <i class="bi bi-info-circle"></i> {{ __('messages.email_domain_hint') }}
                     </small>
                     @error('email')
                     <span class="error-text">{{ $message }}</span>
@@ -86,18 +86,18 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Số điện thoại</label>
-                    <input type="text" name="phone" class="form-control @error('phone') form-error @enderror" placeholder="Nhập số điện thoại" value="{{ old('phone') }}" required>
+                    <label class="form-label fw-bold">{{ __('messages.phone_number') }}</label>
+                    <input type="text" name="phone" class="form-control @error('phone') form-error @enderror" placeholder="{{ __('messages.phone_placeholder') }}" value="{{ old('phone') }}" required>
                     @error('phone')
                     <span class="error-text">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Mật khẩu</label>
-                    <input type="password" name="password" class="form-control @error('password') form-error @enderror" placeholder="Ít nhất 6 ký tự" required>
+                    <label class="form-label fw-bold">{{ __('messages.password') }}</label>
+                    <input type="password" name="password" class="form-control @error('password') form-error @enderror" placeholder="{{ __('messages.password_hint') }}" required>
                     <small class="text-muted d-block mt-2">
-                        <i class="bi bi-lock"></i> Mật khẩu phải có ít nhất 6 ký tự
+                        <i class="bi bi-lock"></i> {{ __('messages.password_hint') }}
                     </small>
                     @error('password')
                     <span class="error-text">{{ $message }}</span>
@@ -105,12 +105,12 @@
                 </div>
 
                 <button type="submit" class="btn btn-success w-100 fw-bold py-2" style="border-radius: 50px; font-size: 16px;">
-                    <i class="bi bi-check-circle me-2"></i>TẠO TÀI KHOẢN
+                    <i class="bi bi-check-circle me-2"></i>{{ __('messages.register_now') }}
                 </button>
             </form>
 
             <div class="text-center mt-4">
-                <p class="small text-muted">Bạn đã có tài khoản? <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none">Đăng nhập ngay tại đây</a></p>
+                <p class="small text-muted">{{ __('messages.already_have_account') }} <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none">{{ __('messages.login_here') }}</a></p>
             </div>
         </div>
     </div>
