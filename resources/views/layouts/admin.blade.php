@@ -222,6 +222,13 @@
     <script>
         // Tự động ẩn thông báo sau 5 giây (5000ms)
         document.addEventListener('DOMContentLoaded', function() {
+            // === RESTRICT PHONE NUMBER INPUTS TO DIGITS ONLY ===
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.name === 'phone') {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }
+            });
+
             setTimeout(function() {
                 let alerts = document.querySelectorAll('.alert');
                 alerts.forEach(function(alert) {

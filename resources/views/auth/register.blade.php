@@ -87,7 +87,7 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{ __('messages.phone_number') }}</label>
-                    <input type="text" name="phone" class="form-control @error('phone') form-error @enderror" placeholder="{{ __('messages.phone_placeholder') }}" value="{{ old('phone') }}" required>
+                    <input type="text" name="phone" class="form-control @error('phone') form-error @enderror" placeholder="{{ __('messages.phone_placeholder') }}" value="{{ old('phone') }}" required inputmode="numeric" pattern="[0-9]*">
                     @error('phone')
                     <span class="error-text">{{ $message }}</span>
                     @enderror

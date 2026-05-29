@@ -485,6 +485,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            // === RESTRICT PHONE NUMBER INPUTS TO DIGITS ONLY ===
+            document.addEventListener('input', function(e) {
+                if (e.target && e.target.name === 'phone') {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }
+            });
+
             // === PROMOTION POPUP MODAL ===
             const promotionModal = document.getElementById('promotionModal');
             const closeBtn = document.getElementById('closePromotionModal');
