@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('receiver_name')->nullable();
-            $table->string('phone_number', 10)->nullable();
+            $table->string('phone_number', 50)->nullable();
             $table->text('address')->nullable();
             $table->decimal('total_amount', 20, 2);
             $table->string('status', 50)->default('pending')->nullable();
