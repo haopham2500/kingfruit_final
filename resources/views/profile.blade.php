@@ -46,13 +46,23 @@
                             @foreach($orders as $order)
                                 @php
                                     $statusKey = 'order_' . str_replace('-', '_', $order->status);
+
+                                    $statusColors = [
+                                        'pending'     => 'bg-warning text-dark',
+                                        'processing'  => 'bg-info text-white',
+                                        'completed'   => 'bg-success text-white',
+                                        'cancelled'   => 'bg-danger text-white',
+                                        'refunded'    => 'bg-primary text-white',
+                                        'wait_refund' => 'bg-dark text-white',
+                                    ];
+                                    $badgeClass = $statusColors[$order->status] ?? 'bg-secondary text-white';
                                 @endphp
                                 <tr>
                                     <td>#{{ $order->id }}</td>
                                     <td>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '-' }}</td>
                                     <td>{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ __($statusKey) }}</span>
+                                        <span class="badge {{ $badgeClass }}">{{ __('messages.' . $statusKey) }}</span>
                                     </td>
                                 </tr>
                             @endforeach
