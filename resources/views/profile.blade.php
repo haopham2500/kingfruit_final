@@ -19,6 +19,9 @@
         <a href="{{ route('orders.track') }}" class="btn btn-outline-primary flex-fill py-3 fs-5">
             <i class="bi bi-truck me-2"></i> {{ __('messages.track_orders') }}
         </a>
+        <button type="button" class="btn btn-outline-warning flex-fill py-3 fs-5" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+            <i class="bi bi-key me-2"></i> {{ __('messages.change_password') }}
+        </button>
     </div>
 
     <div id="order-history" class="card shadow-sm border-0">
@@ -60,4 +63,92 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Đổi Mật Khẩu -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow">
+            <div class="modal-header bg-warning text-dark border-0 rounded-top-4">
+                <h5 class="modal-title fw-bold" id="changePasswordModalLabel">
+                    <i class="bi bi-key-fill me-2"></i>{{ __('messages.change_password') }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="change-password-form" action="{{ route('profile.changePassword') }}" method="POST">
+                @csrf
+                <div class="modal-body p-4">
+                    <div id="change-password-alert" class="alert d-none"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ __('messages.current_password') }}</label>
+                        <input type="password" name="current_password" class="form-control" required placeholder="********">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ __('messages.new_password') }}</label>
+                        <input type="password" name="new_password" class="form-control" required placeholder="********">
+                        <div class="form-text small text-muted">{{ __('messages.password_hint') }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">{{ __('messages.confirm_password') }}</label>
+                        <input type="password" name="confirm_password" class="form-control" required placeholder="********">
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
+                    <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold">{{ __('messages.save_changes') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#change-password-form').submit(function(e) {
+        e.preventDefault();
+        
+        const form = $(this);
+        const submitBtn = form.find('button[type="submit"]');
+        const alertBox = $('#change-password-alert');
+        
+        alertBox.addClass('d-none').removeClass('alert-success alert-danger');
+        submitBtn.prop('disabled', true);
+
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: form.serialize(),
+            success: function(res) {
+                if (res.success) {
+                    alertBox.addClass('alert-success').removeClass('d-none').text(res.message);
+                    form[0].reset();
+                    
+                    // Đóng modal sau 1.5s
+                    setTimeout(function() {
+                        $('#changePasswordModal').modal('hide');
+                        alertBox.addClass('d-none');
+                        location.reload();
+                    }, 1500);
+                } else {
+                    alertBox.addClass('alert-danger').removeClass('d-none').text(res.message || 'Lỗi đổi mật khẩu!');
+                    submitBtn.prop('disabled', false);
+                }
+            },
+            error: function(xhr) {
+                let errorMsg = 'Lỗi kết nối hệ thống!';
+                if (xhr.status === 422) {
+                    // Lấy lỗi validation của Laravel
+                    const errors = xhr.responseJSON.errors;
+                    errorMsg = Object.values(errors).flat().join('<br>');
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+                alertBox.addClass('alert-danger').removeClass('d-none').html(errorMsg);
+                submitBtn.prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
 @endsection

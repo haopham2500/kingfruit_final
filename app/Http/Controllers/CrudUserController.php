@@ -256,4 +256,51 @@ class CrudUserController extends Controller
 
         return view('profile', compact('user', 'orders'));
     }
+
+    /**
+     * Xử lý đổi mật khẩu của người dùng.
+     */
+    public function changePassword(Request $request)
+    {
+        $user = auth()->user();
+
+        // 1. Validate dữ liệu đầu vào
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|different:current_password',
+            'confirm_password' => 'required|string|same:new_password',
+        ], [
+            'current_password.required' => 'Vui lòng nhập mật khẩu hiện tại.',
+            'new_password.required' => 'Vui lòng nhập mật khẩu mới.',
+            'new_password.min' => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+            'new_password.different' => 'Mật khẩu mới không được trùng với mật khẩu hiện tại.',
+            'confirm_password.required' => 'Vui lòng xác nhận mật khẩu mới.',
+            'confirm_password.same' => 'Xác nhận mật khẩu mới không khớp.',
+        ]);
+
+        // 2. Kiểm tra mật khẩu hiện tại có đúng không
+        if (!Hash::check($request->current_password, $user->password)) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mật khẩu hiện tại không chính xác.'
+                ]);
+            }
+            return back()->with('error', 'Mật khẩu hiện tại không chính xác.');
+        }
+
+        // 3. Cập nhật mật khẩu mới
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Đổi mật khẩu thành công!'
+            ]);
+        }
+
+        return back()->with('success', 'Đổi mật khẩu thành công!');
+    }
 }

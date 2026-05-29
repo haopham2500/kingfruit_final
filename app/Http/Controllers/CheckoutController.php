@@ -15,7 +15,10 @@ class CheckoutController extends Controller
      */
     public function index()
     {
-        $vouchers = Voucher::where('expiry_date', '>=', now())
+        $collectedCodes = session()->get('collected_vouchers', []);
+
+        $vouchers = Voucher::whereIn('code', $collectedCodes)
+                           ->where('expiry_date', '>=', now())
                            ->where('quantity', '>', 0)
                            ->get();
 
