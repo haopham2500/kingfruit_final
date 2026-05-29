@@ -11,36 +11,54 @@
             
             <div class="mb-3">
                 <label class="form-label fw-bold">{{ __('messages.voucher_code') }}</label>
-                <input type="text" name="code" class="form-control" value="{{ $voucher->code }}" required>
+                <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" value="{{ old('code', $voucher->code) }}" required>
+                @error('code')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="row mb-3">
                 <div class="col-6">
                     <label class="form-label fw-bold">{{ __('messages.voucher_type') }}</label>
-                    <select name="type" class="form-select">
-                        <option value="fixed" {{ $voucher->type == 'fixed' ? 'selected' : '' }}>{{ __('messages.voucher_cash') }}</option>
-                        <option value="percent" {{ $voucher->type == 'percent' ? 'selected' : '' }}>{{ __('messages.voucher_percent') }}</option>
+                    <select name="type" class="form-select @error('type') is-invalid @enderror">
+                        <option value="fixed" {{ old('type', $voucher->type) == 'fixed' ? 'selected' : '' }}>{{ __('messages.voucher_cash') }}</option>
+                        <option value="percent" {{ old('type', $voucher->type) == 'percent' ? 'selected' : '' }}>{{ __('messages.voucher_percent') }}</option>
                     </select>
+                    @error('type')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col-6">
                     <label class="form-label fw-bold">{{ __('messages.voucher_value') }}</label>
-                    <input type="number" name="discount_value" class="form-control" value="{{ $voucher->discount_value }}" required>
+                    <input type="number" name="discount_value" class="form-control @error('discount_value') is-invalid @enderror" value="{{ old('discount_value', $voucher->discount_value) }}" required>
+                    @error('discount_value')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-bold">{{ __('messages.voucher_min_order') }}</label>
-                <input type="number" name="min_order_value" class="form-control" value="{{ $voucher->min_order_value }}">
+                <input type="number" name="min_order_value" class="form-control @error('min_order_value') is-invalid @enderror" value="{{ old('min_order_value', $voucher->min_order_value) }}">
+                @error('min_order_value')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="row mb-4">
                 <div class="col-6">
                     <label class="form-label fw-bold">Số lượng</label>
-                    <input type="number" name="quantity" class="form-control" value="{{ $voucher->quantity }}">
+                    <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', $voucher->quantity) }}">
+                    @error('quantity')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="col-6">
                     <label class="form-label fw-bold">{{ __('messages.voucher_expiry') }}</label>
-                    <input type="date" name="expiry_date" class="form-control" value="{{ $voucher->expiry_date }}">
+                    <input type="date" name="expiry_date" class="form-control @error('expiry_date') is-invalid @enderror" value="{{ old('expiry_date', $voucher->expiry_date) }}">
+                    @error('expiry_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 

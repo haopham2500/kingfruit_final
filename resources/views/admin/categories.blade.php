@@ -48,7 +48,10 @@
                                     </div>
                                     <div class="modal-body">
                                         <label class="form-label">{{ __('messages.category_name') }}</label>
-                                        <input type="text" name="name" class="form-control" value="{{ $cat->name }}" required>
+                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $cat->name) }}" required>
+                                        @error('name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
@@ -76,7 +79,10 @@
                 </div>
                 <div class="modal-body">
                     <label class="form-label">{{ __('messages.category_name') }}</label>
-                    <input type="text" name="name" class="form-control" placeholder="{{ __('messages.category_placeholder') }}" required>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="{{ __('messages.category_placeholder') }}" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
