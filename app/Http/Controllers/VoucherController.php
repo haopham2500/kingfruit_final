@@ -26,7 +26,9 @@ class VoucherController extends Controller
             'code' => 'required|max:50|unique:vouchers,code',
             'discount_value' => 'required|numeric',
             'expiry_date' => 'required|date|after_or_equal:today',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'type' => 'required|in:fixed,percent',
+            'min_order_value' => 'required|numeric|min:0'
         ], [
             'code.required' => 'Vui lòng nhập mã khuyến mãi.',
             'code.max' => 'Mã khuyến mãi không được dài quá 50 ký tự.',
@@ -39,6 +41,11 @@ class VoucherController extends Controller
             'quantity.required' => 'Vui lòng nhập số lượng.',
             'quantity.integer' => 'Số lượng phải là số nguyên.',
             'quantity.min' => 'Số lượng ít nhất là 1.',
+            'type.required' => 'Vui lòng chọn loại giảm.',
+            'type.in' => 'Loại giảm không hợp lệ.',
+            'min_order_value.required' => 'Vui lòng nhập giá trị đơn tối thiểu.',
+            'min_order_value.numeric' => 'Giá trị đơn tối thiểu phải là số.',
+            'min_order_value.min' => 'Giá trị tối thiểu không được nhỏ hơn 0.',
         ]);
 
         Voucher::create($request->all());

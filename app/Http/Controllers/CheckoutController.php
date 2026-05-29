@@ -95,21 +95,41 @@ class CheckoutController extends Controller
             return redirect()->back()->with('error', 'Giỏ hàng đang trống!');
         }
 
-        // 2. Tính tổng tiền hàng (Tạm tính)
+        // 2. Tính tổng tiền hàng (Lấy giá từ DB để bảo mật)
         $subtotal = 0;
-        foreach ($cart as $item) {
-            $subtotal += $item['price'] * $item['quantity'];
+        $actualCart = [];
+        foreach ($cart as $id => $item) {
+            $product = \App\Models\Product::find($id);
+            if ($product) {
+                $actualPrice = $product->price;
+                $quantity = max(1, (int)$item['quantity']);
+                $subtotal += $actualPrice * $quantity;
+                $actualCart[$id] = [
+                    'price' => $actualPrice,
+                    'quantity' => $quantity
+                ];
+            }
         }
 
-        // 3. Xử lý giảm giá (Logic sửa lỗi tiền âm)
+        if (empty($actualCart)) {
+            return redirect()->back()->with('error', 'Sản phẩm trong giỏ không hợp lệ!');
+        }
+
+        // 3. Xử lý giảm giá (Logic sửa lỗi tiền âm & sửa lỗi type)
         $discountAmount = 0;
+        $appliedVoucher = null;
         if ($request->has('voucher_code') && !empty($request->voucher_code)) {
-            $voucher = Voucher::where('code', $request->voucher_code)
-                              ->where('expiry_date', '>=', now())
-                              ->first();
+            $voucher = Voucher::where('code', $request->voucher_code)->first();
             
-            if ($voucher) {
-                $discountAmount = $voucher->discount_value;
+            // Dùng hàm isValid() có sẵn trong Model Voucher
+            if ($voucher && $voucher->isValid($subtotal)) {
+                $appliedVoucher = $voucher;
+
+                if ($voucher->type == 'percent') {
+                    $discountAmount = ($subtotal * $voucher->discount_value) / 100;
+                } else {
+                    $discountAmount = $voucher->discount_value;
+                }
                 
                 // Nếu tiền giảm lớn hơn tổng đơn hàng, chỉ giảm tối đa bằng tổng đơn
                 if ($discountAmount > $subtotal) {
@@ -127,7 +147,7 @@ class CheckoutController extends Controller
             'receiver_name'  => $request->customer_name,
             'phone_number'   => $request->phone,
             'address'        => $request->address,
-            'total_amount'   => $finalTotal, // Lưu số tiền đã xử lý (không bị âm)
+            'total_amount'   => $finalTotal,
             'status'         => 'pending',
         ];
 
@@ -142,13 +162,18 @@ class CheckoutController extends Controller
         $order = Order::create($orderData);
 
         // 6. Lưu chi tiết từng sản phẩm vào bảng order_items
-        foreach ($cart as $id => $item) {
+        foreach ($actualCart as $id => $item) {
             OrderItem::create([
                 'order_id'   => $order->id,
                 'product_id' => $id,
                 'quantity'   => $item['quantity'],
                 'price'      => $item['price'],
             ]);
+        }
+
+        // Trừ số lượng Voucher
+        if ($appliedVoucher) {
+            $appliedVoucher->decrement('quantity', 1);
         }
 
         // 7. Xóa giỏ hàng sau khi đặt thành công

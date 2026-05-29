@@ -24,7 +24,7 @@ class CartController extends Controller
     // 2. Thêm sản phẩm vào giỏ
     public function addToCart(Request $request, $id)
     {
-        $quantity = $request->input('quantity', 1);
+        $quantity = max(1, (int)$request->input('quantity', 1));
         $result = $this->cartService->addToCart($id, $quantity);
 
         if (!$result) {
@@ -38,9 +38,14 @@ class CartController extends Controller
     public function updateCart(Request $request)
     {
         if($request->id && $request->quantity){
+            $quantity = (int)$request->quantity;
+            if ($quantity <= 0) {
+                return response()->json(['status' => 'error', 'message' => 'Số lượng không hợp lệ!'], 400);
+            }
+
             $cart = session()->get('cart');
             if(isset($cart[$request->id])) {
-                $cart[$request->id]["quantity"] = $request->quantity;
+                $cart[$request->id]["quantity"] = $quantity;
                 session()->put('cart', $cart);
                 return response()->json(['status' => 'success', 'message' => 'Đã cập nhật số lượng!']);
             }
