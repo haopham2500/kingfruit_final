@@ -175,7 +175,10 @@ class ProductController extends Controller
             $request->image->move(public_path('images'), $fileName);
             $data['image'] = $fileName;
 
-            // Lưu ý: Ní có thể code thêm đoạn xóa ảnh cũ ở đây để nhẹ máy chủ
+            // Xóa ảnh cũ để nhẹ máy chủ
+            if ($product->image && file_exists(public_path('images/' . $product->image))) {
+                unlink(public_path('images/' . $product->image));
+            }
         }
 
         $product->update($data);
