@@ -107,13 +107,20 @@
             </div>
             <div class="modal-body p-4 bg-body-tertiary">
                 @foreach($vouchers as $v)
+                @php
+                    $isUsed = in_array($v->code, session()->get('used_vouchers', []));
+                @endphp
                 <div class="bg-body-tertiary border-success-subtle border-2 border p-3 rounded-3 d-flex justify-content-between align-items-center mb-3 shadow-sm" style="border-style: dashed !important;">
                     <div>
                         <div class="fw-bold text-success">{{ __('messages.discount') }} {{ number_format($v->discount_value) }}{{ $v->discount_type == 'percentage' ? '%' : __('messages.currency') }}</div>
                         <div class="small fw-bold text-body">{{ __('messages.voucher_code') }}: {{ $v->code }}</div>
                         <div class="text-muted" style="font-size: 11px;">{{ __('messages.voucher_expiry') }}: {{ $v->expiry_date }}</div>
                     </div>
-                    <button type="button" class="btn btn-success btn-sm px-3 fw-bold rounded-pill btn-use-voucher" data-code="{{ $v->code }}">{{ __('messages.use_voucher') }}</button>
+                    @if($isUsed)
+                        <button type="button" class="btn btn-secondary btn-sm px-3 fw-bold rounded-pill disabled" disabled>{{ __('messages.voucher_used_up') }}</button>
+                    @else
+                        <button type="button" class="btn btn-success btn-sm px-3 fw-bold rounded-pill btn-use-voucher" data-code="{{ $v->code }}">{{ __('messages.use_voucher') }}</button>
+                    @endif
                 </div>
                 @endforeach
             </div>

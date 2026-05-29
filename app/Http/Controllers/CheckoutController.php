@@ -171,9 +171,15 @@ class CheckoutController extends Controller
             ]);
         }
 
-        // Trừ số lượng Voucher
+        // Trừ số lượng Voucher và lưu vào session đã dùng
         if ($appliedVoucher) {
             $appliedVoucher->decrement('quantity', 1);
+
+            $usedVouchers = session()->get('used_vouchers', []);
+            if (!in_array($appliedVoucher->code, $usedVouchers)) {
+                $usedVouchers[] = $appliedVoucher->code;
+                session()->put('used_vouchers', $usedVouchers);
+            }
         }
 
         // 7. Xóa giỏ hàng sau khi đặt thành công
@@ -217,5 +223,52 @@ class CheckoutController extends Controller
         }
 
         return $orders;
+    }
+
+    /**
+     * Yêu cầu trả hàng hoàn tiền.
+     */
+    public function requestRefund(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->user_id && auth()->id() !== $order->user_id) {
+            abort(403, 'Bạn không có quyền yêu cầu hoàn tiền cho đơn hàng này.');
+        }
+
+        if ($order->status !== 'completed') {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Đơn hàng chưa hoàn thành, không thể hoàn tiền.'
+                ]);
+            }
+            return back()->with('error', 'Đơn hàng chưa hoàn thành, không thể hoàn tiền.');
+        }
+
+        // Kiểm tra trong vòng 2 tuần (14 ngày)
+        if (!$order->created_at || $order->created_at->lt(now()->subDays(14))) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Đã quá hạn 2 tuần để yêu cầu hoàn tiền.'
+                ]);
+            }
+            return back()->with('error', 'Đã quá hạn 2 tuần để yêu cầu hoàn tiền.');
+        }
+
+        $order->update([
+            'status' => 'wait_refund'
+        ]);
+
+        if ($request->ajax()) {
+            session()->flash('success', 'Yêu cầu trả hàng hoàn tiền thành công.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Yêu cầu trả hàng hoàn tiền thành công!'
+            ]);
+        }
+
+        return back()->with('success', 'Yêu cầu trả hàng hoàn tiền thành công.');
     }
 }

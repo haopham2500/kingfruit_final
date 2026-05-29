@@ -408,17 +408,9 @@
                                         <i class="bi bi-gift-fill me-2" style="color: #ff3838;"></i>{{ __('messages.promotion_popup_preview') }}
                                     </a>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <div class="px-3 py-2 border-bottom">
-                                        <div class="fw-semibold text-dark">{{ Auth::user()->name }}</div>
-                                        <div class="small text-muted"><i class="bi bi-telephone me-1"></i>{{ Auth::user()->phone ?? __('messages.phone_not_updated') }}</div>
-                                        <div class="small text-muted"><i class="bi bi-envelope me-1"></i>{{ Auth::user()->email }}</div>
-                                    </div>
-                                </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('profile') }}">
-                                        <i class="bi bi-person me-2"></i> {{ __('messages.profile') }}
+                                        <i class="bi bi-person me-2"></i> {{ __('messages.profile_title') }}
                                     </a>
                                 </li>
                                 <li>

@@ -25,7 +25,17 @@
             @foreach($orders as $order)
                 @php
                     $statusKey = 'order_' . str_replace('-', '_', $order->status);
-                    $statusLabel = __($statusKey);
+                    $statusLabel = __('messages.' . $statusKey);
+
+                    $statusColors = [
+                        'pending'     => 'bg-warning text-dark',
+                        'processing'  => 'bg-info text-white',
+                        'completed'   => 'bg-success text-white',
+                        'cancelled'   => 'bg-danger text-white',
+                        'refunded'    => 'bg-primary text-white',
+                        'wait_refund' => 'bg-dark text-white',
+                    ];
+                    $badgeClass = $statusColors[$order->status] ?? 'bg-secondary text-white';
                 @endphp
                 <div class="col-12">
                     <div class="card shadow-sm border-0">
@@ -34,8 +44,7 @@
                                 <div>
                                     <div class="d-flex align-items-center gap-2 mb-2">
                                         <span class="badge bg-primary">#{{ $order->id }}</span>
-                                        <span class="badge bg-secondary">{{ $statusLabel }}</span>
-                                        <small class="text-muted">{{ $order->status }}</small>
+                                        <span class="badge {{ $badgeClass }}">{{ $statusLabel }}</span>
                                     </div>
                                     <p class="mb-1"><strong>{{ __('messages.order_date') }}:</strong> {{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '-' }}</p>
                                     <p class="mb-1"><strong>{{ __('messages.order_total') }}:</strong> {{ number_format($order->total_amount, 0, ',', '.') }}đ</p>
@@ -60,6 +69,17 @@
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-danger btn-sm">{{ __('messages.cancel_order') }}</button>
+                                        </form>
+                                    </div>
+                                @endif
+
+                                @if($order->status === 'completed' && $order->created_at && $order->created_at->gt(now()->subDays(14)))
+                                    <div class="text-end">
+                                        <form action="{{ route('orders.refund', $order->id) }}" method="POST" class="d-inline refund-order-form">
+                                            @csrf
+                                            <button type="submit" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-arrow-counterclockwise me-1"></i> Trả hàng & Hoàn tiền
+                                            </button>
                                         </form>
                                     </div>
                                 @endif
@@ -103,6 +123,46 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.location.reload();
                 } else {
                     alert(res.message || 'Có lỗi xảy ra khi hủy đơn hàng!');
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Lỗi kết nối hệ thống!');
+                submitBtn.disabled = false;
+            });
+        });
+    });
+
+    const refundForms = document.querySelectorAll('.refund-order-form');
+    refundForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!confirm('Bạn có chắc chắn muốn yêu cầu trả hàng hoàn tiền cho đơn hàng này không?')) {
+                return;
+            }
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || formData.get('_token')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(res => {
+                if (res.success) {
+                    alert(res.message);
+                    window.location.reload();
+                } else {
+                    alert(res.message || 'Có lỗi xảy ra khi yêu cầu hoàn tiền!');
                     submitBtn.disabled = false;
                 }
             })
