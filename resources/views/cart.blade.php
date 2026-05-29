@@ -42,7 +42,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="py-4 text-muted fw-semibold">
+                                        <td class="py-4 text-muted fw-semibold item-price" data-price="{{ $details['price'] }}">
                                             {{ number_format($details['price']) }} {{ __('messages.currency') }}
                                         </td>
                                         <td class="py-4 text-center">
@@ -54,7 +54,7 @@
                                                 <button class="btn btn-white border-0 px-2 btn-plus" type="button"><i class="bi bi-plus"></i></button>
                                             </div>
                                         </td>
-                                        <td class="py-4 text-end pe-4 fw-bold text-danger fs-5">
+                                        <td class="py-4 text-end pe-4 fw-bold text-danger fs-5 item-total">
                                             {{ number_format($details['price'] * $details['quantity']) }} {{ __('messages.currency') }}
                                         </td>
                                         <td class="py-4 text-center pe-3">
@@ -87,7 +87,7 @@
                     <h5 class="fw-bold mb-4">{{ __('messages.order_detail') }}</h5>
                     <div class="d-flex justify-content-between mb-3">
                         <span class="text-muted">{{ __('messages.subtotal') }}:</span>
-                        <span class="fw-semibold">{{ number_format($total) }} {{ __('messages.currency') }}</span>
+                        <span class="fw-semibold subtotal-display">{{ number_format($total) }} {{ __('messages.currency') }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-3">
                         <span class="text-muted">{{ __('messages.shipping_fee') }}:</span>
@@ -96,7 +96,7 @@
                     <hr class="my-4 opacity-50">
                     <div class="d-flex justify-content-between mb-4">
                         <span class="fs-5 fw-bold text-body">{{ __('messages.total') }}:</span>
-                        <span class="fs-4 fw-bold text-danger">{{ number_format($total) }} {{ __('messages.currency') }}</span>
+                        <span class="fs-4 fw-bold text-danger total-display">{{ number_format($total) }} {{ __('messages.currency') }}</span>
                     </div>
 <a href="{{ route('checkout.index') }}" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm fw-bold py-3 mb-3 text-decoration-none d-flex align-items-center justify-content-center">
     {{ __('messages.proceed_checkout') }}
@@ -126,8 +126,53 @@
     const updateErrorMessage = @json(__('messages.update_error'));
     const removeErrorMessage = @json(__('messages.remove_error'));
     const removeItemConfirmMessage = @json(__('messages.delete_item_confirm'));
+    const currencySymbol = @json(__('messages.currency'));
 
     $(document).ready(function() {
+        let debounceTimer;
+
+        // Hàm tính toán và cập nhật giá trị hiển thị trên UI tức thời
+        function updateTotals() {
+            let total = 0;
+            $(".cart-item-row").each(function() {
+                let row = $(this);
+                let price = parseInt(row.find('.item-price').attr('data-price'));
+                let quantity = parseInt(row.find('.update-cart').val()) || 0;
+                let itemTotal = price * quantity;
+                
+                row.find('.item-total').text(itemTotal.toLocaleString() + ' ' + currencySymbol);
+                total += itemTotal;
+            });
+            
+            $('.subtotal-display').text(total.toLocaleString() + ' ' + currencySymbol);
+            $('.total-display').text(total.toLocaleString() + ' ' + currencySymbol);
+        }
+
+        // Hàm gửi AJAX cập nhật giỏ hàng lên server (Debounced)
+        function sendCartUpdate(id, quantity, row) {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(function() {
+                $.ajax({
+                    url: '{{ route("cart.update") }}',
+                    method: "PATCH",
+                    data: {
+                        _token: '{{ csrf_token() }}', 
+                        id: id, 
+                        quantity: quantity
+                    },
+                    beforeSend: function() {
+                        row.css('opacity', '0.7');
+                    },
+                    success: function (response) {
+                        row.css('opacity', '1');
+                    },
+                    error: function() {
+                        row.css('opacity', '1');
+                        alert(updateErrorMessage);
+                    }
+                });
+            }, 500); // Đợi 500ms sau lần gõ cuối mới gửi request
+        }
         
         // Nút cộng số lượng
         $(".btn-plus").click(function() {
@@ -145,38 +190,38 @@
             }
         });
 
-        // Cập nhật giỏ hàng khi input thay đổi (bao gồm cả khi nhấn cộng/trừ)
-        $(".update-cart").on('change', function () {
+        // Bắt sự kiện gõ phím (input) và thay đổi giá trị (change)
+        $(document).on('input change', '.update-cart', function () {
             let ele = $(this);
-            let quantity = ele.val();
+            let quantity = parseInt(ele.val()) || 0;
             let id = ele.closest("tr").attr("data-id");
+            let row = ele.closest("tr");
 
             if(quantity < 1) {
-                alert(quantityMinimumMessage);
-                ele.val(1);
+                // Cho phép người dùng tạm xóa để gõ số mới, không chặn ngay lúc đang gõ
                 return;
             }
 
-            $.ajax({
-                url: '{{ route("cart.update") }}',
-                method: "PATCH",
-                data: {
-                    _token: '{{ csrf_token() }}', 
-                    id: id, 
-                    quantity: quantity
-                },
-                beforeSend: function() {
-                    ele.closest('tr').css('opacity', '0.5');
-                },
-                success: function (response) {
-                    // Load lại để cập nhật tổng tiền và UI cho chuẩn
-                    window.location.reload();
-                },
-                error: function() {
-                    alert(updateErrorMessage);
-                    window.location.reload();
-                }
-            });
+            // Cập nhật giá trị hiển thị trên UI ngay lập tức
+            updateTotals();
+
+            // Gửi cập nhật ngầm lên server
+            sendCartUpdate(id, quantity, row);
+        });
+
+        // Xử lý khi người dùng rời ô nhập liệu (blur) mà bỏ trống hoặc nhập số không hợp lệ
+        $(document).on('blur', '.update-cart', function() {
+            let ele = $(this);
+            let quantity = parseInt(ele.val()) || 0;
+            let id = ele.closest("tr").attr("data-id");
+            let row = ele.closest("tr");
+
+            if (quantity < 1) {
+                alert(quantityMinimumMessage);
+                ele.val(1);
+                updateTotals();
+                sendCartUpdate(id, 1, row);
+            }
         });
 
         // Xóa sản phẩm khỏi giỏ
@@ -202,9 +247,6 @@
                 });
             }
         });
-        
-
-        
     });
 </script>
 @endsection

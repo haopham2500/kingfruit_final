@@ -13,9 +13,6 @@
     </div>
 
     <div class="d-flex gap-3 mb-4">
-        <a href="#order-history" class="btn btn-outline-success flex-fill py-3 fs-5">
-            <i class="bi bi-clock-history me-2"></i> {{ __('messages.purchase_history') }}
-        </a>
         <a href="{{ route('orders.track') }}" class="btn btn-outline-primary flex-fill py-3 fs-5">
             <i class="bi bi-truck me-2"></i> {{ __('messages.track_orders') }}
         </a>

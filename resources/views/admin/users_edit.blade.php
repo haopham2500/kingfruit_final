@@ -19,7 +19,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.phone_number') }}</label>
-                    <input type="text" name="phone" class="form-control" value="{{ $user->phone }}">
+                    <input type="text" name="phone" class="form-control" value="{{ $user->phone }}" inputmode="numeric" pattern="[0-9]*">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.role') }}</label>
