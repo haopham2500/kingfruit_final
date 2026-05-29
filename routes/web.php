@@ -115,4 +115,5 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 // Route cho trang Profile
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [CrudUserController::class, 'profile'])->name('profile');
+    Route::post('/profile/change-password', [CrudUserController::class, 'changePassword'])->name('profile.changePassword');
 });
