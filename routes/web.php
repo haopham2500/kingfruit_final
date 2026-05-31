@@ -81,6 +81,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/product/edit/{id}', [ProductController::class, 'edit'])->name('product.edit');
     Route::post('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
     Route::get('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
+    Route::post('/product/delete-multiple', [ProductController::class, 'destroyMultiple'])->name('product.deleteMultiple');
 
     // 6.2. Quản lý danh mục
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
