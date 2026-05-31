@@ -146,6 +146,10 @@
                 </div>
             </div>
             <nav class="nav flex-column mt-3">
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i> {{ __('messages.dashboard') }}
+                </a>
+
                 <a class="nav-link {{ request()->routeIs('crud') ? 'active' : '' }}" href="{{ route('crud') }}">
                     <i class="bi bi-box-seam me-2"></i> {{ __('messages.manage_products') }}
                 </a>

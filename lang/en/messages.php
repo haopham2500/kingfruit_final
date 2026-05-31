@@ -264,4 +264,16 @@ return [
     'customer_phone_placeholder' => 'Enter phone number',
     'shipping_address_placeholder' => 'House number, street, ward...',
     'order_note_placeholder' => 'Add order notes',
+    
+    // Dashboard new translations
+    'dashboard' => 'Dashboard',
+    'dashboard_overview' => 'Dashboard Overview',
+    'revenue' => 'Revenue',
+    'products' => 'Products',
+    'customers' => 'Customers',
+    'orders_last_30_days' => 'Orders (Last 30 Days)',
+    'new_users_last_30_days' => 'New Users (Last 30 Days)',
+    'latest_5_orders' => 'Latest 5 Orders',
+    'order_count_label' => 'Orders Count',
+    'new_user_label' => 'New Users',
 ];

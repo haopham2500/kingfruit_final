@@ -10,6 +10,7 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
 // --- 6. HỆ THỐNG QUẢN TRỊ (ADMIN) ---
 // Lưu ý: Mình giữ nguyên name('crud') để khớp với Controller và View hiện tại của ní
 Route::middleware(['auth'])->prefix('admin')->group(function () {
+
+    // 6.0. Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     // 6.1. Quản lý sản phẩm (CRUD)
     Route::get('/crud', [ProductController::class, 'indexAdmin'])->name('crud');
