@@ -3,9 +3,14 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold text-success">{{ __('messages.manage_products') }}</h2>
-    <button class="btn btn-success rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalAdd">
-        <i class="bi bi-plus-circle me-2"></i>{{ __('messages.add_product') }}
-    </button>
+    <div>
+        <button id="btnDeleteSelected" class="btn btn-danger rounded-pill px-4 me-2 d-none" onclick="deleteSelected()">
+            <i class="bi bi-trash me-2"></i>Xóa đã chọn
+        </button>
+        <button class="btn btn-success rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#modalAdd">
+            <i class="bi bi-plus-circle me-2"></i>{{ __('messages.add_product') }}
+        </button>
+    </div>
 </div>
 
 <div class="card border-0 shadow-sm rounded-3">
@@ -13,7 +18,10 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th class="ps-4">{{ __('messages.product_id') }}</th>
+                    <th class="ps-4" style="width: 40px;">
+                        <input class="form-check-input" type="checkbox" id="selectAll">
+                    </th>
+                    <th>{{ __('messages.product_id') }}</th>
                     <th>{{ __('messages.product_image') }}</th>
                     <th>{{ __('messages.product_name') }}</th>
                     <th>{{ __('messages.product_price') }}</th>
@@ -24,7 +32,10 @@
             <tbody>
                 @foreach($products as $pro)
                 <tr>
-                    <td class="ps-4">{{ $pro->id }}</td>
+                    <td class="ps-4">
+                        <input class="form-check-input product-checkbox" type="checkbox" value="{{ $pro->id }}">
+                    </td>
+                    <td>{{ $pro->id }}</td>
                     <td><img src="{{ asset('images/' . $pro->image) }}" width="50" class="rounded border"></td>
                     <td class="fw-bold">{{ $pro->name }}</td>
                     <td class="text-danger fw-bold">{{ number_format($pro->price) }}đ</td>
@@ -169,4 +180,54 @@
         </div>
     </div>
 </div>
+
+<form id="deleteMultipleForm" action="{{ route('product.deleteMultiple') }}" method="POST" class="d-none">
+    @csrf
+    <input type="hidden" name="ids" id="deleteIds">
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        const btnDeleteSelected = document.getElementById('btnDeleteSelected');
+        const deleteIdsInput = document.getElementById('deleteIds');
+        const deleteMultipleForm = document.getElementById('deleteMultipleForm');
+
+        function updateDeleteButton() {
+            const checkedCount = document.querySelectorAll('.product-checkbox:checked').length;
+            if (checkedCount > 0) {
+                btnDeleteSelected.classList.remove('d-none');
+            } else {
+                btnDeleteSelected.classList.add('d-none');
+            }
+        }
+
+        if(selectAll) {
+            selectAll.addEventListener('change', function() {
+                checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                updateDeleteButton();
+            });
+        }
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                const allChecked = document.querySelectorAll('.product-checkbox:checked').length === checkboxes.length;
+                selectAll.checked = allChecked;
+                updateDeleteButton();
+            });
+        });
+
+        window.deleteSelected = function() {
+            const checkedBoxes = document.querySelectorAll('.product-checkbox:checked');
+            if (checkedBoxes.length > 0) {
+                if (confirm('Bạn có chắc muốn xóa hay không?')) {
+                    const ids = Array.from(checkedBoxes).map(cb => cb.value).join(',');
+                    deleteIdsInput.value = ids;
+                    deleteMultipleForm.submit();
+                }
+            }
+        };
+    });
+</script>
 @endsection
