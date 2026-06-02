@@ -25,11 +25,10 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.phone_number') }}</label>
-<<<<<<< HEAD
-                
-=======
-                    
->>>>>>> php/fix
+                    <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}">
+                    @error('phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.role') }}</label>

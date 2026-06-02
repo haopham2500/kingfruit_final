@@ -153,7 +153,7 @@ class CrudUserController extends Controller
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'.$id,
+            'email' => 'required|email|max:255|regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/|unique:users,email,'.$id,
             'phone' => 'nullable|string|max:20',
             'role' => 'required|in:admin,user,banned',
         ], [
@@ -161,6 +161,7 @@ class CrudUserController extends Controller
             'name.max' => 'Tên không được dài quá 255 ký tự.',
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email không hợp lệ.',
+            'email.regex' => 'Vui lòng nhập email có đuôi @gmail.com',
             'email.max' => 'Email không được dài quá 255 ký tự.',
             'email.unique' => 'Email này bị trùng mất rồi.',
             'phone.max' => 'Số điện thoại không được dài quá 20 ký tự.',
