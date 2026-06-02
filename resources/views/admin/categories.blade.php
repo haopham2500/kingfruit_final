@@ -30,9 +30,13 @@
                             <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $cat->id }}">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <a href="{{ route('category.delete', $cat->id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ __('messages.delete_category_confirm') }}')">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            <form action="{{ route('category.delete', $cat->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.delete_category_confirm') }}')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
 

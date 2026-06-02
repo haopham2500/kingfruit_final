@@ -46,9 +46,13 @@
                                 data-bs-target="#modalEdit{{ $pro->id }}">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <a href="{{ route('product.delete', $pro->id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Ní chắc chưa?')">
-                            <i class="bi bi-trash"></i>
-                        </a>
+                        <form action="{{ route('product.delete', $pro->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Ní chắc chưa?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
                     </td>
                 </tr>
 
@@ -99,7 +103,10 @@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold d-block">{{ __('messages.current_image') }}</label>
                                         <img src="{{ asset('images/' . $pro->image) }}" width="80" class="mb-2 border rounded">
-                                        <input type="file" name="image" class="form-control" accept="image/*">
+                                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*">
+                                        @error('image')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">{{ __('messages.product_description') }}</label>
@@ -165,7 +172,10 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.product_image') }}</label>
-                        <input type="file" name="image" class="form-control" accept="image/*" required>
+                        <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" accept="image/*" required>
+                        @error('image')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.product_description') }}</label>

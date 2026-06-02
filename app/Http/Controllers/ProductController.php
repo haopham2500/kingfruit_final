@@ -36,15 +36,18 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        if (!is_numeric($id)) {
+            return view('detail', ['product' => null]);
+        }
+
         // Eager loading 'category' để lấy tên loại trái cây
         $product = Product::with('category')->find($id);
 
         if (!$product) {
-            return redirect()->route('home')->with('error', 'Sản phẩm không tồn tại!');
+            return view('detail', ['product' => null]);
         }
 
         return view('detail', compact('product'));
-
     }
 
 
@@ -126,7 +129,11 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+        
+        if (!$product) {
+            return redirect()->route('crud')->with('error', 'Không tìm thấy sản phẩm hoặc URL không hợp lệ!');
+        }
         $categories = Category::all();
         return view('admin.product_edit', compact('product', 'categories'));
     }
@@ -167,7 +174,7 @@ class ProductController extends Controller
             'image.max' => 'Kích thước ảnh không được vượt quá 2MB.',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('image');
 
         if ($request->hasFile('image')) {
             // Upload ảnh mới
@@ -207,7 +214,11 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+
+        if (!$product) {
+            return back()->with('error', 'Xóa không hợp lệ! Mục này có thể đã bị xóa trước đó.');
+        }
         
         // Tùy chọn: Xóa ảnh khỏi máy chủ để tiết kiệm dung lượng
         if ($product->image && file_exists(public_path('images/' . $product->image))) {

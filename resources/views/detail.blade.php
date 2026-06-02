@@ -57,11 +57,21 @@
 </style>
 
 <div class="container py-5">
-    <div class="mb-5">
-        <a href="{{ route('home') }}" class="btn-back">
-            <i class="bi bi-chevron-left me-2"></i> Quay lại trang chủ
-        </a>
-    </div>
+    @if(!$product)
+        <div class="text-center py-5 my-5 bg-white rounded-4 shadow-sm border">
+            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 5rem;"></i>
+            <h2 class="text-danger fw-bold mt-4">Sản phẩm không tồn tại hoặc URL không hợp lệ!</h2>
+            <p class="text-muted mt-3 fs-5">Rất tiếc, sản phẩm bạn đang tìm kiếm không có trong hệ thống hoặc đường dẫn đã bị sai.</p>
+            <a href="{{ route('home') }}" class="btn btn-success mt-4 px-4 py-2 rounded-pill fw-bold">
+                <i class="bi bi-house-door-fill me-2"></i>Quay lại trang chủ
+            </a>
+        </div>
+    @else
+        <div class="mb-5">
+            <a href="{{ route('home') }}" class="btn-back">
+                <i class="bi bi-chevron-left me-2"></i> Quay lại trang chủ
+            </a>
+        </div>
 
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
@@ -223,5 +233,6 @@
             </div>
         </div>
     </div>
+    @endif
 </div>
 @endsection
