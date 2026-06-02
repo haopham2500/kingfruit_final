@@ -38,7 +38,7 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,processing,completed,cancelled,refunded,wait_refund,returning'
+            'status' => 'required|in:pending,processing,completed,cancelled,refunded,wait_refund,returning,refund_rejected'
         ], [
             'status.required' => 'Vui lòng chọn trạng thái.',
             'status.in' => 'Trạng thái không hợp lệ.',
@@ -67,5 +67,50 @@ class OrderController extends Controller
         }
         
         return view('admin.show', compact('order')); // Nếu file nằm ở admin/show.blade.php
+    }
+
+    /**
+     * Hiển thị trang duyệt trả hàng/hoàn tiền.
+     * @return \Illuminate\View\View
+     */
+    public function refundsIndex()
+    {
+        // Lấy danh sách các đơn hàng có yêu cầu hoàn tiền (chờ duyệt trước, sau đó là các trạng thái hoàn tiền khác)
+        $orders = Order::whereIn('status', ['wait_refund', 'refunded', 'refund_rejected'])
+            ->orderByRaw("FIELD(status, 'wait_refund', 'refund_rejected', 'refunded')")
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return view('admin.refunds', compact('orders'));
+    }
+
+    /**
+     * Xử lý duyệt hoặc từ chối yêu cầu hoàn tiền.
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function refundsProcess(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+
+        $request->validate([
+            'action' => 'required|in:approve,reject',
+            'feedback' => 'nullable|string|max:1000'
+        ]);
+
+        if ($request->action === 'approve') {
+            $order->update([
+                'status' => 'refunded',
+                'refund_feedback' => $request->feedback
+            ]);
+            return back()->with('success', 'Đã duyệt hoàn tiền cho đơn hàng #' . $id . ' thành công!');
+        } else {
+            $order->update([
+                'status' => 'refund_rejected',
+                'refund_feedback' => $request->feedback
+            ]);
+            return back()->with('success', 'Đã từ chối yêu cầu hoàn tiền cho đơn hàng #' . $id . '.');
+        }
     }
 }

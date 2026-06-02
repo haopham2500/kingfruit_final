@@ -257,8 +257,27 @@ class CheckoutController extends Controller
             return back()->with('error', 'Đã quá hạn 2 tuần để yêu cầu hoàn tiền.');
         }
 
+        $request->validate([
+            'refund_reason' => 'required|string|max:1000',
+            'evidence' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'refund_reason.required' => 'Vui lòng nhập lý do hoàn tiền.',
+            'evidence.required' => 'Vui lòng tải lên hình ảnh minh chứng.',
+            'evidence.image' => 'File tải lên phải là hình ảnh.',
+            'evidence.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif.',
+            'evidence.max' => 'Kích thước ảnh không được vượt quá 2MB.',
+        ]);
+
+        $evidenceFileName = null;
+        if ($request->hasFile('evidence')) {
+            $evidenceFileName = time() . '_' . $request->evidence->getClientOriginalName();
+            $request->evidence->move(public_path('refunds'), $evidenceFileName);
+        }
+
         $order->update([
-            'status' => 'wait_refund'
+            'status' => 'wait_refund',
+            'refund_reason' => $request->refund_reason,
+            'refund_evidence' => $evidenceFileName,
         ]);
 
         if ($request->ajax()) {

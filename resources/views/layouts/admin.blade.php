@@ -165,6 +165,18 @@
                 <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
                     <i class="bi bi-truck me-2"></i> {{ __('messages.manage_orders') }}
                 </a>
+
+                @php
+                    $pendingRefundsCount = \App\Models\Order::where('status', 'wait_refund')->count();
+                @endphp
+                <a class="nav-link {{ request()->routeIs('admin.refunds.*') ? 'active' : '' }} d-flex justify-content-between align-items-center" href="{{ route('admin.refunds.index') }}">
+                    <span>
+                        <i class="bi bi-arrow-counterclockwise me-2"></i> {{ __('messages.manage_refunds') }}
+                    </span>
+                    @if($pendingRefundsCount > 0)
+                        <span class="badge bg-danger rounded-pill">{{ $pendingRefundsCount }}</span>
+                    @endif
+                </a>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('admin/reviews*') ? 'active' : '' }}" href="{{ route('admin.reviews.index') }}">
                         <i class="bi bi-chat-left-text me-2"></i> {{ __('messages.manage_reviews') }}

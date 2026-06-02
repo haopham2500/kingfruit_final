@@ -45,12 +45,13 @@
                                     $statusKey = 'order_' . str_replace('-', '_', $order->status);
 
                                     $statusColors = [
-                                        'pending'     => 'bg-warning text-dark',
-                                        'processing'  => 'bg-info text-white',
-                                        'completed'   => 'bg-success text-white',
-                                        'cancelled'   => 'bg-danger text-white',
-                                        'refunded'    => 'bg-primary text-white',
-                                        'wait_refund' => 'bg-dark text-white',
+                                        'pending'         => 'bg-warning text-dark',
+                                        'processing'      => 'bg-info text-white',
+                                        'completed'       => 'bg-success text-white',
+                                        'cancelled'       => 'bg-danger text-white',
+                                        'refunded'        => 'bg-primary text-white',
+                                        'wait_refund'     => 'bg-dark text-white',
+                                        'refund_rejected' => 'bg-danger text-white',
                                     ];
                                     $badgeClass = $statusColors[$order->status] ?? 'bg-secondary text-white';
                                 @endphp

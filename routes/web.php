@@ -108,6 +108,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        
+        // Duyệt Trả hàng / Hoàn tiền
+        Route::get('/refunds', [OrderController::class, 'refundsIndex'])->name('refunds.index');
+        Route::post('/refunds/{id}/process', [OrderController::class, 'refundsProcess'])->name('refunds.process');
     });
 
     // 6.6. Quản lý Bình luận (Admin)
