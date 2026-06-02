@@ -80,14 +80,14 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
     Route::get('/product/edit/{id}', [ProductController::class, 'edit'])->name('product.edit');
     Route::post('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
-    Route::get('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
+    Route::delete('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
     Route::post('/product/delete-multiple', [ProductController::class, 'destroyMultiple'])->name('product.deleteMultiple');
 
     // 6.2. Quản lý danh mục
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('category.store');
     Route::post('/categories/update/{id}', [CategoryController::class, 'update'])->name('category.update');
-    Route::get('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
+    Route::delete('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
 
     // 6.3. Quản lý người dùng
     Route::get('/users', [CrudUserController::class, 'index'])->name('admin.users.index');

@@ -233,6 +233,23 @@
                 }
             });
 
+            // === CHỐNG DOUBLE CLICK (SPAM CLICK) GÂY TRÙNG LẶP DỮ LIỆU ===
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    if (this.dataset.submitted) {
+                        e.preventDefault();
+                        return;
+                    }
+                    this.dataset.submitted = 'true';
+                    
+                    const submitButtons = this.querySelectorAll('button[type="submit"]');
+                    submitButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang xử lý...';
+                    });
+                });
+            });
+
             setTimeout(function() {
                 let alerts = document.querySelectorAll('.alert');
                 alerts.forEach(function(alert) {

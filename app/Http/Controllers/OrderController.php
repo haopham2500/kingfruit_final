@@ -27,7 +27,11 @@ class OrderController extends Controller
      */
     public function updateStatus(Request $request, $id) {
         // Tìm đơn hàng theo id
-        $order = \App\Models\Order::findOrFail($id);
+        $order = \App\Models\Order::find($id);
+        
+        if (!$order) {
+            return redirect()->route('admin.orders.index')->with('error', 'Không tìm thấy đơn hàng hoặc URL không hợp lệ!');
+        }
         
         if ($request->has('original_updated_at') && $order->updated_at != $request->original_updated_at) {
             return back()->with('error', 'Lỗi: Dữ liệu đã bị thay đổi bởi người khác trước đó. Vui lòng tải lại trang để xem dữ liệu mới nhất.');
@@ -56,7 +60,11 @@ class OrderController extends Controller
     public function show($id)
     {
         // Tìm đơn hàng kèm theo chi tiết sản phẩm (nếu có relationship)
-        $order = Order::with('details')->findOrFail($id); 
+        $order = Order::with('details')->find($id); 
+        
+        if (!$order) {
+            return redirect()->route('admin.orders.index')->with('error', 'Không tìm thấy đơn hàng hoặc URL không hợp lệ!');
+        }
         
         return view('admin.show', compact('order')); // Nếu file nằm ở admin/show.blade.php
     }
