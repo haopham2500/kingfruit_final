@@ -50,6 +50,15 @@
 </div>
 @endif
 
+@if(session('error'))
+<div class="container mt-4">
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+@endif
+
 {{-- 1. BANNER CAROUSEL --}}
 @if(!isset($query))
 <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
