@@ -85,6 +85,7 @@
                                     'cancelled'  => ['c' => 'bg-danger', 't' => __('messages.order_cancelled')],
                                     'refunded'   => ['c' => 'bg-primary', 't' => __('messages.order_refunded')],
                                     'wait_refund'=> ['c' => 'bg-dark', 't' => __('messages.order_wait_refund')],
+                                    'returning'  => ['c' => 'bg-secondary', 't' => __('messages.order_returning')],
                                 ];
                                 $st = $status_map[$order->status] ?? ['c' => 'bg-secondary', 't' => $order->status];
                             @endphp
@@ -108,6 +109,9 @@
                                             'pending' => __('messages.order_pending'),
                                             'processing' => __('messages.order_processing'),
                                             'completed' => __('messages.order_completed'),
+                                            'wait_refund' => __('messages.order_wait_refund'),
+                                            'refunded' => __('messages.order_refunded'),
+                                            'returning' => __('messages.order_returning'),
                                             'cancelled' => __('messages.order_cancelled'),
                                         ] as $key => $label)
                                         <li>

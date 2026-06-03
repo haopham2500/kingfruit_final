@@ -13,9 +13,6 @@
     </div>
 
     <div class="d-flex gap-3 mb-4">
-        <a href="#order-history" class="btn btn-outline-success flex-fill py-3 fs-5">
-            <i class="bi bi-clock-history me-2"></i> {{ __('messages.purchase_history') }}
-        </a>
         <a href="{{ route('orders.track') }}" class="btn btn-outline-primary flex-fill py-3 fs-5">
             <i class="bi bi-truck me-2"></i> {{ __('messages.track_orders') }}
         </a>
@@ -46,13 +43,23 @@
                             @foreach($orders as $order)
                                 @php
                                     $statusKey = 'order_' . str_replace('-', '_', $order->status);
+
+                                    $statusColors = [
+                                        'pending'     => 'bg-warning text-dark',
+                                        'processing'  => 'bg-info text-white',
+                                        'completed'   => 'bg-success text-white',
+                                        'cancelled'   => 'bg-danger text-white',
+                                        'refunded'    => 'bg-primary text-white',
+                                        'wait_refund' => 'bg-dark text-white',
+                                    ];
+                                    $badgeClass = $statusColors[$order->status] ?? 'bg-secondary text-white';
                                 @endphp
                                 <tr>
                                     <td>#{{ $order->id }}</td>
                                     <td>{{ $order->created_at ? $order->created_at->format('d/m/Y H:i') : '-' }}</td>
                                     <td>{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ __($statusKey) }}</span>
+                                        <span class="badge {{ $badgeClass }}">{{ __('messages.' . $statusKey) }}</span>
                                     </td>
                                 </tr>
                             @endforeach

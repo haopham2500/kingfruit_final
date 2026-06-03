@@ -47,6 +47,8 @@
                             'processing' => ['c' => 'bg-info text-white', 't' => __('messages.order_processing')],
                             'completed'  => ['c' => 'bg-success', 't' => __('messages.order_completed')],
                             'cancelled'  => ['c' => 'bg-danger', 't' => __('messages.order_cancelled')],
+                            'refunded'   => ['c' => 'bg-primary', 't' => __('messages.order_refunded')],
+                            'wait_refund'=> ['c' => 'bg-dark', 't' => __('messages.order_wait_refund')],
                         ];
                         $st = $status_map[$order->status] ?? ['c' => 'bg-secondary', 't' => $order->status];
                     @endphp

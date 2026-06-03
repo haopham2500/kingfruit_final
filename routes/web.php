@@ -59,6 +59,7 @@ Route::middleware(['auth'])->group(function () {
     // Theo dõi đơn hàng và hủy đơn
     Route::get('/orders', [CheckoutController::class, 'trackOrders'])->name('orders.track');
     Route::post('/orders/{id}/cancel', [CheckoutController::class, 'cancelOrder'])->name('orders.cancel');
+    Route::post('/orders/{id}/refund', [CheckoutController::class, 'requestRefund'])->name('orders.refund');
 
     // Bình luận
     Route::post('/product/{id}/review', [ReviewController::class, 'store'])->name('review.store');

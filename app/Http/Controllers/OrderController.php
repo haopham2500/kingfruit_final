@@ -34,7 +34,7 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:pending,processing,completed,cancelled,refunded,wait_refund'
+            'status' => 'required|in:pending,processing,completed,cancelled,refunded,wait_refund,returning'
         ], [
             'status.required' => 'Vui lòng chọn trạng thái.',
             'status.in' => 'Trạng thái không hợp lệ.',
