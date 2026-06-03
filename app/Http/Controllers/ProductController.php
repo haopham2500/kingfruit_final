@@ -36,15 +36,20 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        if (!is_numeric($id)) {
+            return view('detail', ['product' => null]);
+        }
+
         // Eager loading 'category' để lấy tên loại trái cây
         $product = Product::with('category')->find($id);
 
         if (!$product) {
             return redirect()->route('home')->with('error', 'Không có sản phẩm, tìm sản phẩm khác!');
+
+            return view('detail', ['product' => null]);
         }
 
         return view('detail', compact('product'));
-
     }
 
 
@@ -126,7 +131,11 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+        
+        if (!$product) {
+            return redirect()->route('crud')->with('error', 'Không tìm thấy sản phẩm hoặc URL không hợp lệ!');
+        }
         $categories = Category::all();
         return view('admin.product_edit', compact('product', 'categories'));
     }
@@ -167,7 +176,7 @@ class ProductController extends Controller
             'image.max' => 'Kích thước ảnh không được vượt quá 2MB.',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('image');
 
         if ($request->hasFile('image')) {
             // Upload ảnh mới
@@ -205,16 +214,48 @@ class ProductController extends Controller
         return view('home', compact('allProducts', 'query', 'hotProducts', 'categories'));
     }
 
-    /**
-     * Xóa một sản phẩm khỏi Database dựa vào ID.
-     * @param int $id ID sản phẩm
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+
+        if (!$product) {
+            return back()->with('error', 'Xóa không hợp lệ! Mục này có thể đã bị xóa trước đó.');
+        }
+        
+        // Tùy chọn: Xóa ảnh khỏi máy chủ để tiết kiệm dung lượng
+        if ($product->image && file_exists(public_path('images/' . $product->image))) {
+            unlink(public_path('images/' . $product->image));
+        }
+
         $product->delete();
 
         return back()->with('success', 'Xóa sản phẩm thành công!');
+    }
+
+    /**
+     * Xóa nhiều sản phẩm cùng lúc.
+     * @param Request $request Chứa chuỗi các ID cách nhau bằng dấu phẩy
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroyMultiple(Request $request)
+    {
+        $ids = $request->input('ids');
+        if ($ids) {
+            $idArray = explode(',', $ids);
+            
+            // Lấy ra các sản phẩm để xóa ảnh (nếu cần)
+            $products = Product::whereIn('id', $idArray)->get();
+            foreach ($products as $product) {
+                if ($product->image && file_exists(public_path('images/' . $product->image))) {
+                    unlink(public_path('images/' . $product->image));
+                }
+            }
+
+            // Xóa hàng loạt
+            Product::whereIn('id', $idArray)->delete();
+            return back()->with('success', 'Đã xóa thành công các sản phẩm được chọn!');
+        }
+
+        return back()->with('error', 'Chưa có sản phẩm nào được chọn để xóa.');
     }
 }

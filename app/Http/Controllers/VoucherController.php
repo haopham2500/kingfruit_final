@@ -58,7 +58,11 @@ class VoucherController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id) {
-        Voucher::findOrFail($id)->delete();
+        $voucher = Voucher::find($id);
+        if (!$voucher) {
+            return back()->with('error', 'Xóa không hợp lệ! Mục này có thể đã bị xóa trước đó.');
+        }
+        $voucher->delete();
         return back()->with('success', 'Đã xóa voucher!');
     }
 
@@ -68,7 +72,10 @@ class VoucherController extends Controller
      * @return \Illuminate\View\View
      */
     public function edit($id) {
-        $voucher = Voucher::findOrFail($id);
+        $voucher = Voucher::find($id);
+        if (!$voucher) {
+            return redirect()->route('admin.vouchers.index')->with('error', 'Không tìm thấy dữ liệu hoặc URL không hợp lệ!');
+        }
         return view('admin.vouchers_edit', compact('voucher'));
     }
 
@@ -80,7 +87,11 @@ class VoucherController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id) {
-        $voucher = Voucher::findOrFail($id);
+        $voucher = Voucher::find($id);
+
+        if (!$voucher) {
+            return redirect()->route('admin.vouchers.index')->with('error', 'Không tìm thấy dữ liệu hoặc URL không hợp lệ!');
+        }
 
         if ($request->has('original_updated_at') && $voucher->updated_at != $request->original_updated_at) {
             return back()->with('error', 'Lỗi: Dữ liệu đã bị thay đổi bởi người khác trước đó. Vui lòng tải lại trang để xem dữ liệu mới nhất.');
@@ -109,7 +120,7 @@ class VoucherController extends Controller
             'quantity.integer' => 'Số lượng phải là số nguyên.',
         ]);
 
-        Voucher::findOrFail($id)->update($data);
+        $voucher->update($data);
         return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật xong rồi nhé ní!');
     }
 

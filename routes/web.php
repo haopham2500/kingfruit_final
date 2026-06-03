@@ -10,6 +10,7 @@ use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,19 +71,23 @@ Route::middleware(['auth'])->group(function () {
 // Lưu ý: Mình giữ nguyên name('crud') để khớp với Controller và View hiện tại của ní
 Route::middleware(['auth'])->prefix('admin')->group(function () {
 
+    // 6.0. Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
     // 6.1. Quản lý sản phẩm (CRUD)
     Route::get('/crud', [ProductController::class, 'indexAdmin'])->name('crud');
     Route::get('/product/create', [ProductController::class, 'create'])->name('product.create');
     Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
     Route::get('/product/edit/{id}', [ProductController::class, 'edit'])->name('product.edit');
     Route::post('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
-    Route::get('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
+    Route::delete('/product/delete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
+    Route::post('/product/delete-multiple', [ProductController::class, 'destroyMultiple'])->name('product.deleteMultiple');
 
     // 6.2. Quản lý danh mục
     Route::get('/categories', [CategoryController::class, 'index'])->name('category.index');
     Route::post('/categories/store', [CategoryController::class, 'store'])->name('category.store');
     Route::post('/categories/update/{id}', [CategoryController::class, 'update'])->name('category.update');
-    Route::get('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
+    Route::delete('/categories/delete/{id}', [CategoryController::class, 'destroy'])->name('category.delete');
 
     // 6.3. Quản lý người dùng
     Route::get('/users', [CrudUserController::class, 'index'])->name('admin.users.index');
@@ -103,6 +108,10 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/update-status/{id}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        
+        // Duyệt Trả hàng / Hoàn tiền
+        Route::get('/refunds', [OrderController::class, 'refundsIndex'])->name('refunds.index');
+        Route::post('/refunds/{id}/process', [OrderController::class, 'refundsProcess'])->name('refunds.process');
     });
 
     // 6.6. Quản lý Bình luận (Admin)

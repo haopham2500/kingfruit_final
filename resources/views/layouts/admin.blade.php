@@ -146,6 +146,10 @@
                 </div>
             </div>
             <nav class="nav flex-column mt-3">
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
+                    <i class="bi bi-speedometer2 me-2"></i> {{ __('messages.dashboard') }}
+                </a>
+
                 <a class="nav-link {{ request()->routeIs('crud') ? 'active' : '' }}" href="{{ route('crud') }}">
                     <i class="bi bi-box-seam me-2"></i> {{ __('messages.manage_products') }}
                 </a>
@@ -160,6 +164,18 @@
 
                 <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
                     <i class="bi bi-truck me-2"></i> {{ __('messages.manage_orders') }}
+                </a>
+
+                @php
+                    $pendingRefundsCount = \App\Models\Order::where('status', 'wait_refund')->count();
+                @endphp
+                <a class="nav-link {{ request()->routeIs('admin.refunds.*') ? 'active' : '' }} d-flex justify-content-between align-items-center" href="{{ route('admin.refunds.index') }}">
+                    <span>
+                        <i class="bi bi-arrow-counterclockwise me-2"></i> {{ __('messages.manage_refunds') }}
+                    </span>
+                    @if($pendingRefundsCount > 0)
+                        <span class="badge bg-danger rounded-pill">{{ $pendingRefundsCount }}</span>
+                    @endif
                 </a>
                 <li class="nav-item">
                     <a class="nav-link {{ Request::is('admin/reviews*') ? 'active' : '' }}" href="{{ route('admin.reviews.index') }}">
@@ -227,6 +243,23 @@
                 if (e.target && e.target.name === 'phone') {
                     e.target.value = e.target.value.replace(/[^0-9]/g, '');
                 }
+            });
+
+            // === CHỐNG DOUBLE CLICK (SPAM CLICK) GÂY TRÙNG LẶP DỮ LIỆU ===
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    if (this.dataset.submitted) {
+                        e.preventDefault();
+                        return;
+                    }
+                    this.dataset.submitted = 'true';
+                    
+                    const submitButtons = this.querySelectorAll('button[type="submit"]');
+                    submitButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang xử lý...';
+                    });
+                });
             });
 
             setTimeout(function() {

@@ -11,23 +11,35 @@
                 <input type="hidden" name="original_updated_at" value="{{ $user->updated_at }}">
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.name') }}</label>
-                    <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.email') }}</label>
-                    <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.phone_number') }}</label>
-                    <input type="text" name="phone" class="form-control" value="{{ $user->phone }}" inputmode="numeric" pattern="[0-9]*">
+                    <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}">
+                    @error('phone')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.role') }}</label>
-                    <select name="role" class="form-select" {{ $user->id == auth()->id() ? 'disabled' : '' }}>
-                        <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>{{ __('messages.customer_role') }}</option>
-                        <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>{{ __('messages.admin_role') }}</option>
-                        <option value="banned" {{ $user->role == 'banned' ? 'selected' : '' }}>{{ __('messages.banned_role') }}</option>
+                    <select name="role" class="form-select @error('role') is-invalid @enderror" {{ $user->id == auth()->id() ? 'disabled' : '' }}>
+                        <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>{{ __('messages.customer_role') }}</option>
+                        <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>{{ __('messages.admin_role') }}</option>
+                        <option value="banned" {{ old('role', $user->role) == 'banned' ? 'selected' : '' }}>{{ __('messages.banned_role') }}</option>
                     </select>
+                    @error('role')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <button type="submit" class="btn btn-primary">{{ __('messages.save_changes') }}</button>
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">{{ __('messages.back') }}</a>

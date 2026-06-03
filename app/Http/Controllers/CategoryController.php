@@ -67,7 +67,11 @@ class CategoryController extends Controller
      */
     public function destroy($id) 
     {
-        $category = Category::findOrFail($id);
+        $category = Category::find($id);
+        
+        if (!$category) {
+            return back()->with('error', 'Xóa không hợp lệ! Mục này có thể đã bị xóa trước đó.');
+        }
         
         // Kiểm tra xem có sản phẩm không (Dùng hàm trong Model)
         if ($category->hasProducts()) {

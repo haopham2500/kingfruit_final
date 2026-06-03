@@ -17,33 +17,51 @@
                     @csrf
                     <div class="mb-3">
                         <label class="form-label small fw-bold">{{ __('messages.voucher_code') }}</label>
-                        <input type="text" name="code" class="form-control form-control-lg" placeholder="{{ __('messages.voucher_code_example') }}" required style="text-transform: uppercase;">
+                        <input type="text" name="code" class="form-control form-control-lg @error('code') is-invalid @enderror" value="{{ old('code') }}" placeholder="{{ __('messages.voucher_code_example') }}" required style="text-transform: uppercase;">
+                        @error('code')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-bold">{{ __('messages.voucher_type') }}</label>
-                            <select name="type" class="form-select">
-                                <option value="fixed">{{ __('messages.voucher_cash') }}</option>
-                                <option value="percent">{{ __('messages.voucher_percent') }}</option>
+                            <select name="type" class="form-select @error('type') is-invalid @enderror">
+                                <option value="fixed" {{ old('type') == 'fixed' ? 'selected' : '' }}>{{ __('messages.voucher_cash') }}</option>
+                                <option value="percent" {{ old('type') == 'percent' ? 'selected' : '' }}>{{ __('messages.voucher_percent') }}</option>
                             </select>
+                            @error('type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-bold">{{ __('messages.voucher_value') }}</label>
-                            <input type="number" name="discount_value" class="form-control" required>
+                            <input type="number" name="discount_value" class="form-control @error('discount_value') is-invalid @enderror" value="{{ old('discount_value') }}" required>
+                            @error('discount_value')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-bold">{{ __('messages.voucher_min_order') }}</label>
-                        <input type="number" name="min_order_value" class="form-control" value="0">
+                        <input type="number" name="min_order_value" class="form-control @error('min_order_value') is-invalid @enderror" value="{{ old('min_order_value', '0') }}">
+                        @error('min_order_value')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-bold">{{ __('messages.voucher_quantity') }}</label>
-                            <input type="number" name="quantity" class="form-control" value="100" required>
+                            <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', '100') }}" required>
+                            @error('quantity')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-bold">{{ __('messages.voucher_expiry') }}</label>
-                            <input type="date" name="expiry_date" class="form-control" required value="{{ date('Y-m-d', strtotime('+1 month')) }}">
+                            <input type="date" name="expiry_date" class="form-control @error('expiry_date') is-invalid @enderror" required value="{{ old('expiry_date', date('Y-m-d', strtotime('+1 month'))) }}">
+                            @error('expiry_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success w-100 fw-bold py-3 mt-2 shadow-sm">

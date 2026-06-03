@@ -66,7 +66,11 @@ class ReviewController extends Controller
     // 4. Xóa bình luận
     public function destroy($id)
     {
-        Review::findOrFail($id)->delete();
+        $review = Review::find($id);
+        if (!$review) {
+            return back()->with('error', 'Xóa không hợp lệ! Mục này có thể đã bị xóa trước đó.');
+        }
+        $review->delete();
         return back()->with('success', 'Đã xóa bình luận thành công!');
     }
 }

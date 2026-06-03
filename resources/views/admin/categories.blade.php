@@ -30,9 +30,13 @@
                             <button class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editModal{{ $cat->id }}">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <a href="{{ route('category.delete', $cat->id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ __('messages.delete_category_confirm') }}')">
-                                <i class="bi bi-trash"></i>
-                            </a>
+                            <form action="{{ route('category.delete', $cat->id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.delete_category_confirm') }}')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
 
@@ -48,7 +52,10 @@
                                     </div>
                                     <div class="modal-body">
                                         <label class="form-label">{{ __('messages.category_name') }}</label>
-                                        <input type="text" name="name" class="form-control" value="{{ $cat->name }}" required>
+                                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $cat->name) }}" required>
+                                        @error('name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>
@@ -76,7 +83,10 @@
                 </div>
                 <div class="modal-body">
                     <label class="form-label">{{ __('messages.category_name') }}</label>
-                    <input type="text" name="name" class="form-control" placeholder="{{ __('messages.category_placeholder') }}" required>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="{{ __('messages.category_placeholder') }}" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.cancel') }}</button>

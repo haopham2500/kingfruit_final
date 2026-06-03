@@ -24,6 +24,9 @@ class Order extends Model
         'total_amount',
         'status',
         'cancel_reason',
+        'refund_reason',
+        'refund_evidence',
+        'refund_feedback',
     ];
 
     /**
