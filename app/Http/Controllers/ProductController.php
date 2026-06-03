@@ -44,6 +44,8 @@ class ProductController extends Controller
         $product = Product::with('category')->find($id);
 
         if (!$product) {
+            return redirect()->route('home')->with('error', 'Không có sản phẩm, tìm sản phẩm khác!');
+
             return view('detail', ['product' => null]);
         }
 
