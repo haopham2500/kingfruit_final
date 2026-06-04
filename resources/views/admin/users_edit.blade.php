@@ -11,7 +11,7 @@
                 <input type="hidden" name="original_updated_at" value="{{ $user->updated_at }}">
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.name') }}</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required maxlength="20">
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required maxlength="30">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
