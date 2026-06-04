@@ -11,7 +11,7 @@
                 <input type="hidden" name="original_updated_at" value="{{ $user->updated_at }}">
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.name') }}</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required maxlength="20">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -25,7 +25,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">{{ __('messages.phone_number') }}</label>
-                    <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}">
+                    <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $user->phone) }}" inputmode="numeric" pattern="[0-9]*" maxlength="11">
                     @error('phone')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

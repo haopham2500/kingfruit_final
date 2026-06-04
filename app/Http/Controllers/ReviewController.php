@@ -92,7 +92,7 @@ class ReviewController extends Controller
             return back()->with('error', 'Không thể sửa nội dung này.');
         }
 
-        if (!Carbon::parse($request->reply_updated_at)->equalTo($reply->updated_at)) {
+        if ($request->reply_updated_at !== $reply->updated_at->format('Y-m-d H:i:s')) {
             return back()->with('error', __('messages.review_edit_conflict'));
         }
 
@@ -112,8 +112,7 @@ class ReviewController extends Controller
         }
 
         if ($request->filled('review_updated_at')) {
-            $submittedAt = Carbon::createFromFormat('Y-m-d H:i:s', $request->review_updated_at);
-            if (!$submittedAt->equalTo($review->updated_at)) {
+            if ($request->review_updated_at !== $review->updated_at->format('Y-m-d H:i:s')) {
                 return back()->with('error', __('messages.review_delete_conflict'));
             }
         }
