@@ -17,6 +17,15 @@ class CheckConcurrentSession
     {
         if (auth()->check()) {
             $user = auth()->user();
+
+            // Kiểm tra tài khoản có bị khóa không
+            if ($user->role === 'banned') {
+                auth()->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('login')->with('error', 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Admin!');
+            }
+
             if ($user->last_session_id && $user->last_session_id !== $request->session()->getId()) {
                 auth()->logout();
                 $request->session()->invalidate();
