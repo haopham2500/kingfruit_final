@@ -90,11 +90,27 @@
         .sidebar {
             min-width: 250px;
             max-width: 250px;
-            min-height: 100vh;
+            height: 100vh; /* Cố định chiều cao bằng màn hình để có thể cuộn */
+            overflow-y: auto; /* Thêm thanh cuộn dọc khi nội dung vượt quá chiều cao */
             background: #198754;
             color: white;
             position: fixed;
             /* Cố định sidebar khi cuộn trang */
+        }
+
+        /* Tùy chỉnh thanh cuộn cho sidebar nhìn mượt hơn */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
         }
 
         [data-bs-theme="dark"] .sidebar {
