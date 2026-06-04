@@ -68,7 +68,7 @@
                 @csrf
                 <div class="mb-3">
                     <label class="form-label fw-bold">{{ __('messages.full_name') }}</label>
-                    <input type="text" name="name" class="form-control @error('name') form-error @enderror" placeholder="{{ __('messages.full_name_placeholder') }}" value="{{ old('name') }}" required maxlength="20">
+                    <input type="text" name="name" class="form-control @error('name') form-error @enderror" placeholder="{{ __('messages.full_name_placeholder') }}" value="{{ old('name') }}" required maxlength="30">
                     @error('name')
                     <span class="error-text">{{ $message }}</span>
                     @enderror

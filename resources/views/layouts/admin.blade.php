@@ -262,19 +262,24 @@
             });
 
             // === CHỐNG DOUBLE CLICK (SPAM CLICK) GÂY TRÙNG LẶP DỮ LIỆU ===
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    if (this.dataset.submitted) {
-                        e.preventDefault();
-                        return;
-                    }
-                    this.dataset.submitted = 'true';
-                    
-                    const submitButtons = this.querySelectorAll('button[type="submit"]');
-                    submitButtons.forEach(btn => {
-                        btn.disabled = true;
-                        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang xử lý...';
-                    });
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+
+                // Nếu submit bị hủy (ví dụ: confirm() trả về false hoặc validation lỗi), không disable nút
+                if (e.defaultPrevented) {
+                    return;
+                }
+
+                if (form.dataset.submitted) {
+                    e.preventDefault();
+                    return;
+                }
+                form.dataset.submitted = 'true';
+                
+                const submitButtons = form.querySelectorAll('button[type="submit"]');
+                submitButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang xử lý...';
                 });
             });
 
@@ -313,6 +318,65 @@
             }
         });
     </script>
+
+    @if(Auth::check())
+    <script>
+        (function() {
+            // Clear blocked flag if we are on the login page
+            if (window.location.pathname.endsWith('/login')) {
+                sessionStorage.removeItem('tab_blocked');
+                return;
+            }
+
+            // If this tab was previously blocked, redirect it to login immediately
+            if (sessionStorage.getItem('tab_blocked') === 'true') {
+                window.location.replace('{{ route('login') }}');
+                return;
+            }
+
+            // Generate a unique identifier for this tab session
+            const tabId = Math.random().toString(36).substring(2) + Date.now();
+            window.myTabId = tabId;
+
+            const channel = new BroadcastChannel('kingfruit_tab_channel');
+
+            // Check if there is already an active tab recorded in localStorage
+            const activeTabId = localStorage.getItem('active_tab_id');
+            if (activeTabId && activeTabId !== tabId) {
+                // Ping to see if the active tab is still open and alive
+                channel.postMessage({ type: 'PING_ACTIVE', targetId: activeTabId, senderId: tabId });
+                
+                // Set a timeout to wait for response. If no response, assume it closed.
+                const pingTimeout = setTimeout(() => {
+                    localStorage.setItem('active_tab_id', tabId);
+                }, 300);
+
+                window.pingTimeout = pingTimeout;
+            } else {
+                localStorage.setItem('active_tab_id', tabId);
+            }
+
+            channel.onmessage = function(event) {
+                const data = event.data;
+                if (data.type === 'PING_ACTIVE' && data.targetId === window.myTabId) {
+                    // Respond that we are still here and active
+                    channel.postMessage({ type: 'PONG_ACTIVE', targetId: data.senderId, senderId: window.myTabId });
+                } else if (data.type === 'PONG_ACTIVE' && data.targetId === window.myTabId) {
+                    // If we receive a PONG, it means the other tab is indeed alive!
+                    clearTimeout(window.pingTimeout);
+                    
+                    // Mark this tab as blocked in sessionStorage
+                    sessionStorage.setItem('tab_blocked', 'true');
+                    
+                    alert('Tài khoản đã được đăng nhập ở nơi khác!');
+                    
+                    // Redirect to login page immediately
+                    window.location.replace('{{ route('login') }}');
+                }
+            };
+        })();
+    </script>
+    @endif
 </body>
 
 </html>

@@ -51,6 +51,10 @@ class CrudUserController extends Controller
 
             $request->session()->regenerate();
 
+            // Lưu session ID cuối cùng để chặn đăng nhập đồng thời
+            $user->last_session_id = $request->session()->getId();
+            $user->save();
+
             // Phân quyền admin/user
             if ($user->role === 'admin') {
                 return redirect()->route('crud'); 
@@ -82,13 +86,13 @@ class CrudUserController extends Controller
     public function createUser(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:20',
+            'name' => 'required|string|max:30',
             'email' => 'required|string|email|max:255|unique:users|regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/',
             'password' => 'required|string|min:6|max:255',
             'phone' => 'nullable|string|max:11',
         ], [
             'name.required' => 'Vui lòng nhập tên.',
-            'name.max' => 'Họ và tên không được dài quá 20 ký tự.',
+            'name.max' => 'Họ và tên không được dài quá 30 ký tự.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
             'email.max' => 'Email không được dài quá 255 ký tự.',
@@ -152,13 +156,13 @@ class CrudUserController extends Controller
         }
 
         $data = $request->validate([
-            'name' => 'required|string|max:20',
+            'name' => 'required|string|max:30',
             'email' => 'required|email|max:255|regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/|unique:users,email,'.$id,
             'phone' => 'nullable|string|max:11',
             'role' => 'required|in:admin,user,banned',
         ], [
             'name.required' => 'Tên không được để trống.',
-            'name.max' => 'Họ và tên không được dài quá 20 ký tự.',
+            'name.max' => 'Họ và tên không được dài quá 30 ký tự.',
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email không hợp lệ.',
             'email.regex' => 'Vui lòng nhập email có đuôi @gmail.com',

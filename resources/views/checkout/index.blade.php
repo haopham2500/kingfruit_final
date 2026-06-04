@@ -18,7 +18,7 @@
                     <h5 class="fw-bold mb-4">{{ __('messages.shipping_info') }}</h5>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.customer_name') }}</label>
-                        <input type="text" name="customer_name" class="form-control" required placeholder="{{ __('messages.customer_name_placeholder') }}" maxlength="20">
+                        <input type="text" name="customer_name" class="form-control" required placeholder="{{ __('messages.customer_name_placeholder') }}" maxlength="30">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.customer_phone') }}</label>

@@ -83,12 +83,12 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         $request->validate([
-            'customer_name' => 'required|string|max:20',
+            'customer_name' => 'required|string|max:30',
             'phone' => 'required|string|max:11',
             'address' => 'required|string|max:500',
         ], [
             'customer_name.required' => 'Vui lòng nhập họ và tên.',
-            'customer_name.max' => 'Họ và tên không được dài quá 20 ký tự.',
+            'customer_name.max' => 'Họ và tên không được dài quá 30 ký tự.',
             'phone.required' => 'Vui lòng nhập số điện thoại.',
             'phone.max' => 'Số điện thoại không được dài quá 11 số.',
             'address.required' => 'Vui lòng nhập địa chỉ giao hàng.',
