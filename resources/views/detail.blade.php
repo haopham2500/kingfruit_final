@@ -48,6 +48,16 @@
         border-bottom: 1px solid #eee;
         padding-bottom: 1.5rem;
         margin-bottom: 1.5rem;
+        overflow-wrap: anywhere;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .comment-item p,
+    .comment-item small {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
 
     .star-rating {
@@ -223,7 +233,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Nội dung</label>
-                            <textarea name="comment" class="form-control border-0 shadow-none @error('comment') is-invalid @enderror" rows="4" placeholder="Nhập cảm nhận của bạn..." required></textarea>
+                            <textarea name="comment" maxlength="200" class="form-control border-0 shadow-none @error('comment') is-invalid @enderror" rows="4" wrap="soft" style="white-space: pre-wrap; word-break: break-word;" placeholder="Nhập cảm nhận của bạn..." required></textarea>
+                            <div class="form-text text-muted">Tối đa 200 ký tự. KingFruit đề nghị bình luận rõ ràng, lịch sự và không có mã hay ký tự lạ.</div>
                             @error('comment')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
