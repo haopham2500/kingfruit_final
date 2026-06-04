@@ -82,13 +82,13 @@ class CrudUserController extends Controller
     public function createUser(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:20',
             'email' => 'required|string|email|max:255|unique:users|regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/',
             'password' => 'required|string|min:6|max:255',
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:11',
         ], [
             'name.required' => 'Vui lòng nhập tên.',
-            'name.max' => 'Tên không được dài quá 255 ký tự.',
+            'name.max' => 'Họ và tên không được dài quá 20 ký tự.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
             'email.max' => 'Email không được dài quá 255 ký tự.',
@@ -97,7 +97,7 @@ class CrudUserController extends Controller
             'password.required' => 'Vui lòng nhập mật khẩu.',
             'password.min' => 'Mật khẩu ít nhất 6 ký tự nhé.',
             'password.max' => 'Mật khẩu không được dài quá 255 ký tự.',
-            'phone.max' => 'Số điện thoại không được dài quá 20 ký tự.',
+            'phone.max' => 'Số điện thoại không được dài quá 11 số.',
         ]);
 
         User::registerUser($data);
@@ -152,19 +152,19 @@ class CrudUserController extends Controller
         }
 
         $data = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:20',
             'email' => 'required|email|max:255|regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/|unique:users,email,'.$id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:11',
             'role' => 'required|in:admin,user,banned',
         ], [
             'name.required' => 'Tên không được để trống.',
-            'name.max' => 'Tên không được dài quá 255 ký tự.',
+            'name.max' => 'Họ và tên không được dài quá 20 ký tự.',
             'email.required' => 'Email không được để trống.',
             'email.email' => 'Email không hợp lệ.',
             'email.regex' => 'Vui lòng nhập email có đuôi @gmail.com',
             'email.max' => 'Email không được dài quá 255 ký tự.',
             'email.unique' => 'Email này bị trùng mất rồi.',
-            'phone.max' => 'Số điện thoại không được dài quá 20 ký tự.',
+            'phone.max' => 'Số điện thoại không được dài quá 11 số.',
             'role.required' => 'Vui lòng chọn vai trò.',
             'role.in' => 'Vai trò không hợp lệ.',
         ]);

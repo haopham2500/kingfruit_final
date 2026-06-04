@@ -18,11 +18,11 @@
                     <h5 class="fw-bold mb-4">{{ __('messages.shipping_info') }}</h5>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.customer_name') }}</label>
-                        <input type="text" name="customer_name" class="form-control" required placeholder="{{ __('messages.customer_name_placeholder') }}">
+                        <input type="text" name="customer_name" class="form-control" required placeholder="{{ __('messages.customer_name_placeholder') }}" maxlength="20">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.customer_phone') }}</label>
-                        <input type="text" name="phone" class="form-control" required placeholder="{{ __('messages.customer_phone_placeholder') }}" inputmode="numeric" pattern="[0-9]*">
+                        <input type="text" name="phone" class="form-control" required placeholder="{{ __('messages.customer_phone_placeholder') }}" inputmode="numeric" pattern="[0-9]*" maxlength="11">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">{{ __('messages.shipping_address') }}</label>
