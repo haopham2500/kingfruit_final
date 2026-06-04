@@ -118,6 +118,9 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::name('admin.')->group(function () {
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/reviews/{id}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
+        Route::patch('/reviews/replies/{id}', [ReviewController::class, 'updateReply'])->name('reviews.reply.update');
+        Route::get('/reviews/{id}/check', [ReviewController::class, 'checkStatus'])->name('reviews.check');
+        Route::get('/reviews/replies/{id}/check', [ReviewController::class, 'checkReplyStatus'])->name('reviews.replies.check');
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
 });
